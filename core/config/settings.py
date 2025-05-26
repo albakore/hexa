@@ -10,7 +10,7 @@ class Environment(Enum):
 
 class Settings(BaseSettings):
 	ENV : str = "local"
-	DATABASE_URL : str = "sqlite+aiosqlite///db.sqlite"
+	DATABASE_URL : str = "sqlite+aiosqlite:///db.sqlite"
 
 class LocalSettings(Settings):
 	ENV : str = "local"

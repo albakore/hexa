@@ -15,6 +15,9 @@ class UserUseCase(ABC):
 
 	@abstractmethod
 	def is_active(self,) -> bool: ...
+
+	@abstractmethod
+	def is_admin(self,user_id) -> bool: ...
 	
 	@abstractmethod
 	def is_owner(self,) -> bool: ...
