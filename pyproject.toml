@@ -1,15 +1,18 @@
 [project]
-name = "backend"
+name = "fast-hexagonal"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "aiosqlite>=0.21.0",
     "dependency-injector>=4.46.0",
     "fastapi[all]>=0.115.12",
+    "psycopg[binary]>=3.2.9",
     "pyjwt>=2.10.1",
     "pymysql>=1.1.1",
     "sqlmodel>=0.0.24",
+    "typer>=0.15.4",
     "zeep>=4.3.1",
 ]
 
@@ -17,3 +20,6 @@ dependencies = [
 dev = [
     "ruff>=0.11.10",
 ]
+
+[project.scripts]
+hexa = "hexa.__main__:cmd"

@@ -2,7 +2,7 @@ import os
 import importlib
 from fastapi import APIRouter, FastAPI
 from pprint import pprint
-
+from rich import print
 from app.container import MainContainer
 
 def get_routes():
@@ -13,8 +13,8 @@ def get_routes():
 			module = importlib.import_module(path)
 
 			if hasattr(module, "router"):
-				pprint(module.router.tags)
-				pprint(module.router.routes)
+				print(module.router.tags)
+				print(module.router.routes)
 				routes.append(module.router)
 
 	return routes
