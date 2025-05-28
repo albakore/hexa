@@ -5,9 +5,15 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "aiopg[sa]>=1.1.0",
     "aiosqlite>=0.21.0",
+    "alembic>=1.16.1",
+    "asyncpg>=0.30.0",
     "dependency-injector>=4.46.0",
+    "faker>=37.3.0",
     "fastapi[all]>=0.115.12",
+    "psycopg-binary>=3.2.9",
+    "psycopg2-binary>=2.9.10",
     "psycopg[binary]>=3.2.9",
     "pyjwt>=2.10.1",
     "pymysql>=1.1.1",

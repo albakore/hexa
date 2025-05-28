@@ -1,7 +1,9 @@
 
+from app.user.domain.command import CreateUserCommand
 from app.user.domain.entity.user import User
 from app.user.domain.repository.user import UserRepository
 from app.user.domain.usecase.user import UserUseCase
+from core.db.transactional import Transactional
 
 
 class UserService(UserUseCase):
@@ -10,7 +12,8 @@ class UserService(UserUseCase):
 		self.repository = repository
 
 	async def get_user_list(self, limit: int, page:int) -> list[User]:
-		return await self.repository.get_user_list(limit,page)
+		data = await self.repository.get_user_list(limit,page)
+		return data
 
 	def get_user_by_id(self) -> User | None:
 		raise NotImplementedError
@@ -26,4 +29,9 @@ class UserService(UserUseCase):
 
 	def is_admin(self) -> bool:
 		raise NotImplementedError
+	
+	@Transactional()
+	async def create_user(self, *, command: CreateUserCommand) -> None:
+		user = User.model_validate(command)
+		await self.repository.save(user=user)
 

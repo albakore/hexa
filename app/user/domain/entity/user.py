@@ -1,7 +1,7 @@
 from sqlmodel import Field, SQLModel
 from datetime import datetime
 
-class User(SQLModel):
+class User(SQLModel, table=True):
 	id: int | None = Field(default=None, primary_key=True)
 	name: str
 	lastname: str
@@ -11,4 +11,4 @@ class User(SQLModel):
 	is_active: bool = Field(default=True)
 	date_last_session: datetime = Field(default_factory=datetime.now)
 	date_registration: datetime = Field(default_factory=datetime.now)
-	fk_role: int = Field(default=None, foreign_key="role.id")
+	fk_role: int | None = Field(default=None, foreign_key="role.id")

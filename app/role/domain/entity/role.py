@@ -5,11 +5,11 @@ from sqlmodel import Field, Relationship, SQLModel
 if TYPE_CHECKING:
     from app.role.domain.entity.permission import GroupPermission
 
-class RoleGroupPermissionLink(SQLModel,):
+class RoleGroupPermissionLink(SQLModel, table=True):
     fk_role: int = Field(foreign_key="role.id", primary_key=True)
     fk_group: int = Field(foreign_key="grouppermission.id", primary_key=True)
 
-class Role(SQLModel,):
+class Role(SQLModel, table=True):
 	id: int | None = Field(default=None, primary_key=True)
 	name: str
 	description: str | None = Field(default=None)

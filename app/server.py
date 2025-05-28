@@ -11,6 +11,7 @@ from core.exceptions.base import CustomException
 from core.fastapi.dependencies.logging import Logging
 from core.fastapi.middlewares import AuthBackend, AuthenticationMiddleware, ResponseLogMiddleware, SQLAlchemyMiddleware
 
+
 def on_auth_error(request: Request, exc: Exception):
     status_code, error_code, message = 401, None, str(exc)
     if isinstance(exc, CustomException):

@@ -1,5 +1,5 @@
 from enum import Enum
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings,SettingsConfigDict
 import os
 import typer
 
@@ -11,6 +11,8 @@ class Environment(Enum):
 class Settings(BaseSettings):
 	ENV : str = "local"
 	DATABASE_URL : str = "sqlite+aiosqlite:///db.sqlite"
+
+	model_config = SettingsConfigDict(env_file='.env', env_file_encoding='utf-8')
 
 class LocalSettings(Settings):
 	ENV : str = "local"

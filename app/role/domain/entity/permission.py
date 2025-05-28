@@ -3,16 +3,15 @@ from typing import List, TYPE_CHECKING
 from sqlmodel import Field, Relationship, SQLModel
 
 
-if TYPE_CHECKING:
-	from app.role.domain.entity.role import RoleGroupPermissionLink, Role
+from app.role.domain.entity.role import RoleGroupPermissionLink, Role
     
 
-class GroupPermissionLink(SQLModel):
+class GroupPermissionLink(SQLModel, table=True):
     fk_group: int = Field(foreign_key="grouppermission.id", primary_key=True)
     fk_permission: int = Field(foreign_key="permission.id", primary_key=True)
 
 
-class GroupPermission(SQLModel):
+class GroupPermission(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     name: str
     description: str | None = Field(default=None)
@@ -25,7 +24,7 @@ class GroupPermission(SQLModel):
     )
 
 
-class Permission(SQLModel):
+class Permission(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     nombre: str
     clave: str
