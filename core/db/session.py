@@ -18,15 +18,18 @@ session_context: ContextVar[str] = ContextVar("session_context")
 
 
 def get_session_context() -> str:
+    #print(f"GET contexto de sesion: {session_context.get()}")
     return session_context.get()
 
 
 def set_session_context(session_id: str) -> Token:
+    #print(f"SET contexto de sesion: {session_id}")
     return session_context.set(session_id)
 
 
 def reset_session_context(context: Token) -> None:
     session_context.reset(context)
+    #print(f"RESET contexto de sesion: {context}")
 
 
 class EngineType(Enum):

@@ -31,7 +31,7 @@ class UserSQLiteRepository(UserRepository):
 
 	async def save(self, user: User) -> User | None:
 		global_session.add(user)
-		await global_session.refresh(user)
+		await global_session.flush()
 		return user
 			
 		

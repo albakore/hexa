@@ -15,23 +15,25 @@ class UserService(UserUseCase):
 		data = await self.repository.get_user_list(limit,page)
 		return data
 
-	def get_user_by_id(self) -> User | None:
+	async def get_user_by_id(self, user_id: int) -> User | None:
+		user = await self.repository.get_user_by_id(user_id)
+		return user
+
+	async def get_user_by_email(self) -> User | None:
 		raise NotImplementedError
 
-	def get_user_by_email(self) -> User | None:
+	async def is_active(self,user_id) -> bool:
 		raise NotImplementedError
 
-	def is_active(self,user_id) -> bool:
-		raise NotImplementedError
-
-	def is_owner(self) -> bool:
+	async def is_owner(self) -> bool:
 		raise NotImplementedError
 
 	def is_admin(self) -> bool:
 		raise NotImplementedError
 	
 	@Transactional()
-	async def create_user(self, *, command: CreateUserCommand) -> None:
+	async def create_user(self, *, command: CreateUserCommand) -> User | None:
 		user = User.model_validate(command)
-		await self.repository.save(user=user)
+		new_user = await self.repository.save(user=user)
+		return new_user
 

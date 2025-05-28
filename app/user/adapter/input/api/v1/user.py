@@ -17,6 +17,15 @@ async def get_user_list(
 ):
 	return await user_service.get_user_list(int(limit),int(page))
 
+@user_router.get("/{user_id}")
+@inject
+async def get_user(
+	user_id: int,
+	user_service: UserService = Depends(Provide[MainContainer.user.service])
+):
+	return await user_service.get_user_by_id(int(user_id))
+
+
 @user_router.post("")
 @inject
 async def create_user(
