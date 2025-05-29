@@ -17,5 +17,5 @@ class UserRepositoryAdapter(UserRepository):
 	async def get_user_by_email(self, user_email: str) -> User | None:
 		return await self.repository.get_user_by_email(user_email)
 
-	async def save(self, user: User) -> None:
+	async def save(self, user: User) -> User | None:
 		return await self.repository.save(user)

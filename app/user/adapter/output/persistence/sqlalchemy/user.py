@@ -4,7 +4,7 @@ from app.user.domain.repository.user import UserRepository
 from sqlmodel import select
 from core.db.session import session as global_session, session_factory
 
-class UserSQLiteRepository(UserRepository):
+class UserSQLAlchemyRepository(UserRepository):
 	async def get_user_list(self, limit: int = 12, page: int = 0) -> List[User] | Sequence[User]:
 		query = select(User)
 		query = query.slice(page,limit)
