@@ -4,9 +4,9 @@ import sys
 from pathlib import Path
 import importlib.util
 sys.path.append(str(Path(__file__).resolve().parents[1]))
-from core.db.session import async_engine
+from core.db.session import session
 
-from app.models import create_tables as async_create_all, drop_tables as async_drop_all
+from app.models import create_tables, drop_tables
 
 # Configuración del CLI principal
 cmd = typer.Typer(rich_markup_mode="rich", help="Gestor del proyecto hexagonal")
@@ -24,18 +24,16 @@ db_app = typer.Typer(help="Comandos para gestión de la base de datos")
 cmd.add_typer(db_app, name="db")
 
 @db_app.command("create-tables")
-def create_tables(verbose: bool = True):
+def create_all(verbose: bool = True):
     """Crea todas las tablas en la base de datos"""
-    import asyncio
-    asyncio.run(async_create_all(async_engine))
+    create_tables(session.bind)
     if verbose:
         typer.echo("✅ Tablas creadas exitosamente")
 
 @db_app.command("drop-tables")
-def drop_tables(verbose: bool = True):
+def drop_all(verbose: bool = True):
     """Elimina todas las tablas de la base de datos"""
-    import asyncio
-    asyncio.run(async_drop_all(async_engine))
+    drop_tables(session.bind)
     if verbose:
         typer.echo("🗑️ Tablas eliminadas exitosamente")
 

@@ -1,19 +1,17 @@
 from sqlmodel import SQLModel
-from sqlalchemy.ext.asyncio import AsyncEngine
+from sqlalchemy import Engine
 
 from app.user.domain.entity import *
 from app.role.domain.entity import *
 
-async def create_tables(async_engine : AsyncEngine):
+def create_tables(engine : Engine):
 	"""
 	Crea todas las tablas en la base de datos de forma asíncrona
 	"""
-	async with async_engine.begin() as conn:
-		await conn.run_sync(SQLModel.metadata.create_all)
+	SQLModel.metadata.create_all(engine)
 
-async def drop_tables(async_engine : AsyncEngine):
+def drop_tables(engine : Engine):
 	"""
 	Elimina todas las tablas de la base de datos de forma asíncrona
 	"""
-	async with async_engine.begin() as conn:
-		await conn.run_sync(SQLModel.metadata.drop_all)
+	SQLModel.metadata.drop_all(engine)
