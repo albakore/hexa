@@ -16,3 +16,6 @@ class UserRepository(ABC):
 
 	@abstractmethod
 	async def save(self, user: User) -> User | None: ...
+
+	@abstractmethod
+	async def delete(self, user: User) -> User | None: ...
