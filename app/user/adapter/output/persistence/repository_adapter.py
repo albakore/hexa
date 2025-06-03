@@ -19,3 +19,7 @@ class UserRepositoryAdapter(UserRepository):
 
 	async def save(self, user: User) -> User | None:
 		return await self.repository.save(user)
+
+	async def delete(self, user: User) -> None:
+		return await self.repository.delete(user)
+

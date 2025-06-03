@@ -1,8 +1,8 @@
-from app.role.domain.entity.role import (
+from app.rbac.domain.entity.role import (
 	RoleGroupPermissionLink,
 	Role,
 )
-from app.role.domain.entity.permission import (
+from app.rbac.domain.entity.permission import (
 	GroupPermissionLink,
 	GroupPermission,
 	Permission

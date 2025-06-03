@@ -2,7 +2,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from app.role.domain.entity.role import Role
+from app.rbac.domain.entity.role import Role
 
 
 class RoleRepository(ABC):

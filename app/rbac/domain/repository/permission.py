@@ -2,8 +2,8 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from app.role.domain.entity.permission import Permission
-from app.role.domain.entity.role import GroupPermission
+from app.rbac.domain.entity.permission import Permission
+from app.rbac.domain.entity.role import GroupPermission
 
 
 class PermissionRepository(ABC):

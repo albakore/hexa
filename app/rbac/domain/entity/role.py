@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, List
 from sqlmodel import Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
-    from app.role.domain.entity.permission import GroupPermission
+    from app.rbac.domain.entity.permission import GroupPermission
 
 class RoleGroupPermissionLink(SQLModel, table=True):
     fk_role: int = Field(foreign_key="role.id", primary_key=True)

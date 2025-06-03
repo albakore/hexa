@@ -33,5 +33,10 @@ class UserSQLAlchemyRepository(UserRepository):
 		global_session.add(user)
 		await global_session.flush()
 		return user
+
+	async def delete(self, user: User) -> None:
+		await global_session.delete(user)
+		await global_session.flush()
+
 			
 		
