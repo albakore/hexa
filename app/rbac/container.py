@@ -1,9 +1,9 @@
 from dependency_injector.providers import Factory, Singleton
 from dependency_injector.containers import DeclarativeContainer
 
-from app.rbac.adapter.output.persistence.repository_adapter import UserRepositoryAdapter
-from app.rbac.adapter.output.persistence.sqlalchemy.user import UserSQLAlchemyRepository
-from app.rbac.application.service.role import RoleService
+from app.rbac.adapter.output.persistence.repository_adapter import RBACRepositoryAdapter
+from app.rbac.adapter.output.persistence.sqlalchemy.rbac import RBACSQLAlchemyRepository
+from app.rbac.application.service.role import PermissionService, RoleService
 
 class RBACContainer(DeclarativeContainer):
 
@@ -16,7 +16,12 @@ class RBACContainer(DeclarativeContainer):
 		repository=repository
 	)
 
-	service = Factory(
+	role_service = Factory(
 		RoleService,
+		repository=repository_adapter
+	)
+
+	permission_service = Factory(
+		PermissionService,
 		repository=repository_adapter
 	)
