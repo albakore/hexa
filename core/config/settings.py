@@ -11,6 +11,8 @@ class Environment(Enum):
 class Settings(BaseSettings):
 	ENV : str = "local"
 	DATABASE_URL : str = "sqlite+aiosqlite:///db.sqlite"
+	JWT_SECRET_KEY : str = "omelettedufromage"
+	JWT_ALGORITHM : str = "HS256"
 
 	model_config = SettingsConfigDict(env_file='.env', env_file_encoding='utf-8')
 
