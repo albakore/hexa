@@ -5,33 +5,46 @@ from starlette.middleware.authentication import (
 	AuthenticationMiddleware as BaseAuthenticationMiddleware,
 )
 from starlette.requests import HTTPConnection
-
+from starlette.authentication import BaseUser, AuthCredentials
 from core.config.settings import env
 
 
-class CurrentUser(BaseModel):
-	id: int | None = Field(default=None, description="ID")
+class CurrentUser(BaseUser):
+	def __init__(
+		self,
+		user_id: int | None,
+		username: str | None,
+		email: str | None,
+		role: str | None,
+	):
+		self.id = user_id
+		self.username = username
+		self.email = email
+		self.role = role
+
+	@property
+	def is_authenticated(self) -> bool:
+		return self.id is not None
+
+	@property
+	def display_name(self) -> str:
+		return f"User {self.id}" if self.id else "Anon"
 
 
 class AuthBackend(AuthenticationBackend):
 	async def authenticate(
 		self, conn: HTTPConnection
-	) -> tuple[bool, CurrentUser | None]:
-		current_user = CurrentUser()
-		print(conn.items())
-		authorization: str = conn.headers.get("Authorization")
+	) -> tuple[AuthCredentials, CurrentUser] | None:
+		authorization: str | None = conn.headers.get("Authorization")
 		if not authorization:
-			return False, current_user
+			return None
 
 		try:
 			scheme, credentials = authorization.split(" ")
 			if scheme.lower() != "bearer":
-				return False, current_user
+				return None
 		except ValueError:
-			return False, current_user
-
-		if not credentials:
-			return False, current_user
+			return None
 
 		try:
 			payload = jwt.decode(
@@ -41,10 +54,10 @@ class AuthBackend(AuthenticationBackend):
 			)
 			user_id = payload.get("user_id")
 		except jwt.exceptions.PyJWTError:
-			return False, current_user
+			print("Token inválido")
+			return None
 
-		current_user.id = user_id
-		return True, current_user
+		return AuthCredentials(["authenticated"]), CurrentUser(user_id)
 
 
 class AuthenticationMiddleware(BaseAuthenticationMiddleware): ...
