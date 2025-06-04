@@ -1,7 +1,7 @@
 from typing import List
-from app.rbac.domain.entity.permission import Permission
-from app.rbac.domain.entity.role import GroupPermission
-from app.rbac.domain.usecase.permission import PermissionUseCase
+from app.rbac.domain.entity import Permission
+from app.rbac.domain.entity import GroupPermission
+from app.rbac.domain.usecase import PermissionUseCase
 
 
 class PermissionService(PermissionUseCase):
