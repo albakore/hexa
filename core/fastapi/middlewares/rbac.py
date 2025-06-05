@@ -9,7 +9,7 @@ class RBACMiddleware:
 
 	async def __call__(self, scope, receive, send):
 		request = Request(scope, receive=receive)
-		request.scope.
+
 		user : CurrentUser | None = getattr(request, "user", None)
 		auth : AuthCredentials = getattr(request, "auth")
 		print("👤 Usuario desde middleware:", user)

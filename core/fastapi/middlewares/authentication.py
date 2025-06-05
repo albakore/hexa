@@ -1,3 +1,4 @@
+from typing import List
 import jwt
 from pydantic import BaseModel, Field
 from starlette.authentication import AuthenticationBackend
@@ -9,34 +10,34 @@ from starlette.authentication import BaseUser, AuthCredentials
 from core.config.settings import env
 
 
-class CurrentUser(BaseUser):
-	def __init__(
-		self,
-		user_id: int | None,
-		username: str | None,
-		email: str | None,
-		role: str | None,
-	):
-		self.id = user_id
-		self.username = username
-		self.email = email
-		self.role = role
+class CurrentUser(BaseModel):
+	id: int
+	username: str
+	email: str
+	role: str
+	tipo_usuario: str
+	permissions: List[str]
+
+
+class User(BaseUser):
+	def __init__(self, user_data: CurrentUser):
+		self._user = user_data
 
 	@property
-	def is_authenticated(self) -> bool:
-		return self.id is not None
+	def is_authenticated(self):
+		return True
 
-	@property
-	def display_name(self) -> str:
-		return f"User {self.id}" if self.id else "Anon"
+	def __getattr__(self, item):
+		return getattr(self._user, item)
 
 
 class AuthBackend(AuthenticationBackend):
 	async def authenticate(
 		self, conn: HTTPConnection
-	) -> tuple[AuthCredentials, CurrentUser] | None:
+	) -> tuple[AuthCredentials, User] | None:
 		authorization: str | None = conn.headers.get("Authorization")
 		if not authorization:
+			print("❌ Sin Authorization")
 			return None
 
 		try:
@@ -52,12 +53,14 @@ class AuthBackend(AuthenticationBackend):
 				env.JWT_SECRET_KEY,
 				algorithms=[env.JWT_ALGORITHM],
 			)
-			user_id = payload.get("user_id")
+			user = CurrentUser(**payload)
+			scopes = user.permissions
+
 		except jwt.exceptions.PyJWTError:
 			print("Token inválido")
 			return None
 
-		return AuthCredentials(["authenticated"]), CurrentUser(user_id)
+		return AuthCredentials(scopes), User(user)
 
 
 class AuthenticationMiddleware(BaseAuthenticationMiddleware): ...

@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "aiokeydb>=0.2.1",
     "aiopg[sa]>=1.1.0",
     "aiosqlite>=0.21.0",
     "alembic>=1.16.1",
