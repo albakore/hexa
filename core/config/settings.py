@@ -10,7 +10,8 @@ class Environment(Enum):
 
 class Settings(BaseSettings):
 	ENV : str = "local"
-	DATABASE_URL : str = "sqlite+aiosqlite:///db.sqlite"
+	DATABASE_URL : str = "postgresql+asyncpg://hexa:hexa@localhost:5432/hexa" 
+	# DATABASE_URL : str = "sqlite+aiosqlite:///db.sqlite"
 	JWT_SECRET_KEY : str = "omelettedufromage"
 	JWT_ALGORITHM : str = "HS256"
 

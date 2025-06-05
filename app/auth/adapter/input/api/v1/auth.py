@@ -7,7 +7,7 @@ from app.auth.adapter.input.api.v1.request import (
 )
 from app.auth.adapter.input.api.v1.response import RefreshTokenResponse
 from app.auth.domain.usecase.jwt import JwtUseCase
-from app.container import Container
+from app.container import MainContainer
 
 auth_router = APIRouter()
 
@@ -19,7 +19,7 @@ auth_router = APIRouter()
 @inject
 async def refresh_token(
     request: RefreshTokenRequest,
-    usecase: JwtUseCase = Depends(Provide[Container.jwt_service]),
+    usecase: JwtUseCase = Depends(Provide[MainContainer.jwt_service]),
 ):
     token = await usecase.create_refresh_token(
         token=request.token, refresh_token=request.refresh_token
@@ -31,7 +31,7 @@ async def refresh_token(
 @inject
 async def verify_token(
     request: VerifyTokenRequest,
-    usecase: JwtUseCase = Depends(Provide[Container.jwt_service]),
+    usecase: JwtUseCase = Depends(Provide[MainContainer.jwt_service]),
 ):
     await usecase.verify_token(token=request.token)
     return Response(status_code=200)
