@@ -194,3 +194,4 @@ migrations/versions/*
 *.sqlite3
 *.sqlite
 *.db
+docker/data/appendonly.aof
