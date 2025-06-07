@@ -1,7 +1,7 @@
 from typing import List, Sequence
 from app.user.domain.entity.user import User
 from app.user.domain.repository.user import UserRepository
-from sqlmodel import select
+from sqlmodel import or_, select
 from core.db.session import session as global_session, session_factory
 
 class UserSQLAlchemyRepository(UserRepository):
@@ -37,6 +37,19 @@ class UserSQLAlchemyRepository(UserRepository):
 	async def delete(self, user: User) -> None:
 		await global_session.delete(user)
 		await global_session.flush()
+
+	async def get_user_by_email_or_nickname(
+		self,
+		*,
+		email: str,
+		nickname: str,
+	) -> User | None:
+		async with session_factory() as read_session:
+			stmt = await read_session.execute(
+				select(User).where(or_(User.email == email, User.nickname == nickname)),
+			)
+			return stmt.scalars().first()
+
 
 			
 		

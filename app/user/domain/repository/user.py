@@ -15,6 +15,9 @@ class UserRepository(ABC):
 	async def get_user_by_email(self,user_email : str) -> User | None: ...
 
 	@abstractmethod
+	async def get_user_by_email_or_nickname(self,email : str, nickname:str) -> User | None: ...
+
+	@abstractmethod
 	async def save(self, user: User) -> User | None: ...
 
 	@abstractmethod
