@@ -8,3 +8,8 @@ class RefreshTokenRequest(BaseModel):
 
 class VerifyTokenRequest(BaseModel):
     token: str = Field(..., description="Token")
+
+class AuthLoginRequest(BaseModel):
+    ...
+
+class AuthRegisterRequest():

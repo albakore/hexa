@@ -4,8 +4,8 @@ from datetime import datetime
 class User(SQLModel, table=True):
 	id: int | None = Field(default=None, primary_key=True)
 	nickname: str | None = Field(default=None)
-	name: str
-	lastname: str
+	name: str | None = Field(default=None)
+	lastname: str | None = Field(default=None)
 	job_position: str | None = Field(default=None)
 	phone_number: str | None = Field(default=None)
 	email: str

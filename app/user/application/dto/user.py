@@ -9,9 +9,11 @@ class GetUserListResponseDTO(BaseModel):
 
 class CreateUserRequestDTO(BaseModel):
     email: str = Field(..., description="Email")
-    password1: str = Field(..., description="Password1")
-    password2: str = Field(..., description="Password2")
-    nickname: str = Field(..., description="Nickname")
+    nickname: str | None = Field(..., description="Nickname")
+    name : str | None  = Field(..., description="Name")
+    lastname : str | None = Field(..., description="Lastname")
+    job_position : str | None = Field(..., description="Job Position")
+    phone_number : int | None = Field(..., description="Phone Number")
 
 
 class CreateUserResponseDTO(BaseModel):

@@ -1,5 +1,6 @@
 
 
+from app.auth.application.dto import AuthRegisterRequestDTO
 from app.auth.application.exception import LoginUsernamePasswordException
 from app.auth.domain.usecase.auth import AuthUseCase
 from app.user.application.dto import LoginResponseDTO
@@ -36,3 +37,6 @@ class AuthService(AuthUseCase):
 			refresh_token=TokenHelper.encode(payload={"sub": "refresh"}),
 		)
 		return response
+	
+	async def register(self, registration_data : AuthRegisterRequestDTO):
+		...
