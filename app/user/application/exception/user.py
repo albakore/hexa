@@ -17,3 +17,8 @@ class UserNotFoundException(CustomException):
     code = 404
     error_code = "USER__NOT_FOUND"
     message = "user not found"
+
+class UserRegisteredException(CustomException):
+    code = 404
+    error_code = "USER__REGISTERER_FOUND"
+    message = "The user has been previously registered"

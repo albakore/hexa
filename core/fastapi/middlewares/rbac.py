@@ -2,7 +2,7 @@ from starlette.authentication import AuthCredentials
 from starlette.requests import Request
 from starlette.types import ASGIApp, Receive, Scope, Send
 
-from core.fastapi.middlewares.authentication import CurrentUser
+from core.fastapi.middlewares.authentication import CurrentUser, User
 class RBACMiddleware:
 	def __init__(self, app: ASGIApp) -> None:
 		self.app = app
@@ -10,7 +10,7 @@ class RBACMiddleware:
 	async def __call__(self, scope, receive, send):
 		request = Request(scope, receive=receive)
 
-		user : CurrentUser | None = getattr(request, "user", None)
+		user : User | None = getattr(request, "user", None)
 		auth : AuthCredentials = getattr(request, "auth")
 		print("👤 Usuario desde middleware:", user)
 		print("👤 Auth:", auth.scopes)

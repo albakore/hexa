@@ -4,11 +4,11 @@ from app.auth.application.dto import AuthRegisterRequestDTO
 from app.auth.application.exception import LoginUsernamePasswordException
 from app.auth.domain.usecase.auth import AuthUseCase
 from app.user.application.dto import LoginResponseDTO
-from app.user.application.exception.user import UserNotFoundException
+from app.user.application.exception.user import UserNotFoundException, UserRegisteredException
 from app.user.domain.repository.user import UserRepository
+from app.user.domain.entity.user import User
 from core.helpers.password import PasswordHelper
 from core.helpers.token import TokenHelper
-
 
 class AuthService(AuthUseCase):
 
@@ -39,4 +39,16 @@ class AuthService(AuthUseCase):
 		return response
 	
 	async def register(self, registration_data : AuthRegisterRequestDTO):
-		...
+		user = await self.user_repository.get_user_by_email_or_nickname(
+			email= registration_data.email,
+			nickname=registration_data.nickname
+		)
+
+		if user:
+			raise UserRegisteredException
+		
+		new_user = User.model_validate(registration_data)
+		user_created = await self.user_repository.save(new_user)
+		return user_created
+		
+
