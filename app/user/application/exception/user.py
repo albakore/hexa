@@ -19,6 +19,11 @@ class UserNotFoundException(CustomException):
     message = "user not found"
 
 class UserRegisteredException(CustomException):
-    code = 404
+    code = 400
     error_code = "USER__REGISTERER_FOUND"
     message = "The user has been previously registered"
+
+class UserInactiveException(CustomException):
+    code = 400
+    error_code = "USER__INACTIVE"
+    message = "User Inactive"

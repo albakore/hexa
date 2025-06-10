@@ -3,11 +3,12 @@ from fastapi import APIRouter, Depends, Form, Response
 
 from app.auth.adapter.input.api.v1.request import (
     AuthLoginRequest,
+    AuthPasswordResetRequest,
     AuthRegisterRequest,
     RefreshTokenRequest,
     VerifyTokenRequest,
 )
-from app.auth.adapter.input.api.v1.response import RefreshTokenResponse
+from app.auth.adapter.input.api.v1.response import AuthPasswordResetResponse, RefreshTokenResponse
 from app.auth.domain.usecase.auth import AuthUseCase
 from app.auth.domain.usecase.jwt import JwtUseCase
 from app.container import MainContainer
@@ -63,3 +64,16 @@ async def register(
         registration_data=request
     )
     return data
+
+@auth_router.post("/password_reset")
+@inject
+async def password_reset(
+    request: AuthPasswordResetRequest = Form(),
+    usecase: AuthUseCase = Depends(Provide[MainContainer.auth.service]),
+):
+    await usecase.password_reset(
+        request.id,
+        request.initial_password,
+        request.new_password
+    )
+    return AuthPasswordResetResponse()

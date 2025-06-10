@@ -9,3 +9,5 @@ class RefreshTokenResponseDTO(BaseModel):
 
 class AuthRegisterRequestDTO(CreateUserRequestDTO):
     ...
+class AuthPasswordResetResponseDTO(BaseModel):
+    id: int

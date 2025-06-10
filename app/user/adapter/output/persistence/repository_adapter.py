@@ -26,4 +26,8 @@ class UserRepositoryAdapter(UserRepository):
 	async def get_user_by_email_or_nickname(self, email: str, nickname: str) -> User | None:
 		return await self.repository.get_user_by_email_or_nickname(email, nickname)
 
+	async def set_user_password(self, user: User, password: str) -> None:
+		return await self.repository.set_user_password(user,password)
+
+
 

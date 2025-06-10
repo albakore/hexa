@@ -49,6 +49,12 @@ class UserSQLAlchemyRepository(UserRepository):
 			)
 			return stmt.scalars().first()
 
+	async def set_user_password(self, user: User, password: str) -> None:
+		user.password = password
+		user.requires_password_reset = False
+		global_session.add(user)
+
+
 
 			
 		
