@@ -1,8 +1,9 @@
+import uuid
 from pydantic import BaseModel, Field
 
 
 class GetUserListResponseDTO(BaseModel):
-    id: int = Field(..., description="ID")
+    id: uuid.UUID = Field(..., description="ID")
     email: str = Field(..., description="Email")
     nickname: str = Field(..., description="Nickname")
 
@@ -21,7 +22,7 @@ class CreateUserResponseDTO(BaseModel):
     nickname: str = Field(..., description="Nickname")
 
 class UserLoginResponseDTO(BaseModel):
-    id: int | None = None
+    id: uuid.UUID | None = None
     nickname: str | None = None
     email: str | None = None
     name: str | None = None

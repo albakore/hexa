@@ -18,6 +18,10 @@ class UserService(UserUseCase):
 	async def get_user_by_id(self, user_id: int) -> User | None:
 		user = await self.repository.get_user_by_id(user_id)
 		return user
+	
+	async def get_user_by_uuid(self, user_uuid: str) -> User | None:
+		user = await self.repository.get_user_by_uuid(user_uuid)
+		return user
 
 	async def get_user_by_email(self) -> User | None:
 		raise NotImplementedError

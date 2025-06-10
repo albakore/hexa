@@ -1,10 +1,11 @@
+import uuid
 from sqlmodel import Field, SQLModel
 from datetime import datetime
 
 from core.helpers.password import PasswordHelper
 
 class User(SQLModel, table=True):
-	id: int | None = Field(default=None, primary_key=True)
+	id: uuid.UUID | None = Field(default_factory=uuid.uuid4, primary_key=True)
 	nickname: str | None = Field(default=None)
 	name: str | None = Field(default=None)
 	lastname: str | None = Field(default=None)

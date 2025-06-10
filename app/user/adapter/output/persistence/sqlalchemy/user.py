@@ -1,32 +1,39 @@
 from typing import List, Sequence
+from uuid import UUID
+import uuid
 from app.user.domain.entity.user import User
 from app.user.domain.repository.user import UserRepository
 from sqlmodel import or_, select
 from core.db.session import session as global_session, session_factory
 
+
 class UserSQLAlchemyRepository(UserRepository):
-	async def get_user_list(self, limit: int = 12, page: int = 0) -> List[User] | Sequence[User]:
+	async def get_user_list(
+		self, limit: int = 12, page: int = 0
+	) -> List[User] | Sequence[User]:
 		query = select(User)
-		query = query.slice(page,limit)
+		query = query.slice(page, limit)
 
 		async with session_factory() as session:
 			result = await session.execute(query)
-		
-		return result.scalars().all()
-			
 
+		return result.scalars().all()
 
 	async def get_user_by_id(self, user_id: int) -> User | None:
 		async with session_factory() as session:
-			instance = await session.get(User,int(user_id))
+			instance = await session.get(User, int(user_id))
 		return instance
 
+	async def get_user_by_uuid(self, user_uuid: str) -> User | None:
+		async with session_factory() as session:
+			instance = await session.get(User, uuid.UUID(user_uuid))
+		return instance
 
 	async def get_user_by_email(self, user_email: str) -> User | None:
 		async with session_factory() as session:
 			query = select(User).where(User.email == str(user_email))
 			result = await session.execute(query)
-			
+
 		return result.scalars().one_or_none()
 
 	async def save(self, user: User) -> User | None:
@@ -53,8 +60,3 @@ class UserSQLAlchemyRepository(UserRepository):
 		user.password = password
 		user.requires_password_reset = False
 		global_session.add(user)
-
-
-
-			
-		

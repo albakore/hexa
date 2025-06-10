@@ -1,10 +1,9 @@
-
+from uuid import UUID
 from app.user.domain.entity.user import User
 from app.user.domain.repository.user import UserRepository
 
 
 class UserRepositoryAdapter(UserRepository):
-
 	def __init__(self, repository: UserRepository):
 		self.repository = repository
 
@@ -13,6 +12,9 @@ class UserRepositoryAdapter(UserRepository):
 
 	async def get_user_by_id(self, user_id: int) -> User | None:
 		return await self.repository.get_user_by_id(user_id)
+
+	async def get_user_by_uuid(self, user_uuid: str) -> User | None:
+		return await self.repository.get_user_by_uuid(user_uuid)
 
 	async def get_user_by_email(self, user_email: str) -> User | None:
 		return await self.repository.get_user_by_email(user_email)
@@ -23,11 +25,10 @@ class UserRepositoryAdapter(UserRepository):
 	async def delete(self, user: User) -> None:
 		return await self.repository.delete(user)
 
-	async def get_user_by_email_or_nickname(self, email: str, nickname: str) -> User | None:
+	async def get_user_by_email_or_nickname(
+		self, email: str, nickname: str
+	) -> User | None:
 		return await self.repository.get_user_by_email_or_nickname(email, nickname)
 
 	async def set_user_password(self, user: User, password: str) -> None:
-		return await self.repository.set_user_password(user,password)
-
-
-
+		return await self.repository.set_user_password(user, password)

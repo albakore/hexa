@@ -12,6 +12,9 @@ class UserUseCase(ABC):
 	def get_user_by_id(self,) -> User | None: ...
 
 	@abstractmethod
+	def get_user_by_uuid(self,user_uuid: str) -> User | None: ...
+
+	@abstractmethod
 	def get_user_by_email(self,) -> User | None: ...
 
 	@abstractmethod
