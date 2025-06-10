@@ -14,6 +14,7 @@ dependencies = [
     "faker>=37.3.0",
     "fastapi[all]>=0.115.12",
     "lazyops>=0.4.0",
+    "passlib>=1.7.4",
     "psycopg-binary>=3.2.9",
     "psycopg2-binary>=2.9.10",
     "psycopg[binary]>=3.2.9",

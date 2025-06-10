@@ -40,7 +40,6 @@ class UserSQLAlchemyRepository(UserRepository):
 
 	async def get_user_by_email_or_nickname(
 		self,
-		*,
 		email: str,
 		nickname: str,
 	) -> User | None:

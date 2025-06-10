@@ -23,3 +23,7 @@ class UserRepositoryAdapter(UserRepository):
 	async def delete(self, user: User) -> None:
 		return await self.repository.delete(user)
 
+	async def get_user_by_email_or_nickname(self, email: str, nickname: str) -> User | None:
+		return await self.repository.get_user_by_email_or_nickname(email, nickname)
+
+

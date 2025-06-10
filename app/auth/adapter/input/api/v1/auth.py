@@ -1,11 +1,14 @@
 from dependency_injector.wiring import Provide, inject
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends, Form, Response
 
 from app.auth.adapter.input.api.v1.request import (
+    AuthLoginRequest,
+    AuthRegisterRequest,
     RefreshTokenRequest,
     VerifyTokenRequest,
 )
 from app.auth.adapter.input.api.v1.response import RefreshTokenResponse
+from app.auth.domain.usecase.auth import AuthUseCase
 from app.auth.domain.usecase.jwt import JwtUseCase
 from app.container import MainContainer
 
@@ -35,3 +38,28 @@ async def verify_token(
 ):
     await usecase.verify_token(token=request.token)
     return Response(status_code=200)
+
+
+@auth_router.post("/login")
+@inject
+async def login(
+    request: AuthLoginRequest = Form(),
+    usecase: AuthUseCase = Depends(Provide[MainContainer.auth.service]),
+):
+    data = await usecase.login(
+        request.nickname,
+        request.password
+    )
+    return data
+
+
+@auth_router.post("/register")
+@inject
+async def register(
+    request: AuthRegisterRequest = Form(),
+    usecase: AuthUseCase = Depends(Provide[MainContainer.auth.service]),
+):
+    data = await usecase.register(
+        registration_data=request
+    )
+    return data

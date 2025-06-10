@@ -2,6 +2,7 @@ from dependency_injector.providers import Container, Factory
 from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
 
 from app.auth.application.service.jwt import JwtService
+from app.auth.container import AuthContainer
 from app.user.container import UserContainer
 
 class MainContainer(DeclarativeContainer):
@@ -11,4 +12,6 @@ class MainContainer(DeclarativeContainer):
 	)
 
 	user = Container(UserContainer)
+	auth = Container(AuthContainer)
+
 	jwt_service = Factory(JwtService)

@@ -13,7 +13,7 @@ class CreateUserRequestDTO(BaseModel):
     name : str | None  = Field(..., description="Name")
     lastname : str | None = Field(..., description="Lastname")
     job_position : str | None = Field(..., description="Job Position")
-    phone_number : int | None = Field(..., description="Phone Number")
+    phone_number : str | None = Field(..., description="Phone Number")
 
 
 class CreateUserResponseDTO(BaseModel):
