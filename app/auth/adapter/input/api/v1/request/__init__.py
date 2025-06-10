@@ -1,3 +1,4 @@
+import uuid
 from pydantic import BaseModel, Field
 
 from app.auth.application.dto import AuthRegisterRequestDTO
@@ -18,6 +19,6 @@ class AuthLoginRequest(BaseModel):
 class AuthRegisterRequest(AuthRegisterRequestDTO): ...
 
 class AuthPasswordResetRequest(BaseModel):
-    id : int = Field(..., description="User ID")
+    id : uuid.UUID = Field(..., description="User ID")
     initial_password : str = Field(..., description="Initial password")
     new_password : str = Field(..., description="New password account")

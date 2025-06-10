@@ -72,7 +72,7 @@ async def password_reset(
     usecase: AuthUseCase = Depends(Provide[MainContainer.auth.service]),
 ):
     await usecase.password_reset(
-        request.id,
+        request.id.hex,
         request.initial_password,
         request.new_password
     )

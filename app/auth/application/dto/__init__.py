@@ -1,3 +1,4 @@
+import uuid
 from pydantic import BaseModel, Field
 
 from app.user.application.dto.user import CreateUserRequestDTO
@@ -10,4 +11,4 @@ class RefreshTokenResponseDTO(BaseModel):
 class AuthRegisterRequestDTO(CreateUserRequestDTO):
     ...
 class AuthPasswordResetResponseDTO(BaseModel):
-    id: int
+    id: uuid.UUID

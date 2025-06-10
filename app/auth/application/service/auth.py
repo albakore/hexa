@@ -1,3 +1,4 @@
+from fastapi.encoders import jsonable_encoder
 from app.auth.application.dto import (
 	AuthPasswordResetResponseDTO,
 	AuthRegisterRequestDTO,
@@ -54,12 +55,12 @@ class AuthService(AuthUseCase):
 			raise UserInactiveException
 
 		user_response = UserLoginResponseDTO.model_validate(user.model_dump())
-
+		user_dump = jsonable_encoder(user_response)
 		response = LoginResponseDTO(
 			user=user_response,
-			token=TokenHelper.encode(payload=user_response.model_dump()),
+			token=TokenHelper.encode(payload=user_dump),
 			refresh_token=TokenHelper.encode(
-				payload={**user_response.model_dump(), "sub": "refresh"}
+				payload={**user_dump, "sub": "refresh"}
 			),
 		)
 		return response
@@ -79,9 +80,9 @@ class AuthService(AuthUseCase):
 	
 	@Transactional()
 	async def password_reset(
-		self, id_user: int, initial_password: str, new_password: str
+		self, user_uuid: str, initial_password: str, new_password: str
 	) -> bool | Exception:
-		user = await self.user_repository.get_user_by_id(int(id_user))
+		user = await self.user_repository.get_user_by_uuid(user_uuid)
 		
 		if not user:
 			raise UserNotFoundException

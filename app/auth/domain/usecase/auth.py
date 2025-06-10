@@ -11,5 +11,5 @@ class AuthUseCase(ABC):
 
 	@abstractmethod
 	async def password_reset(
-		self, id_user: int, initial_password: str, new_password: str
+		self, user_uuid: str, initial_password: str, new_password: str
 	) -> bool | Exception: ...
