@@ -1,4 +1,3 @@
-
 from app.auth.domain.entity.auth import AuthRepository
 
 
@@ -13,4 +12,7 @@ class RedisAuthRepository(AuthRepository):
 		raise NotImplementedError
 
 	async def delete_user_session(self):
+		raise NotImplementedError
+
+	async def revoque_user_session(self):
 		raise NotImplementedError

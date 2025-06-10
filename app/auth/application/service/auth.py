@@ -63,6 +63,7 @@ class AuthService(AuthUseCase):
 				payload={**user_dump, "sub": "refresh"}
 			),
 		)
+		await self.db_repository.create_user_session()
 		return response
 
 	@Transactional()
