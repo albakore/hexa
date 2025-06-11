@@ -23,19 +23,19 @@ auth_router = APIRouter()
 @inject
 async def refresh_token(
     request: RefreshTokenRequest,
-    usecase: JwtUseCase = Depends(Provide[MainContainer.jwt_service]),
+    usecase: JwtUseCase = Depends(Provide[MainContainer.auth.jwt_service]),
 ):
     token = await usecase.create_refresh_token(
-        token=request.token, refresh_token=request.refresh_token
+        refresh_token=request.refresh_token
     )
-    return {"token": token.token, "refresh_token": token.refresh_token}
+    return token
 
 
 @auth_router.post("/verify")
 @inject
 async def verify_token(
     request: VerifyTokenRequest,
-    usecase: JwtUseCase = Depends(Provide[MainContainer.jwt_service]),
+    usecase: JwtUseCase = Depends(Provide[MainContainer.auth.jwt_service]),
 ):
     await usecase.verify_token(token=request.token)
     return Response(status_code=200)

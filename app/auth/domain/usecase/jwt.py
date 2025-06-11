@@ -9,7 +9,6 @@ class JwtUseCase(ABC):
     @abstractmethod
     async def create_refresh_token(
         self,
-        token: str,
         refresh_token: str,
     ):
         """Create refresh token"""

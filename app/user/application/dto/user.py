@@ -22,7 +22,7 @@ class CreateUserResponseDTO(BaseModel):
     nickname: str = Field(..., description="Nickname")
 
 class UserLoginResponseDTO(BaseModel):
-    id: uuid.UUID | None = None
+    id: uuid.UUID
     nickname: str | None = None
     email: str | None = None
     name: str | None = None

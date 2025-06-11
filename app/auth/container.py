@@ -1,27 +1,36 @@
-from dependency_injector.providers import Factory, Singleton
+from dependency_injector.providers import Factory, Object, Singleton
 from dependency_injector.containers import DeclarativeContainer
-from dependency_injector.wiring import provided
 
 from app.auth.adapter.output.persistence.redis import RedisAuthRepository
 from app.auth.adapter.output.persistence.repository_adapter import AuthRepositoryAdapter
 from app.auth.application.service.auth import AuthService
-from app.user.adapter.output.persistence.repository_adapter import UserRepositoryAdapter
-from app.user.adapter.output.persistence.sqlalchemy.user import UserSQLAlchemyRepository
+from app.auth.application.service.jwt import JwtService
 from app.user.container import UserContainer
+from core.db.redis_db import RedisClient
 
 class AuthContainer(DeclarativeContainer):
 
-	repository = Singleton(
+	redis_session_repository = Object(RedisClient.session)
+	redis_permission_repository = Object(RedisClient.permission)
+
+	redis_repository = Singleton(
 		RedisAuthRepository,
+		session_repository = redis_session_repository,
+		permission_repository = redis_permission_repository
 	)
 
 	repository_adapter = Factory(
 		AuthRepositoryAdapter,
-		repository=repository
+		repository=redis_repository
 	)
 
 	service = Factory(
 		AuthService,
 		db_repository=repository_adapter,
 		user_repository=UserContainer.repository_adapter
+	)
+
+	jwt_service = Factory(
+		JwtService,
+		auth_repository=repository_adapter,
 	)

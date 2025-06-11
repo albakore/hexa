@@ -5,7 +5,7 @@ from app.auth.application.dto import AuthRegisterRequestDTO
 
 
 class RefreshTokenRequest(BaseModel):
-    token: str = Field(..., description="Token")
+    # token: str = Field(..., description="Token")
     refresh_token: str = Field(..., description="Refresh token")
 
 
