@@ -195,3 +195,4 @@ migrations/versions/*
 *.sqlite
 *.db
 docker/data/appendonly.aof
+docker/data/dump.rdb
