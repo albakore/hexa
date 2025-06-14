@@ -16,6 +16,8 @@ class Settings(BaseSettings):
 	JWT_SECRET_KEY : str = "omelettedufromage"
 	JWT_ALGORITHM : str = "HS256"
 
+	OPENAPI_EXPORT_DIR : str = "docs/openapi.json"
+
 	model_config = SettingsConfigDict(env_file='.env', env_file_encoding='utf-8')
 
 class LocalSettings(Settings):

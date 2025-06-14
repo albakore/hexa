@@ -1,9 +1,11 @@
+import json
 import os
 import importlib
 from fastapi import APIRouter, Depends, FastAPI, Request
 from pprint import pprint
 from fastapi.middleware import Middleware
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.openapi.utils import get_openapi
 from fastapi.responses import JSONResponse
 from rich import print
 from app.container import MainContainer
@@ -16,6 +18,7 @@ from core.fastapi.middlewares import (
 	SQLAlchemyMiddleware,
 	RBACMiddleware
 )
+from core.config.settings import env
 
 
 def on_auth_error(request: Request, exc: Exception):
@@ -85,17 +88,27 @@ def init_routers(app_: FastAPI) -> None:
 		route: APIRouter
 		app_.include_router(route)
 
+def export_openapi(app_: FastAPI):
+	schema = get_openapi(
+			title=app_.title,
+			version=app_.version,
+			servers=app_.servers,
+			routes=app_.routes
+		)
+	with open(env.OPENAPI_EXPORT_DIR, "w+") as f:
+		json.dump(schema, f, indent=2)
 
 def create_app() -> FastAPI:
 	app_ = FastAPI(
 		dependencies=[Depends(Logging)],
 		middleware=make_middleware(),
 		servers=[{
-			"url":"http://127.0.0.1:8000", "description": "development"
+			"url":"http://localhost:8000", "description": "development"
 		}]
 	)
 	init_routers(app_=app_)
 	init_listeners(app_=app_)
+	export_openapi(app_=app_)
 	return app_
 
 
