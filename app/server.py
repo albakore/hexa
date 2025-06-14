@@ -90,6 +90,9 @@ def create_app() -> FastAPI:
 	app_ = FastAPI(
 		dependencies=[Depends(Logging)],
 		middleware=make_middleware(),
+		servers=[{
+			"url":"http://127.0.0.1:8000", "description": "development"
+		}]
 	)
 	init_routers(app_=app_)
 	init_listeners(app_=app_)
