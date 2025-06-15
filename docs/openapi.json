@@ -215,6 +215,11 @@
         ],
         "summary": "Get User List",
         "operationId": "get_user_list_users_v1_users_get",
+        "security": [
+          {
+            "PermissionDependency": []
+          }
+        ],
         "parameters": [
           {
             "name": "limit",
@@ -466,17 +471,17 @@
           "name": {
             "type": "string",
             "title": "Name",
-            "default": "Joan Proctor"
+            "default": "Alexandra Hodges"
           },
           "lastname": {
             "type": "string",
             "title": "Lastname",
-            "default": "Bowen"
+            "default": "Perkins"
           },
           "email": {
             "type": "string",
             "title": "Email",
-            "default": "kristinafry@example.net"
+            "default": "michaelfrazier@example.com"
           }
         },
         "type": "object",
@@ -648,6 +653,13 @@
           "token"
         ],
         "title": "VerifyTokenRequest"
+      }
+    },
+    "securitySchemes": {
+      "PermissionDependency": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
       }
     }
   }

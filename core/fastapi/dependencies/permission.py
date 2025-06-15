@@ -62,4 +62,4 @@ class PermissionDependency(SecurityBase):
         self.scheme_name = self.__class__.__name__
 
     async def __call__(self, request: Request):
-        print(request)
+        ...

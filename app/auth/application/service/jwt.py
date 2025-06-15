@@ -22,27 +22,11 @@ class JwtService(JwtUseCase):
 		self.access_token_expiration_minutes = 15
 		self.refresh_token_expiration_days = 7
 
-	def _get_expiration_days(self):
-		datetime_now = datetime.now()
-		expiration_time = datetime_now + timedelta(
-			days=self.refresh_token_expiration_days
-		)
-		ttl_seconds = int((expiration_time - datetime_now).total_seconds())
-		return ttl_seconds
-
-	def _get_expiration_minutes(self):
-		datetime_now = datetime.now()
-		expiration_time = datetime_now + timedelta(
-			minutes=self.access_token_expiration_minutes
-		)
-		ttl_seconds = int((expiration_time - datetime_now).total_seconds())
-		return ttl_seconds
-
-	async def verify_token(self, token: str) -> None:
+	async def verify_token(self, token: str):
 		try:
-			TokenHelper.decode(token=token)
-		except (JwtDecodeTokenException, JwtExpiredTokenException):
-			raise DecodeTokenException
+			return TokenHelper.decode(token=token)
+		except (JwtDecodeTokenException, JwtExpiredTokenException) as e:
+			raise e
 
 	async def create_refresh_token(
 		self,
@@ -67,10 +51,10 @@ class JwtService(JwtUseCase):
 
 		new_login_response_dto = UserLoginResponseDTO.model_validate(session.user)
 		login_dump = jsonable_encoder(new_login_response_dto)
-		access_token = TokenHelper.encode(login_dump, self._get_expiration_minutes())
+		access_token = TokenHelper.encode(login_dump, TokenHelper.get_expiration_minutes())
 
 		login_dump["sub"] = "refresh"
-		new_refresh_token = TokenHelper.encode(login_dump, self._get_expiration_days())
+		new_refresh_token = TokenHelper.encode(login_dump, TokenHelper.get_expiration_days())
 
 		refresh_response = RefreshTokenResponseDTO(
 			user=session.user, 

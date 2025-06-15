@@ -1,3 +1,4 @@
+from dependency_injector.wiring import inject
 from starlette.authentication import AuthCredentials
 from starlette.requests import Request
 from starlette.types import ASGIApp, Receive, Scope, Send
@@ -18,5 +19,8 @@ class RBACMiddleware:
 		# También puede chequear si está autenticado
 		if user and user.is_authenticated:
 			print("✅ Usuario autenticado:", user.id)
+
+			print(user.nickname)
+
 
 		await self.app(scope, receive, send)

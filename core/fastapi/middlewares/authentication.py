@@ -1,6 +1,8 @@
 from typing import List
+import uuid
 import jwt
 from pydantic import BaseModel, Field
+import rich
 from starlette.authentication import AuthenticationBackend
 from starlette.middleware.authentication import (
 	AuthenticationMiddleware as BaseAuthenticationMiddleware,
@@ -11,12 +13,12 @@ from core.config.settings import env
 
 
 class CurrentUser(BaseModel):
-	id: int
-	username: str
+	id: uuid.UUID
+	nickname: str
 	email: str
-	role: str
-	tipo_usuario: str
-	permissions: List[str]
+	role: str | None = None
+	tipo_usuario: str | None = None
+	permissions: List[str] | None = None
 
 
 class User(BaseUser):
@@ -36,6 +38,7 @@ class AuthBackend(AuthenticationBackend):
 		self, conn: HTTPConnection
 	) -> tuple[AuthCredentials, User] | None:
 		authorization: str | None = conn.headers.get("Authorization")
+		
 		if not authorization:
 			print("❌ Sin Authorization")
 			return None
@@ -45,8 +48,11 @@ class AuthBackend(AuthenticationBackend):
 			if scheme.lower() != "bearer":
 				return None
 		except ValueError:
+			print("Error: no tiene bearer")
 			return None
-
+		
+		if not credentials:
+			return None
 		try:
 			payload = jwt.decode(
 				credentials,
@@ -57,10 +63,12 @@ class AuthBackend(AuthenticationBackend):
 			scopes = user.permissions
 
 		except jwt.exceptions.PyJWTError:
-			print("Token inválido")
+			print("❌ Token inválido")
+			
 			return None
 
-		return AuthCredentials(scopes), User(user)
+		authenticated_user = User(user)
+		return AuthCredentials(scopes), authenticated_user
 
 
 class AuthenticationMiddleware(BaseAuthenticationMiddleware): ...

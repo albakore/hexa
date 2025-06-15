@@ -37,8 +37,8 @@ async def verify_token(
     request: VerifyTokenRequest,
     usecase: JwtUseCase = Depends(Provide[MainContainer.auth.jwt_service]),
 ):
-    await usecase.verify_token(token=request.token)
-    return Response(status_code=200)
+    decoded_token = await usecase.verify_token(token=request.token)
+    return decoded_token
 
 
 @auth_router.post("/login")

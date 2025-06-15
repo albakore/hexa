@@ -15,6 +15,8 @@ class Settings(BaseSettings):
 	# DATABASE_URL : str = "sqlite+aiosqlite:///db.sqlite"
 	JWT_SECRET_KEY : str = "omelettedufromage"
 	JWT_ALGORITHM : str = "HS256"
+	JWT_ACCESS_TOKEN_EXPIRATION_MINUTES : int = 15
+	JWT_REFRESH_TOKEN_EXPIRATION_DAYS : int = 7
 
 	OPENAPI_EXPORT_DIR : str = "docs/openapi.json"
 

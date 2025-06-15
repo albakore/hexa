@@ -6,14 +6,16 @@ from app.user.application.service.user import UserService
 from app.container import MainContainer
 from app.user.domain.command import CreateUserCommand
 
+from core.fastapi.dependencies import IsAdmin, PermissionDependency
+
 user_router = APIRouter()
 
-@user_router.get("")
+@user_router.get("",dependencies=[Depends(PermissionDependency([IsAdmin]))])
 @inject
 async def get_user_list(
 	limit: int = Query(default=10, ge=1, le=50),
 	page: int = Query(default=0),
-	user_service: UserService = Depends(Provide[MainContainer.user.service])
+	user_service: UserService = Depends(Provide[MainContainer.user.service]),
 ):
 	return await user_service.get_user_list(int(limit),int(page))
 

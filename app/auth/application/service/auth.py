@@ -58,9 +58,13 @@ class AuthService(AuthUseCase):
 		user_dump = jsonable_encoder(user_response)
 		response = LoginResponseDTO(
 			user=user_response,
-			token=TokenHelper.encode(payload=user_dump),
+			token=TokenHelper.encode(
+				payload=user_dump,
+				expire_period=TokenHelper.get_expiration_minutes()
+			),
 			refresh_token=TokenHelper.encode(
-				payload={**user_dump, "sub": "refresh"}
+				payload={**user_dump, "sub": "refresh"},
+				expire_period=TokenHelper.get_expiration_days()
 			),
 		)
 		await self.db_repository.create_user_session(response)
@@ -78,13 +82,13 @@ class AuthService(AuthUseCase):
 		new_user = User.model_validate(registration_data)
 		user_created = await self.user_repository.save(new_user)
 		return user_created
-	
+
 	@Transactional()
 	async def password_reset(
 		self, user_uuid: str, initial_password: str, new_password: str
 	) -> bool | Exception:
 		user = await self.user_repository.get_user_by_uuid(user_uuid)
-		
+
 		if not user:
 			raise UserNotFoundException
 
@@ -96,10 +100,8 @@ class AuthService(AuthUseCase):
 
 		if not new_password:
 			raise AuthPasswordResetError
-		
-		hashed_password = PasswordHelper.get_password_hash(new_password)
-		
-		await self.user_repository.set_user_password(user,hashed_password)
-		return True
 
-		
+		hashed_password = PasswordHelper.get_password_hash(new_password)
+
+		await self.user_repository.set_user_password(user, hashed_password)
+		return True
