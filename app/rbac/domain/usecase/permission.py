@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List
-from app.rbac.domain.entity import Permission
+from app.rbac.domain.entity import Permission, Role
 from app.rbac.domain.entity import GroupPermission
 
 
@@ -12,6 +12,10 @@ class PermissionUseCase(ABC):
 
 	@abstractmethod
 	def get_permission_by_id(self, id_permission: int) -> Permission | None:
+		raise NotImplementedError
+
+	@abstractmethod
+	def get_all_permissions_from_role(self, role: Role) -> List[str] | None:
 		raise NotImplementedError
 
 	@abstractmethod

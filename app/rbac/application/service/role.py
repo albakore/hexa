@@ -39,7 +39,7 @@ class RoleService(RoleUseCase):
 		return await self.role_repository.unlink_grouplist_to_role(id_role,list_id_group)
 
 	async def delete(self, id_role: int) -> None:
-		return await self.role_repository.delete(id_role)
+		return await self.role_repository.delete_role(id_role)
 
 	async def save(self, role: Role) -> None:
-		return await self.role_repository.save(role)
+		return await self.role_repository.save_role(role)
