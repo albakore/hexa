@@ -2,7 +2,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from app.rbac.domain.entity import Permission
+from app.rbac.domain.entity import Permission, Role
 from app.rbac.domain.entity import GroupPermission
 
 
@@ -13,6 +13,9 @@ class PermissionRepository(ABC):
 
 	@abstractmethod
 	def get_permission_by_id(self, id_permission: int ) -> Permission | None: ...
+
+	@abstractmethod
+	def get_all_permissions_from_role(self,role : Role) -> List[Permission] | None: ...	
 
 	@abstractmethod
 	def modify_permission(self, permission: Permission) -> Permission | None: ...

@@ -196,3 +196,6 @@ migrations/versions/*
 *.db
 docker/data/appendonly.aof
 docker/data/dump.rdb
+
+# Para no estar pusheando la documentacion a cada rato
+docs/openapi.json

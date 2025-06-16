@@ -63,3 +63,7 @@ class RBACRepositoryAdapter(RoleRepository, PermissionRepository):
 		self, id_role: int, list_id_group: List[int]
 	) -> Role | None:
 		raise NotImplementedError
+
+	def get_all_permissions_from_role(self, role: Role) -> List[Permission] | None:
+		raise NotImplementedError
+

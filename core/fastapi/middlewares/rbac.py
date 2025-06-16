@@ -19,7 +19,7 @@ class RBACMiddleware:
 		# También puede chequear si está autenticado
 		if user and user.is_authenticated:
 			print("✅ Usuario autenticado:", user.id)
-
+			
 			print(user.nickname)
 
 

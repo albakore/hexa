@@ -1,75 +1,45 @@
 from typing import List
+
+from sqlmodel import select
 from app.rbac.domain.entity import Permission
 from app.rbac.domain.entity import GroupPermission, Role
+from app.rbac.domain.repository import RoleRepository
 from app.rbac.domain.usecase import PermissionUseCase
 from app.rbac.domain.usecase import RoleUseCase
+from core.db import session_factory
 
 
 class RoleService(RoleUseCase):
-	def get_all_roles(self) -> List[Role]:
-		raise NotImplementedError
 
-	def get_role_by_id(self, id_role: int) -> Role | None:
-		raise NotImplementedError
+	def __init__(self, role_repository : RoleRepository):
+		self.role_repository = role_repository
 
-	def modify_role(self, role: Role) -> Role | None:
-		raise NotImplementedError
+	async def get_all_roles(self) -> list[Role]:
+		return await self.role_repository.get_all_roles()
+	async def get_role_by_id(self, id_role: int) -> Role | None:
+		return await self.role_repository.get_role_by_id(id_role)
 
-	def link_group_to_role(self, id_role: int, id_group: int) -> Role | None:
-		raise NotImplementedError
+	async def modify_role(self, role: Role) -> Role | None:
+		return await self.role_repository.modify_role(role)
 
-	def unlink_group_from_role(self, id_role: int, id_group: int) -> Role | None:
-		raise NotImplementedError
+	async def link_group_to_role(self, id_role: int, id_group: int) -> Role | None:
+		return await self.role_repository.link_group_to_role(id_role,id_group)
 
-	def link_grouplist_to_role(
+	async def unlink_group_from_role(self, id_role: int, id_group: int) -> Role | None:
+		return await self.role_repository.unlink_group_from_role(id_role,id_group)
+
+	async def link_grouplist_to_role(
 		self, id_role: int, list_id_group: List[int]
 	) -> Role | None:
-		raise NotImplementedError
+		return await self.role_repository.link_grouplist_to_role(id_role,list_id_group)
 
-	def unlink_grouplist_to_role(
+	async def unlink_grouplist_to_role(
 		self, id_role: int, list_id_group: List[int]
 	) -> Role | None:
-		raise NotImplementedError
+		return await self.role_repository.unlink_grouplist_to_role(id_role,list_id_group)
 
-	def delete(self, id_role: int) -> None:
-		raise NotImplementedError
+	async def delete(self, id_role: int) -> None:
+		return await self.role_repository.delete(id_role)
 
-	def save(self, role: Role) -> None:
-		raise NotImplementedError
-
-
-class PermissionService(PermissionUseCase):
-	def get_all_permissions(self) -> List[Permission]:
-		raise NotImplementedError
-
-	def get_permission_by_id(self, id_permission: int) -> Permission | None:
-		raise NotImplementedError
-
-	def modify_permission(self, permission: Permission) -> Permission | None:
-		raise NotImplementedError
-
-	def link_permission_to_group(
-		self, id_permission: int, id_group: int
-	) -> GroupPermission | None:
-		raise NotImplementedError
-
-	def unlink_permission_from_group(
-		self, id_permission: int, id_group: int
-	) -> GroupPermission | None:
-		raise NotImplementedError
-
-	def link_list_permissions_to_group(
-		self, id_group: int, list_id_permission: List[int]
-	) -> GroupPermission | None:
-		raise NotImplementedError
-
-	def unlink_list_permissions_to_group(
-		self, id_group: int, list_id_permission: List[int]
-	) -> GroupPermission | None:
-		raise NotImplementedError
-
-	def delete(self, id_permission: int) -> None:
-		raise NotImplementedError
-
-	def save(self, permission: Permission) -> None:
-		raise NotImplementedError
+	async def save(self, role: Role) -> None:
+		return await self.role_repository.save(role)
