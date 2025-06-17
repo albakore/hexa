@@ -18,9 +18,6 @@ class RBACRepositoryAdapter(RoleRepository, PermissionRepository):
 	async def get_permission_by_id(self, id_permission: int) -> Permission | None:
 		return await self.permission_repository.get_permission_by_id(id_permission)
 
-	async def modify_permission(self, permission: Permission) -> Permission | None:
-		return await self.permission_repository.modify_permission(permission)
-
 	async def link_permission_to_group(
 		self, id_permission: int, id_group: int
 	) -> GroupPermission | None:
@@ -61,9 +58,6 @@ class RBACRepositoryAdapter(RoleRepository, PermissionRepository):
 	async def get_role_by_id(self, id_role: int) -> Role | None:
 		return await self.role_repository.get_role_by_id(id_role)
 
-	async def modify_role(self, role: Role) -> Role | None:
-		return await self.role_repository.modify_role(role)
-
 	async def link_group_to_role(self, id_role: int, id_group: int) -> Role | None:
 		return await self.role_repository.link_group_to_role(id_role, id_group)
 
@@ -87,14 +81,18 @@ class RBACRepositoryAdapter(RoleRepository, PermissionRepository):
 	) -> List[Permission] | None:
 		return await self.permission_repository.get_all_permissions_from_role(role)
 
-	async def delete_permission(self, id_permission: int) -> None:
-		return await self.permission_repository.delete_permission(id_permission)
+	async def delete_permission(self, permission: Permission) -> None:
+		return await self.permission_repository.delete_permission(permission)
 
 	async def save_permission(self, permission: Permission) -> None:
 		return await self.permission_repository.save_permission(permission)
 
-	async def delete_role(self, id_role: int) -> None:
-		return await self.role_repository.delete_role(id_role)
+	async def delete_role(self, role: Role) -> None:
+		return await self.role_repository.delete_role(role)
 
 	async def save_role(self, role: Role) -> None:
 		return await self.role_repository.save_role(role)
+
+	def append_permission_to_role(self, permission: Permission, role: Role) -> Role | None:
+		return self.role_repository.append_permission_to_role(permission,role)
+

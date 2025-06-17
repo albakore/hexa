@@ -19,9 +19,6 @@ class RoleService(RoleUseCase):
 	async def get_role_by_id(self, id_role: int) -> Role | None:
 		return await self.role_repository.get_role_by_id(id_role)
 
-	async def modify_role(self, role: Role) -> Role | None:
-		return await self.role_repository.modify_role(role)
-
 	async def link_group_to_role(self, id_role: int, id_group: int) -> Role | None:
 		return await self.role_repository.link_group_to_role(id_role,id_group)
 
@@ -38,8 +35,8 @@ class RoleService(RoleUseCase):
 	) -> Role | None:
 		return await self.role_repository.unlink_grouplist_to_role(id_role,list_id_group)
 
-	async def delete(self, id_role: int) -> None:
-		return await self.role_repository.delete_role(id_role)
+	async def delete(self, role: Role) -> None:
+		return await self.role_repository.delete_role(role)
 
 	async def save(self, role: Role) -> None:
 		return await self.role_repository.save_role(role)
