@@ -55,8 +55,11 @@ class RBACSQLAlchemyRepository(RoleRepository, PermissionRepository):
 		await global_session.flush()
 		return permission
 
-	async def get_all_roles(self) -> List[Role]:
-		raise NotImplementedError
+	async def get_all_roles(self) -> List[Role] | Sequence[Role] | None:
+		stmt = select(Role)
+		async with session_factory() as session:
+			result = await session.execute(stmt)
+		return result.scalars().all()
 
 	async def get_role_by_id(self, id_role: int) -> Role | None:
 		raise NotImplementedError

@@ -1,11 +1,22 @@
-from fastapi import APIRouter
+from typing import Annotated
+from dependency_injector.wiring import Provide, inject, provided
+from fastapi import APIRouter, Depends
+
+from app.container import MainContainer
+from app.rbac.domain.command import CreateRoleCommand
+from app.rbac.domain.usecase import RoleUseCase
 
 
 rbac_router = APIRouter()
 
+RoleUseCaseDependency = Annotated[RoleUseCase,Depends(Provide[MainContainer.rbac.role_service])]
 
 @rbac_router.get("/role")
-async def get_all_roles(): ...
+@inject
+async def get_all_roles(
+	role_usecase: RoleUseCaseDependency
+):
+	return await role_usecase.get_all_roles()
 
 
 @rbac_router.get("/role/{id_role}")
@@ -13,7 +24,14 @@ async def get_role(id_role: int): ...
 
 
 @rbac_router.post("/role")
-async def create_role(): ...
+@inject
+async def create_role(
+	command: CreateRoleCommand,
+	role_usecase : RoleUseCaseDependency
+):
+	role = await role_usecase.create_role(command)
+	new_role = await role_usecase.save(role)
+	return new_role
 
 
 @rbac_router.put("/role")

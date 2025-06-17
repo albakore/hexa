@@ -14,15 +14,16 @@ class RBACContainer(DeclarativeContainer):
 
 	repository_adapter = Factory(
 		RBACRepositoryAdapter,
-		repository=repository
+		role_repository = repository,
+		permission_repository = repository,
 	)
 
 	role_service = Factory(
 		RoleService,
-		repository=repository_adapter
+		role_repository=repository_adapter
 	)
 
 	permission_service = Factory(
 		PermissionService,
-		repository=repository_adapter
+		permission_repository=repository_adapter
 	)

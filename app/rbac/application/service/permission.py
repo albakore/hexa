@@ -16,9 +16,6 @@ class PermissionService(PermissionUseCase):
 	async def get_permission_by_id(self, id_permission: int) -> Permission | None:
 		return await self.permission_repository.get_permission_by_id(id_permission)
 
-	async def modify_permission(self, permission: Permission) -> Permission | None:
-		return await self.permission_repository.modify_permission(permission)
-
 	async def link_permission_to_group(
 		self, id_permission: int, id_group: int
 	) -> GroupPermission | None:
