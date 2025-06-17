@@ -1,7 +1,14 @@
-from sqlmodel import select
+from sqlalchemy.orm import selectinload
+from sqlmodel import or_, select, col
 from typing import List, Sequence
+from app.rbac.application.exception import RoleNotFoundException
 from app.rbac.domain.entity.permission import Permission
-from app.rbac.domain.entity import GroupPermission, GroupPermissionLink, Role, RoleGroupPermissionLink
+from app.rbac.domain.entity import (
+	GroupPermission,
+	GroupPermissionLink,
+	Role,
+	RoleGroupPermissionLink,
+)
 from app.rbac.domain.repository import RoleRepository, PermissionRepository
 from core.db import session_factory, session as global_session
 
@@ -15,16 +22,29 @@ class RBACSQLAlchemyRepository(RoleRepository, PermissionRepository):
 
 	async def get_permission_by_id(self, id_permission: int) -> Permission | None:
 		async with session_factory() as session:
-			instance = await session.get(Permission,int(id_permission))
+			instance = await session.get(Permission, int(id_permission))
 		return instance
+	
+	async def get_permissions_by_ids(self, ids: list[int]) -> List[Permission] | Sequence[Permission]:
+		if not ids:
+			return []
+		stmt = select(Permission).where(col(Permission.id).in_(ids))
+		async with session_factory() as session:
+			result = await session.execute(stmt)
+		return result.scalars().all()
+
 	async def get_all_permissions_from_role(
 		self, role: Role
-	) -> List[Permission] | Sequence[Permission]| None:
-		stmt = select(RoleGroupPermissionLink)\
+	) -> List[Permission] | Sequence[Permission] | None:
+		stmt = (
+			select(RoleGroupPermissionLink)
 			.join(
 				GroupPermissionLink,
-				GroupPermissionLink.fk_group == RoleGroupPermissionLink.fk_group
-			).where(RoleGroupPermissionLink.fk_role == role.id).distinct()
+				GroupPermissionLink.fk_group == RoleGroupPermissionLink.fk_group,
+			)
+			.where(RoleGroupPermissionLink.fk_role == role.id)
+			.distinct()
+		)
 
 	async def link_permission_to_group(
 		self, id_permission: int, id_group: int
@@ -61,9 +81,22 @@ class RBACSQLAlchemyRepository(RoleRepository, PermissionRepository):
 			result = await session.execute(stmt)
 		return result.scalars().all()
 
-	async def get_role_by_id(self, id_role: int) -> Role | None:
-		raise NotImplementedError
-	
+	async def get_role_by_id(
+		self, id_role: int, with_permissions: bool = False, with_groups: bool = False
+	) -> Role | None:
+		stmt = select(Role).where(Role.id == int(id_role))
+
+		if with_permissions:
+			stmt = stmt.options(selectinload(Role.permissions))  # type: ignore
+
+		if with_groups:
+			stmt = stmt.options(selectinload(Role.groups))  # type: ignore
+
+		async with session_factory() as session:
+			role = await session.execute(stmt)
+
+		return role.scalars().one_or_none()
+
 	async def link_group_to_role(self, id_role: int, id_group: int) -> Role | None:
 		raise NotImplementedError
 
@@ -89,6 +122,22 @@ class RBACSQLAlchemyRepository(RoleRepository, PermissionRepository):
 		await global_session.flush()
 		return role
 
-	def append_permission_to_role(self, permission: Permission, role: Role) -> Role | None:
-		role.permissions.append(permission)
+	async def append_permissions_to_role(
+		self, permissions: List[Permission], id_role: int
+	) -> Role:
+		role = await global_session.get(Role, int(id_role))
+		if not role:
+			raise RoleNotFoundException
+		for permission in permissions:
+			role.permissions.append(permission)
 		return role
+
+	async def find_permissions(
+		self, permissions: List[Permission]
+	) -> List[Permission] | Sequence[Permission] | None:
+		stmt = select(Permission).where(
+			col(Permission.id).in_([item.id for item in permissions])
+		)
+		async with session_factory() as session:
+			result = await session.execute(stmt)
+		return result.scalars().all()

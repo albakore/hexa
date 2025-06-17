@@ -55,8 +55,15 @@ class RBACRepositoryAdapter(RoleRepository, PermissionRepository):
 	async def get_all_roles(self) -> List[Role]:
 		return await self.role_repository.get_all_roles()
 
-	async def get_role_by_id(self, id_role: int) -> Role | None:
-		return await self.role_repository.get_role_by_id(id_role)
+	async def get_role_by_id(
+		self, id_role: int, with_permissions: bool = False, with_groups: bool = False
+	) -> Role | None:
+		return await self.role_repository.get_role_by_id(
+			id_role, with_permissions, with_groups
+		)
+
+	async def get_permissions_by_ids(self, ids: list[int]) -> List[Permission]:
+		return await self.permission_repository.get_permissions_by_ids(ids)
 
 	async def link_group_to_role(self, id_role: int, id_group: int) -> Role | None:
 		return await self.role_repository.link_group_to_role(id_role, id_group)
@@ -90,9 +97,17 @@ class RBACRepositoryAdapter(RoleRepository, PermissionRepository):
 	async def delete_role(self, role: Role) -> None:
 		return await self.role_repository.delete_role(role)
 
-	async def save_role(self, role: Role) -> None:
+	async def save_role(self, role: Role) -> Role:
 		return await self.role_repository.save_role(role)
 
-	def append_permission_to_role(self, permission: Permission, role: Role) -> Role | None:
-		return self.role_repository.append_permission_to_role(permission,role)
+	async def append_permissions_to_role(
+		self, permissions: List[Permission], id_role: int
+	) -> Role:
+		return await self.role_repository.append_permissions_to_role(
+			permissions, id_role
+		)
 
+	async def find_permissions(
+		self, permissions: List[Permission]
+	) -> List[Permission] | None:
+		return await self.permission_repository.find_permissions(permissions)

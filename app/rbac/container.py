@@ -20,7 +20,8 @@ class RBACContainer(DeclarativeContainer):
 
 	role_service = Factory(
 		RoleService,
-		role_repository=repository_adapter
+		role_repository=repository_adapter,
+		permission_repository=repository_adapter
 	)
 
 	permission_service = Factory(

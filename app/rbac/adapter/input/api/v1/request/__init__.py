@@ -1,4 +1,7 @@
+from typing import List
 from pydantic import BaseModel, Field
+
+from app.rbac.domain.entity import GroupPermission, Permission
 
 
 class CreatePermissionRequest(BaseModel):
@@ -13,3 +16,9 @@ class CreateRoleRequest(BaseModel):
 class CreateGroupRequest(BaseModel):
 	name: str = Field(..., description="Name of group")
 	description: str | None = Field(None,description="Description of group")
+
+AddPermissionToRoleRequest = List[Permission]
+
+AddPermissionToGroupRequest = List[Permission]
+
+AddGroupToRoleRequest = List[GroupPermission]
