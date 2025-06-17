@@ -3,7 +3,7 @@ from typing import List, TYPE_CHECKING
 from sqlmodel import Field, Relationship, SQLModel
 
 
-from app.rbac.domain.entity.role import RoleGroupPermissionLink, Role
+from app.rbac.domain.entity.role import RoleGroupPermissionLink, Role, RolePermissionLink
     
 
 class GroupPermissionLink(SQLModel, table=True):
@@ -26,10 +26,14 @@ class GroupPermission(SQLModel, table=True):
 
 class Permission(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
-    nombre: str
-    clave: str
+    name: str
+    token: str
     description: str | None = Field(default=None)
 
     groups: List["GroupPermission"] = Relationship(
         back_populates="permissions", link_model=GroupPermissionLink
+    )
+
+    roles: List["Role"] = Relationship(
+        back_populates="permissions", link_model=RolePermissionLink
     )
