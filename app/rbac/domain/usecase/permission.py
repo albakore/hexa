@@ -5,7 +5,6 @@ from app.rbac.domain.entity import GroupPermission
 
 
 class PermissionUseCase(ABC):
-
 	@abstractmethod
 	def get_all_permissions(self) -> List[Permission]:
 		raise NotImplementedError
@@ -16,6 +15,12 @@ class PermissionUseCase(ABC):
 
 	@abstractmethod
 	def get_all_permissions_from_role(self, role: Role) -> List[str] | None:
+		raise NotImplementedError
+
+	@abstractmethod
+	def append_permission_to_role(
+		self, permission: Permission, role: Role
+	) -> Role | None:
 		raise NotImplementedError
 
 	@abstractmethod
