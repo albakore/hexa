@@ -15,24 +15,6 @@ class RoleRepository(ABC):
 	) -> Role | None: ...
 
 	@abstractmethod
-	async def link_group_to_role(self, id_role: int, id_group: int) -> Role | None: ...
-
-	@abstractmethod
-	async def unlink_group_from_role(
-		self, id_role: int, id_group: int
-	) -> Role | None: ...
-
-	@abstractmethod
-	async def link_grouplist_to_role(
-		self, id_role: int, list_id_group: List[int]
-	) -> Role | None: ...
-
-	@abstractmethod
-	async def unlink_grouplist_to_role(
-		self, id_role: int, list_id_group: List[int]
-	) -> Role | None: ...
-
-	@abstractmethod
 	async def append_permissions_to_role(
 		self, permissions: List[Permission], id_role: int
 	) -> Role: ...

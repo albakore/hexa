@@ -27,27 +27,13 @@ class RoleService(RoleUseCase):
 	async def get_role_by_id(self, id_role: int) -> Role | None:
 		return await self.role_repository.get_role_by_id(id_role)
 
-	async def link_group_to_role(self, id_role: int, id_group: int) -> Role | None:
-		return await self.role_repository.link_group_to_role(id_role, id_group)
-
-	async def unlink_group_from_role(self, id_role: int, id_group: int) -> Role | None:
-		return await self.role_repository.unlink_group_from_role(id_role, id_group)
-
-	async def link_grouplist_to_role(
-		self, id_role: int, list_id_group: List[int]
-	) -> Role | None:
-		return await self.role_repository.link_grouplist_to_role(id_role, list_id_group)
-
-	async def unlink_grouplist_to_role(
-		self, id_role: int, list_id_group: List[int]
-	) -> Role | None:
-		return await self.role_repository.unlink_grouplist_to_role(
-			id_role, list_id_group
-		)
 
 	@Transactional()
-	async def delete(self, role: Role) -> None:
-		return await self.role_repository.delete_role(role)
+	async def delete(self, id: int) -> None:
+		role = await self.role_repository.get_role_by_id(id)
+		if not role:
+			raise RoleNotFoundException
+		await self.role_repository.delete_role(role)
 
 	@Transactional()
 	async def save(self, role: Role) -> Role | None:

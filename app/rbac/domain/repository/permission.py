@@ -16,29 +16,7 @@ class PermissionRepository(ABC):
 	async def get_permissions_by_ids(self, ids: list[int]) -> List[Permission]: ...
 
 	@abstractmethod
-	async def get_all_permissions_from_role(
-		self, role: Role
-	) -> List[Permission] | None: ...
-
-	@abstractmethod
-	async def link_permission_to_group(
-		self, id_permission: int, id_group: int
-	) -> GroupPermission | None: ...
-
-	@abstractmethod
-	async def unlink_permission_from_group(
-		self, id_permission: int, id_group: int
-	) -> GroupPermission | None: ...
-
-	@abstractmethod
-	async def link_list_permissions_to_group(
-		self, id_group: int, list_id_permission: List[int]
-	) -> GroupPermission | None: ...
-
-	@abstractmethod
-	async def unlink_list_permissions_to_group(
-		self, id_group: int, list_id_permission: List[int]
-	) -> GroupPermission | None: ...
+	async def get_all_permissions_from_role(self, role: Role) -> List[Permission]: ...
 
 	@abstractmethod
 	async def delete_permission(self, permission: Permission) -> None: ...
@@ -50,3 +28,17 @@ class PermissionRepository(ABC):
 	async def find_permissions(
 		self, permissions: List[Permission]
 	) -> List[Permission] | None: ...
+
+	@abstractmethod
+	async def get_group_by_id(
+		self, id_group: int, with_permissions: bool = False, with_roles: bool = False
+	) -> GroupPermission | None: ...
+
+	@abstractmethod
+	async def get_groups_by_ids(self, ids: list[int]) -> List[GroupPermission]: ...
+
+	@abstractmethod
+	async def save_group(self, group: GroupPermission) -> GroupPermission: ...
+
+	@abstractmethod
+	async def delete_group(self, group: GroupPermission) -> None: ...

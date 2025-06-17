@@ -18,40 +18,6 @@ class RBACRepositoryAdapter(RoleRepository, PermissionRepository):
 	async def get_permission_by_id(self, id_permission: int) -> Permission | None:
 		return await self.permission_repository.get_permission_by_id(id_permission)
 
-	async def link_permission_to_group(
-		self, id_permission: int, id_group: int
-	) -> GroupPermission | None:
-		return await self.permission_repository.link_permission_to_group(
-			id_permission, id_group
-		)
-
-	async def unlink_permission_from_group(
-		self, id_permission: int, id_group: int
-	) -> GroupPermission | None:
-		return await self.permission_repository.unlink_permission_from_group(
-			id_permission, id_group
-		)
-
-	async def link_list_permissions_to_group(
-		self, id_group: int, list_id_permission: List[int]
-	) -> GroupPermission | None:
-		return await self.permission_repository.link_list_permissions_to_group(
-			id_group, list_id_permission
-		)
-
-	async def unlink_list_permissions_to_group(
-		self, id_group: int, list_id_permission: List[int]
-	) -> GroupPermission | None:
-		return await self.permission_repository.unlink_list_permissions_to_group(
-			id_group, list_id_permission
-		)
-
-	# async def delete(self, id_role: int) -> None:
-	# 	return await self.role
-
-	# async def save(self, role: Role) -> None:
-	# 	raise NotImplementedError
-
 	async def get_all_roles(self) -> List[Role]:
 		return await self.role_repository.get_all_roles()
 
@@ -65,27 +31,7 @@ class RBACRepositoryAdapter(RoleRepository, PermissionRepository):
 	async def get_permissions_by_ids(self, ids: list[int]) -> List[Permission]:
 		return await self.permission_repository.get_permissions_by_ids(ids)
 
-	async def link_group_to_role(self, id_role: int, id_group: int) -> Role | None:
-		return await self.role_repository.link_group_to_role(id_role, id_group)
-
-	async def unlink_group_from_role(self, id_role: int, id_group: int) -> Role | None:
-		return await self.role_repository.unlink_group_from_role(id_role, id_group)
-
-	async def link_grouplist_to_role(
-		self, id_role: int, list_id_group: List[int]
-	) -> Role | None:
-		return await self.role_repository.link_grouplist_to_role(id_role, list_id_group)
-
-	async def unlink_grouplist_to_role(
-		self, id_role: int, list_id_group: List[int]
-	) -> Role | None:
-		return await self.role_repository.unlink_grouplist_to_role(
-			id_role, list_id_group
-		)
-
-	async def get_all_permissions_from_role(
-		self, role: Role
-	) -> List[Permission] | None:
+	async def get_all_permissions_from_role(self, role: Role) -> List[Permission]:
 		return await self.permission_repository.get_all_permissions_from_role(role)
 
 	async def delete_permission(self, permission: Permission) -> None:
@@ -111,3 +57,16 @@ class RBACRepositoryAdapter(RoleRepository, PermissionRepository):
 		self, permissions: List[Permission]
 	) -> List[Permission] | None:
 		return await self.permission_repository.find_permissions(permissions)
+
+	async def get_group_by_id(self, id_group: int, with_permissions: bool = False, with_roles: bool = False) -> GroupPermission | None:
+		return await self.permission_repository.get_group_by_id(id_group,with_permissions,with_roles)
+
+	async def get_groups_by_ids(self, ids: List[int]) -> List[GroupPermission]:
+		return await self.permission_repository.get_groups_by_ids(ids)
+
+	async def save_group(self, group: GroupPermission) -> GroupPermission:
+		return await self.permission_repository.save_group(group)
+
+	async def delete_group(self, group: GroupPermission) -> None:
+		return await self.permission_repository.delete_group(group)
+

@@ -56,7 +56,13 @@ async def add_permissions_to_role(
 	return await role_usecase.append_permissions_to_role(permissions,id_role)
 
 @rbac_router.delete("/role/{id_role}")
-async def delete_role(id_role: int): ...
+@inject
+async def delete_role(
+	id_role: int,
+	role_usecase : RoleUseCaseDependency,
+	):
+	await role_usecase.delete(id_role)
+	return {'status': 'ok'}
 
 
 @rbac_router.get("/permission")
@@ -70,7 +76,12 @@ async def get_all_permissions(
 
 @rbac_router.get("/permission/{id_permission}")
 @inject
-async def get_permission(id_permission: int): ...
+async def get_permission(
+	id_permission: int,
+	permission_usecase: PermissionUseCaseDependency
+
+):
+	...
 
 
 @rbac_router.post("/permission")

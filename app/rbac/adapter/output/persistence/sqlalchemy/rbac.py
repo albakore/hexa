@@ -46,26 +46,6 @@ class RBACSQLAlchemyRepository(RoleRepository, PermissionRepository):
 			.distinct()
 		)
 
-	async def link_permission_to_group(
-		self, id_permission: int, id_group: int
-	) -> GroupPermission | None:
-		raise NotImplementedError
-
-	async def unlink_permission_from_group(
-		self, id_permission: int, id_group: int
-	) -> GroupPermission | None:
-		raise NotImplementedError
-
-	async def link_list_permissions_to_group(
-		self, id_group: int, list_id_permission: List[int]
-	) -> GroupPermission | None:
-		raise NotImplementedError
-
-	async def unlink_list_permissions_to_group(
-		self, id_group: int, list_id_permission: List[int]
-	) -> GroupPermission | None:
-		raise NotImplementedError
-
 	async def delete_permission(self, permission: Permission) -> None:
 		await global_session.delete(permission)
 		await global_session.flush()
@@ -97,22 +77,6 @@ class RBACSQLAlchemyRepository(RoleRepository, PermissionRepository):
 
 		return role.scalars().one_or_none()
 
-	async def link_group_to_role(self, id_role: int, id_group: int) -> Role | None:
-		raise NotImplementedError
-
-	async def unlink_group_from_role(self, id_role: int, id_group: int) -> Role | None:
-		raise NotImplementedError
-
-	async def link_grouplist_to_role(
-		self, id_role: int, list_id_group: List[int]
-	) -> Role | None:
-		raise NotImplementedError
-
-	async def unlink_grouplist_to_role(
-		self, id_role: int, list_id_group: List[int]
-	) -> Role | None:
-		raise NotImplementedError
-
 	async def delete_role(self, role: Role) -> None:
 		await global_session.delete(role)
 		await global_session.flush()
@@ -134,10 +98,46 @@ class RBACSQLAlchemyRepository(RoleRepository, PermissionRepository):
 
 	async def find_permissions(
 		self, permissions: List[Permission]
-	) -> List[Permission] | Sequence[Permission] | None:
+	) -> List[Permission] | Sequence[Permission]:
 		stmt = select(Permission).where(
 			col(Permission.id).in_([item.id for item in permissions])
 		)
 		async with session_factory() as session:
 			result = await session.execute(stmt)
 		return result.scalars().all()
+
+	async def get_group_by_id(
+		self, id_group: int, with_permissions: bool = False, with_roles: bool = False
+	) -> GroupPermission | None:
+		stmt = select(GroupPermission).where(GroupPermission.id == int(id_group))
+
+		if with_permissions:
+			stmt = stmt.options(selectinload(GroupPermission.permissions))  # type: ignore
+
+		if with_roles:
+			stmt = stmt.options(selectinload(GroupPermission.roles))  # type: ignore
+
+		async with session_factory() as session:
+			group = await session.execute(stmt)
+
+		return group.scalars().one_or_none()
+	
+	async def get_groups_by_ids(self, ids: List[int]) -> List[GroupPermission] | Sequence[GroupPermission]:
+		if not ids:
+			return []
+		stmt = select(GroupPermission).where(col(GroupPermission.id).in_(ids))
+		async with session_factory() as session:
+			result = await session.execute(stmt)
+		return result.scalars().all()
+
+	async def save_group(self, group: GroupPermission) -> GroupPermission:
+		global_session.add(group)
+		await global_session.flush()
+		return group
+
+	async def delete_group(self, group: GroupPermission) -> None:
+		global_session.add(group)
+		await global_session.flush()
+
+
+

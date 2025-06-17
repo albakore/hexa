@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List
-from app.rbac.domain.command import CreatePermissionCommand
+from app.rbac.domain.command import CreateGroupCommand, CreatePermissionCommand
 from app.rbac.domain.entity import Permission, Role
 from app.rbac.domain.entity import GroupPermission
 
@@ -28,30 +28,6 @@ class PermissionUseCase(ABC):
 		raise NotImplementedError
 
 	@abstractmethod
-	async def link_permission_to_group(
-		self, id_permission: int, id_group: int
-	) -> GroupPermission | None:
-		raise NotImplementedError
-
-	@abstractmethod
-	async def unlink_permission_from_group(
-		self, id_permission: int, id_group: int
-	) -> GroupPermission | None:
-		raise NotImplementedError
-
-	@abstractmethod
-	async def link_list_permissions_to_group(
-		self, id_group: int, list_id_permission: List[int]
-	) -> GroupPermission | None:
-		raise NotImplementedError
-
-	@abstractmethod
-	async def unlink_list_permissions_to_group(
-		self, id_group: int, list_id_permission: List[int]
-	) -> GroupPermission | None:
-		raise NotImplementedError
-
-	@abstractmethod
 	async def delete(self, permission: Permission) -> None:
 		raise NotImplementedError
 
@@ -61,4 +37,15 @@ class PermissionUseCase(ABC):
 
 	@abstractmethod
 	def create_permission(self, command: CreatePermissionCommand) -> Permission:
+		raise NotImplementedError
+
+	@abstractmethod
+	def create_group(self, command: CreateGroupCommand) -> GroupPermission:
+		raise NotImplementedError
+
+	
+	@abstractmethod
+	async def append_permissions_to_group(
+		self, permissions: List[Permission], id_group: int
+	) -> GroupPermission:
 		raise NotImplementedError

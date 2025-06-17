@@ -16,26 +16,6 @@ class RoleUseCase(ABC):
 		raise NotImplementedError
 
 	@abstractmethod
-	async def link_group_to_role(self, id_role: int, id_group: int) -> Role | None:
-		raise NotImplementedError
-
-	@abstractmethod
-	async def unlink_group_from_role(self, id_role: int, id_group: int) -> Role | None:
-		raise NotImplementedError
-
-	@abstractmethod
-	async def link_grouplist_to_role(
-		self, id_role: int, list_id_group: List[int]
-	) -> Role | None:
-		raise NotImplementedError
-
-	@abstractmethod
-	async def unlink_grouplist_to_role(
-		self, id_role: int, list_id_group: List[int]
-	) -> Role | None:
-		raise NotImplementedError
-
-	@abstractmethod
 	async def delete(self, id_role: int) -> None:
 		raise NotImplementedError
 
