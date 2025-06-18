@@ -12,7 +12,12 @@ class RoleUseCase(ABC):
 		raise NotImplementedError
 
 	@abstractmethod
-	async def get_role_by_id(self, id_role: int) -> Role | None:
+	async def get_role_by_id(
+		self,
+		id_role: int,
+		with_permissions: bool = False,
+		with_groups: bool = False
+	) -> Role | None:
 		raise NotImplementedError
 
 	@abstractmethod

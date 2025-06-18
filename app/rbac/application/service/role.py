@@ -24,8 +24,17 @@ class RoleService(RoleUseCase):
 	async def get_all_roles(self) -> list[Role]:
 		return await self.role_repository.get_all_roles()
 
-	async def get_role_by_id(self, id_role: int) -> Role | None:
-		return await self.role_repository.get_role_by_id(id_role)
+	async def get_role_by_id(
+		self,
+		id_role: int,
+		with_permissions: bool = False,
+		with_groups: bool = False
+	) -> Role | None:
+		return await self.role_repository.get_role_by_id(
+			id_role,
+			with_permissions,
+			with_groups
+		)
 
 
 	@Transactional()
