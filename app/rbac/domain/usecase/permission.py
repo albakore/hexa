@@ -24,6 +24,10 @@ class PermissionUseCase(ABC):
 		raise NotImplementedError
 
 	@abstractmethod
+	async def extract_token_from_permissions(self, permissions: List[Permission]) -> List[str]:
+		raise NotImplementedError
+
+	@abstractmethod
 	async def modify_permission(self, permission: Permission) -> Permission | None:
 		raise NotImplementedError
 
