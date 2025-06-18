@@ -58,8 +58,15 @@ class RBACRepositoryAdapter(RoleRepository, PermissionRepository):
 	) -> List[Permission] | None:
 		return await self.permission_repository.find_permissions(permissions)
 
-	async def get_group_by_id(self, id_group: int, with_permissions: bool = False, with_roles: bool = False) -> GroupPermission | None:
-		return await self.permission_repository.get_group_by_id(id_group,with_permissions,with_roles)
+	async def get_all_groups(self) -> List[GroupPermission]:
+		return await self.permission_repository.get_all_groups()
+
+	async def get_group_by_id(
+		self, id_group: int, with_permissions: bool = False, with_roles: bool = False
+	) -> GroupPermission | None:
+		return await self.permission_repository.get_group_by_id(
+			id_group, with_permissions, with_roles
+		)
 
 	async def get_groups_by_ids(self, ids: List[int]) -> List[GroupPermission]:
 		return await self.permission_repository.get_groups_by_ids(ids)
@@ -69,4 +76,3 @@ class RBACRepositoryAdapter(RoleRepository, PermissionRepository):
 
 	async def delete_group(self, group: GroupPermission) -> None:
 		return await self.permission_repository.delete_group(group)
-

@@ -3,10 +3,10 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 
 from app.container import MainContainer
-from app.rbac.adapter.input.api.v1.request import AddPermissionToRoleRequest, CreatePermissionRequest, CreateRoleRequest
-from app.rbac.adapter.input.api.v1.response import RoleAddPermissionResponse, RoleResponse
+from app.rbac.adapter.input.api.v1.request import AddPermissionToGroupRequest, AddPermissionToRoleRequest, CreateGroupRequest, CreatePermissionRequest, CreateRoleRequest
+from app.rbac.adapter.input.api.v1.response import GroupAddPermissionResponse, GroupResponse, RoleAddPermissionResponse, RoleResponse
 from app.rbac.application.exception import PermissionNotFoundException, RoleNotFoundException
-from app.rbac.domain.command import CreatePermissionCommand, CreateRoleCommand
+from app.rbac.domain.command import CreateGroupCommand, CreatePermissionCommand, CreateRoleCommand
 from app.rbac.domain.usecase import PermissionUseCase, RoleUseCase
 
 
@@ -134,3 +134,39 @@ async def get_all_groups(
 	permission_usecase: PermissionUseCaseDependency
 ):
 	return await permission_usecase.get_all_groups()
+
+@rbac_router.get(
+	"/group/{id_group}",
+	response_model=GroupResponse)
+@inject
+async def get_group(
+	id_group:int,
+	permission_usecase: PermissionUseCaseDependency
+):
+	return await permission_usecase.get_group_by_id(
+		id_group,
+		with_permissions=True
+		)
+
+@rbac_router.post("/group")
+@inject
+async def create_group(
+	command : CreateGroupRequest,
+	permission_usecase: PermissionUseCaseDependency
+):
+	group_command = CreateGroupCommand.model_validate(command.model_dump())
+	group = permission_usecase.create_group(group_command)
+	return await permission_usecase.save_group(group)
+
+@rbac_router.put(
+	"/group/{id_group}/add/permission",
+	response_model=GroupAddPermissionResponse
+)
+@inject
+async def add_permissions_to_group(
+	id_group : int,
+	permissions : AddPermissionToGroupRequest,
+	permission_usecase: PermissionUseCaseDependency
+):
+	
+	return await permission_usecase.append_permissions_to_group(permissions,id_group)

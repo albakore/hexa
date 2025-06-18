@@ -24,8 +24,10 @@ class RBACSQLAlchemyRepository(RoleRepository, PermissionRepository):
 		async with session_factory() as session:
 			instance = await session.get(Permission, int(id_permission))
 		return instance
-	
-	async def get_permissions_by_ids(self, ids: list[int]) -> List[Permission] | Sequence[Permission]:
+
+	async def get_permissions_by_ids(
+		self, ids: list[int]
+	) -> List[Permission] | Sequence[Permission]:
 		if not ids:
 			return []
 		stmt = select(Permission).where(col(Permission.id).in_(ids))
@@ -121,8 +123,16 @@ class RBACSQLAlchemyRepository(RoleRepository, PermissionRepository):
 			group = await session.execute(stmt)
 
 		return group.scalars().one_or_none()
-	
-	async def get_groups_by_ids(self, ids: List[int]) -> List[GroupPermission] | Sequence[GroupPermission]:
+
+	async def get_all_groups(self) -> List[GroupPermission] | Sequence[GroupPermission]:
+		stmt = select(GroupPermission)
+		async with session_factory() as session:
+			result = await session.execute(stmt)
+		return result.scalars().all()
+
+	async def get_groups_by_ids(
+		self, ids: List[int]
+	) -> List[GroupPermission] | Sequence[GroupPermission]:
 		if not ids:
 			return []
 		stmt = select(GroupPermission).where(col(GroupPermission.id).in_(ids))
@@ -138,6 +148,3 @@ class RBACSQLAlchemyRepository(RoleRepository, PermissionRepository):
 	async def delete_group(self, group: GroupPermission) -> None:
 		global_session.add(group)
 		await global_session.flush()
-
-
-

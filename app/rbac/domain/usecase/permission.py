@@ -42,11 +42,11 @@ class PermissionUseCase(ABC):
 	# region Group
 
 	@abstractmethod
-	def get_all_group(self) -> List[GroupPermission]:
+	async def get_all_groups(self) -> List[GroupPermission]:
 		raise NotImplementedError
 	
 	@abstractmethod
-	def get_group_by_id(
+	async def get_group_by_id(
 		self,
 		id_group : int,
 		with_permissions : bool = False,	
@@ -56,6 +56,11 @@ class PermissionUseCase(ABC):
 	
 	@abstractmethod
 	def create_group(self, command: CreateGroupCommand) -> GroupPermission:
+		raise NotImplementedError
+	
+	
+	@abstractmethod
+	async def save_group(self, group: GroupPermission) -> GroupPermission:
 		raise NotImplementedError
 	
 	@abstractmethod

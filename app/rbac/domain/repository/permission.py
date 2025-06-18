@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Sequence
 
 from app.rbac.domain.entity import Permission, Role
 from app.rbac.domain.entity import GroupPermission
@@ -28,6 +28,9 @@ class PermissionRepository(ABC):
 	async def find_permissions(
 		self, permissions: List[Permission]
 	) -> List[Permission] | None: ...
+
+	@abstractmethod
+	async def get_all_groups(self) -> List[GroupPermission]: ...
 
 	@abstractmethod
 	async def get_group_by_id(

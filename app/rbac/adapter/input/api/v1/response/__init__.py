@@ -12,8 +12,19 @@ class RoleResponse(BaseModel):
 	groups : List[GroupPermission] | None = []
 	permissions : List[Permission] | None = []
 
+class GroupResponse(BaseModel):
+	id: int | None = None
+	name: str | None = None
+	description : str | None = None
+	permissions : List[Permission] | None = []
+
 
 class RoleAddPermissionResponse(BaseModel):
+	id: int | None = None
+	name: str
+	permissions : List[Permission] | None = []
+
+class GroupAddPermissionResponse(BaseModel):
 	id: int | None = None
 	name: str
 	permissions : List[Permission] | None = []
