@@ -146,5 +146,5 @@ class RBACSQLAlchemyRepository(RoleRepository, PermissionRepository):
 		return group
 
 	async def delete_group(self, group: GroupPermission) -> None:
-		global_session.add(group)
+		await global_session.delete(group)
 		await global_session.flush()

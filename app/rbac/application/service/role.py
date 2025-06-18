@@ -75,3 +75,23 @@ class RoleService(RoleUseCase):
 				role.permissions.append(permission)
 
 		return await self.role_repository.save_role(role)  # type: ignore
+
+	@Transactional()
+	async def append_groups_to_role(
+		self, groups: List[GroupPermission], id_role: int
+	) -> Role:
+		role = await self.role_repository.get_role_by_id(id_role, with_groups=True)
+		if not role:
+			raise RoleNotFoundException
+
+		group_ids = [g.id for g in groups]
+
+		groups_from_db = await self.permission_repository.get_groups_by_ids(
+			group_ids #type:ignore
+		)
+
+		for group in groups_from_db:
+			if group not in role.groups:
+				role.groups.append(group)
+
+		return await self.role_repository.save_role(role)  # type: ignore

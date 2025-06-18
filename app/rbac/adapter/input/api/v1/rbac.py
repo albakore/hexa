@@ -3,8 +3,8 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 
 from app.container import MainContainer
-from app.rbac.adapter.input.api.v1.request import AddPermissionToGroupRequest, AddPermissionToRoleRequest, CreateGroupRequest, CreatePermissionRequest, CreateRoleRequest
-from app.rbac.adapter.input.api.v1.response import GroupAddPermissionResponse, GroupResponse, RoleAddPermissionResponse, RoleResponse
+from app.rbac.adapter.input.api.v1.request import AddGroupToRoleRequest, AddPermissionToGroupRequest, AddPermissionToRoleRequest, CreateGroupRequest, CreatePermissionRequest, CreateRoleRequest
+from app.rbac.adapter.input.api.v1.response import GroupAddPermissionResponse, GroupResponse, RoleAddGroupsResponse, RoleAddPermissionResponse, RoleResponse
 from app.rbac.application.exception import PermissionNotFoundException, RoleNotFoundException
 from app.rbac.domain.command import CreateGroupCommand, CreatePermissionCommand, CreateRoleCommand
 from app.rbac.domain.usecase import PermissionUseCase, RoleUseCase
@@ -68,9 +68,20 @@ async def add_permissions_to_role(
 	id_role: int,
 	permissions : AddPermissionToRoleRequest,
 	role_usecase : RoleUseCaseDependency,
-	permission_usecase : PermissionUseCaseDependency
 ):
 	return await role_usecase.append_permissions_to_role(permissions,id_role)
+
+@rbac_router.put(
+	"/role/{id_role}/add/groups",
+	response_model=RoleAddGroupsResponse
+)
+@inject
+async def add_groups_to_role(
+	id_role: int,
+	groups : AddGroupToRoleRequest,
+	role_usecase : RoleUseCaseDependency,
+):
+	return await role_usecase.append_groups_to_role(groups,id_role)
 
 @rbac_router.delete("/role/{id_role}")
 @inject

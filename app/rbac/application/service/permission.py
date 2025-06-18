@@ -48,6 +48,7 @@ class PermissionService(PermissionUseCase):
 		group = GroupPermission.model_validate(command)
 		return group
 
+	@Transactional()
 	async def append_permissions_to_group(
 		self, permissions: List[Permission], id_group: int
 	) -> GroupPermission:
