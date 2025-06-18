@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 
 from app.container import MainContainer
 from app.rbac.adapter.input.api.v1.request import AddGroupToRoleRequest, AddPermissionToGroupRequest, AddPermissionToRoleRequest, CreateGroupRequest, CreatePermissionRequest, CreateRoleRequest
-from app.rbac.adapter.input.api.v1.response import GroupAddPermissionResponse, GroupResponse, RoleAddGroupsResponse, RoleAddPermissionResponse, RoleResponse
+from app.rbac.adapter.input.api.v1.response import GroupAddPermissionResponse, GroupResponse, PermissionListResponse, RoleAddGroupsResponse, RoleAddPermissionResponse, RoleResponse
 from app.rbac.application.exception import PermissionNotFoundException, RoleNotFoundException
 from app.rbac.domain.command import CreateGroupCommand, CreatePermissionCommand, CreateRoleCommand
 from app.rbac.domain.usecase import PermissionUseCase, RoleUseCase
@@ -41,6 +41,22 @@ async def get_role(
 		with_permissions=True,
 		with_groups=True
 	)
+
+@rbac_router.get(
+	"/role/{id_role}/permission",
+	response_model=PermissionListResponse
+)
+@inject
+async def get_all_role_permissions(
+	id_role: int,
+	role_usecase : RoleUseCaseDependency,
+	permission_usecase : PermissionUseCaseDependency
+	): 
+	role = await role_usecase.get_role_by_id(id_role)
+	if not role:
+		raise RoleNotFoundException
+	return await permission_usecase.get_all_permissions_from_role(role)
+
 
 
 

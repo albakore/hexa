@@ -9,6 +9,7 @@ from app.rbac.domain.entity import (
 	Role,
 	RoleGroupPermissionLink,
 )
+from app.rbac.domain.entity.role import RolePermissionLink
 from app.rbac.domain.repository import RoleRepository, PermissionRepository
 from core.db import session_factory, session as global_session
 
@@ -38,15 +39,26 @@ class RBACSQLAlchemyRepository(RoleRepository, PermissionRepository):
 	async def get_all_permissions_from_role(
 		self, role: Role
 	) -> List[Permission] | Sequence[Permission] | None:
-		stmt = (
-			select(RoleGroupPermissionLink)
-			.join(
-				GroupPermissionLink,
-				GroupPermissionLink.fk_group == RoleGroupPermissionLink.fk_group,
-			)
-			.where(RoleGroupPermissionLink.fk_role == role.id)
-			.distinct()
+		
+		subq1 = select(RolePermissionLink.fk_permission).where(
+			RolePermissionLink.fk_role == role.id
 		)
+		group_ids_subq = select(RoleGroupPermissionLink.fk_group).where(
+			RoleGroupPermissionLink.fk_role == role.id
+		)
+		subq2 = select(GroupPermissionLink.fk_permission).where(
+			col(GroupPermissionLink.fk_group).in_(group_ids_subq)
+		)
+
+		query = select(Permission).where(
+			or_(
+				col(Permission.id).in_(subq1),
+				col(Permission.id).in_(subq2)
+			)
+		)
+		async with session_factory() as session:
+			result = await session.execute(query)
+		return result.scalars().all()
 
 	async def delete_permission(self, permission: Permission) -> None:
 		await global_session.delete(permission)

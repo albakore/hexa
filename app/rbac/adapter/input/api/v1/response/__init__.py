@@ -33,3 +33,5 @@ class GroupAddPermissionResponse(BaseModel):
 	id: int | None = None
 	name: str
 	permissions : List[Permission] | None = []
+
+PermissionListResponse = List[Permission]
