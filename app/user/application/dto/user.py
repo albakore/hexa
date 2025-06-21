@@ -1,5 +1,8 @@
+from typing import List
 import uuid
 from pydantic import BaseModel, Field
+
+from app.rbac.domain.entity import Role
 
 
 class GetUserListResponseDTO(BaseModel):
@@ -28,6 +31,7 @@ class UserLoginResponseDTO(BaseModel):
     name: str | None = None
     lastname: str | None = None
     job_position: str | None = None
+    role: Role | None = None
 
 
 class LoginResponseDTO(BaseModel):

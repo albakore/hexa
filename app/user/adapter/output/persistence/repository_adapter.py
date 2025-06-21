@@ -10,11 +10,11 @@ class UserRepositoryAdapter(UserRepository):
 	async def get_user_list(self, limit: int, page: int) -> list[User]:
 		return await self.repository.get_user_list(limit, page)
 
-	async def get_user_by_id(self, user_id: int) -> User | None:
-		return await self.repository.get_user_by_id(user_id)
+	async def get_user_by_id(self, user_id: int, with_role:bool = False) -> User | None:
+		return await self.repository.get_user_by_id(user_id,with_role)
 
-	async def get_user_by_uuid(self, user_uuid: str) -> User | None:
-		return await self.repository.get_user_by_uuid(user_uuid)
+	async def get_user_by_uuid(self, user_uuid: str, with_role:bool = False) -> User | None:
+		return await self.repository.get_user_by_uuid(user_uuid,with_role)
 
 	async def get_user_by_email(self, user_email: str) -> User | None:
 		return await self.repository.get_user_by_email(user_email)

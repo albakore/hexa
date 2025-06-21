@@ -4,6 +4,7 @@ import uuid
 from app.user.domain.entity.user import User
 from app.user.domain.repository.user import UserRepository
 from sqlmodel import or_, select
+from sqlalchemy.orm import selectinload
 from core.db.session import session as global_session, session_factory
 
 
@@ -19,15 +20,28 @@ class UserSQLAlchemyRepository(UserRepository):
 
 		return result.scalars().all()
 
-	async def get_user_by_id(self, user_id: int) -> User | None:
-		async with session_factory() as session:
-			instance = await session.get(User, int(user_id))
-		return instance
+	async def get_user_by_id(self, user_id: int, with_role: bool = False) -> User | None:
+		stmt = select(User).where(User.id == int(user_id))
 
-	async def get_user_by_uuid(self, user_uuid: str) -> User | None:
+		if with_role:
+			stmt = stmt.options(selectinload(User.role))  # type: ignore
+		
 		async with session_factory() as session:
-			instance = await session.get(User, uuid.UUID(user_uuid))
-		return instance
+			
+			instance = await session.execute(stmt)
+		return instance.scalars().one_or_none()
+
+	async def get_user_by_uuid(self, user_uuid: str, with_role: bool = False) -> User | None:
+		stmt = select(User).where(User.id == uuid.UUID(user_uuid))
+
+		if with_role:
+			stmt = stmt.options(selectinload(User.role))  # type: ignore
+		
+		async with session_factory() as session:
+			
+			instance = await session.execute(stmt)
+		return instance.scalars().one_or_none()
+
 
 	async def get_user_by_email(self, user_email: str) -> User | None:
 		async with session_factory() as session:

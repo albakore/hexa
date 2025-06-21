@@ -1,4 +1,6 @@
 
+from app.auth.application.service.auth import UserNotFoundException
+from app.rbac.domain.entity.role import Role
 from app.user.domain.command import CreateUserCommand
 from app.user.domain.entity.user import User
 from app.user.domain.repository.user import UserRepository
@@ -40,4 +42,17 @@ class UserService(UserUseCase):
 		user = User.model_validate(command)
 		new_user = await self.repository.save(user=user)
 		return new_user
+
+	@Transactional()
+	async def asign_role_to_user(self, user_uuid: str, role_id: int) -> User:
+		user = await self.repository.get_user_by_uuid(user_uuid)
+		if not user:
+			raise UserNotFoundException
+		user.fk_role = role_id
+		user = await self.repository.save(user)
+		return user
+		
+		
+
+
 

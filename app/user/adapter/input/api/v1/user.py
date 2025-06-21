@@ -1,7 +1,8 @@
+import uuid
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, Query
 
-from app.user.adapter.input.api.v1.request import CreateUserRequest
+from app.user.adapter.input.api.v1.request import CreateUserRequest, RoleRequest
 from app.user.application.service.user import UserService
 from app.container import MainContainer
 from app.user.domain.command import CreateUserCommand
@@ -22,10 +23,10 @@ async def get_user_list(
 @user_router.get("/{user_id}")
 @inject
 async def get_user(
-	user_id: int,
+	user_uuid: uuid.UUID,
 	user_service: UserService = Depends(Provide[MainContainer.user.service])
 ):
-	return await user_service.get_user_by_id(int(user_id))
+	return await user_service.get_user_by_uuid(str(user_uuid))
 
 
 @user_router.post("")
@@ -36,3 +37,13 @@ async def create_user(
 ):
 	command = CreateUserCommand.model_validate(request.model_dump())
 	return await user_service.create_user(command=command)
+
+
+@user_router.put("/{user_uuid}/role")
+@inject
+async def asign_role(
+	user_uuid: uuid.UUID,
+	role : RoleRequest,
+	user_service: UserService = Depends(Provide[MainContainer.user.service])
+):
+	return await user_service.asign_role_to_user(str(user_uuid), role.id)

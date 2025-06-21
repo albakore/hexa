@@ -1,8 +1,14 @@
+from codecs import backslashreplace_errors
+from typing import TYPE_CHECKING
 import uuid
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, Relationship, SQLModel
 from datetime import datetime
 
 from core.helpers.password import PasswordHelper
+
+if TYPE_CHECKING:
+	from app.rbac.domain.entity import Role
+
 
 class User(SQLModel, table=True):
 	id: uuid.UUID | None = Field(default_factory=uuid.uuid4, primary_key=True)
@@ -19,3 +25,4 @@ class User(SQLModel, table=True):
 	date_last_session: datetime = Field(default_factory=datetime.now)
 	date_registration: datetime = Field(default_factory=datetime.now)
 	fk_role: int | None = Field(default=None, foreign_key="role.id")
+	role: 'Role' = Relationship(back_populates='users')

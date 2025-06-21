@@ -3,6 +3,9 @@ from faker import Faker
 
 faker = Faker()
 
+class RoleRequest(BaseModel):
+	id: int
+	name: str
 
 class CreateUserRequest(BaseModel):
 	name : str = Field(default=faker.name())

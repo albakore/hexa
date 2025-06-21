@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 
 from fastapi.encoders import jsonable_encoder
 import rich
-import rich.json
 from app.auth.application.dto import RefreshTokenResponseDTO
 from app.auth.application.exception import AuthSessionExpiredException, DecodeTokenException
 from app.auth.domain.entity.auth import AuthRepository
