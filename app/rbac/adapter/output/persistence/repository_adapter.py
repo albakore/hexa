@@ -1,9 +1,9 @@
 from typing import List
 from app.rbac.domain.entity import GroupPermission, Role, Permission
-from app.rbac.domain.repository import PermissionRepository, RoleRepository
+from app.rbac.domain.repository import PermissionRepository, RBACRepository, RoleRepository
 
 
-class RBACRepositoryAdapter(RoleRepository, PermissionRepository):
+class RBACRepositoryAdapter(RBACRepository):
 	def __init__(
 		self,
 		role_repository: RoleRepository,

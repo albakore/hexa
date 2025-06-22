@@ -6,6 +6,8 @@ from app.auth.application.dto import RefreshTokenResponseDTO
 from app.auth.application.exception import AuthSessionExpiredException, DecodeTokenException
 from app.auth.domain.entity.auth import AuthRepository
 from app.auth.domain.usecase.jwt import JwtUseCase
+from app.rbac.domain.entity import permission
+from app.rbac.domain.repository import RBACRepository
 from app.user.application.dto import LoginResponseDTO
 from app.user.application.dto.user import UserLoginResponseDTO
 from core.helpers.token import (
@@ -16,8 +18,9 @@ from core.helpers.token import (
 
 
 class JwtService(JwtUseCase):
-	def __init__(self, auth_repository: AuthRepository):
+	def __init__(self, auth_repository: AuthRepository, rbac_repository : RBACRepository):
 		self.auth_repository = auth_repository
+		self.rbac_repository = rbac_repository
 		self.access_token_expiration_minutes = 15
 		self.refresh_token_expiration_days = 7
 
@@ -48,6 +51,15 @@ class JwtService(JwtUseCase):
 		if not refresh_token == session.refresh_token:
 			raise Exception
 
+		permissions = []
+
+		if session.user.fk_role:
+			role = await self.rbac_repository.get_role_by_id(session.user.fk_role)
+			if role:
+				permissions_of_role = await self.rbac_repository.get_all_permissions_from_role(role)
+				permissions = [permission.token for permission in permissions_of_role]
+
+
 		new_login_response_dto = UserLoginResponseDTO.model_validate(session.user)
 		login_dump = jsonable_encoder(new_login_response_dto)
 		access_token = TokenHelper.encode(login_dump, TokenHelper.get_expiration_minutes())
@@ -57,6 +69,7 @@ class JwtService(JwtUseCase):
 
 		refresh_response = RefreshTokenResponseDTO(
 			user=session.user, 
+			permissions=permissions,
 			token=access_token, 
 			refresh_token=new_refresh_token
 		)

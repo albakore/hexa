@@ -26,9 +26,9 @@ class UserRepositoryAdapter(UserRepository):
 		return await self.repository.delete(user)
 
 	async def get_user_by_email_or_nickname(
-		self, email: str, nickname: str
+		self, email: str, nickname: str, with_role: bool = False
 	) -> User | None:
-		return await self.repository.get_user_by_email_or_nickname(email, nickname)
+		return await self.repository.get_user_by_email_or_nickname(email, nickname,with_role)
 
 	async def set_user_password(self, user: User, password: str) -> None:
 		return await self.repository.set_user_password(user, password)

@@ -10,11 +10,11 @@ from app.rbac.domain.entity import (
 	RoleGroupPermissionLink,
 )
 from app.rbac.domain.entity.role import RolePermissionLink
-from app.rbac.domain.repository import RoleRepository, PermissionRepository
+from app.rbac.domain.repository import RBACRepository, RoleRepository, PermissionRepository
 from core.db import session_factory, session as global_session
 
 
-class RBACSQLAlchemyRepository(RoleRepository, PermissionRepository):
+class RBACSQLAlchemyRepository(RBACRepository):
 	async def get_all_permissions(self) -> List[Permission] | Sequence[Permission]:
 		stmt = select(Permission)
 		async with session_factory() as session:

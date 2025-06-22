@@ -11,6 +11,7 @@ from app.auth.application.exception import (
 )
 from app.auth.domain.entity.auth import AuthRepository
 from app.auth.domain.usecase.auth import AuthUseCase
+from app.rbac.domain.repository import PermissionRepository, RBACRepository,RoleRepository
 from app.user.application.dto import LoginResponseDTO
 from app.user.application.dto.user import UserLoginResponseDTO
 from app.user.application.exception.user import (
@@ -26,9 +27,10 @@ from core.helpers.token import TokenHelper
 
 
 class AuthService(AuthUseCase):
-	def __init__(self, db_repository: AuthRepository, user_repository: UserRepository):
-		self.db_repository = db_repository
+	def __init__(self, auth_repository: AuthRepository, user_repository: UserRepository, rbac_repository: RBACRepository):
+		self.auth_repository = auth_repository
 		self.user_repository = user_repository
+		self.rbac_repository = rbac_repository
 
 	async def login(
 		self, email_or_nickname: str, password: str
@@ -36,6 +38,7 @@ class AuthService(AuthUseCase):
 		user = await self.user_repository.get_user_by_email_or_nickname(
 			email=email_or_nickname,
 			nickname=email_or_nickname,
+			with_role=True
 		)
 		if not user:
 			raise LoginUsernamePasswordException
@@ -46,18 +49,22 @@ class AuthService(AuthUseCase):
 		if user.requires_password_reset and password == user.initial_password:
 			return AuthPasswordResetResponseDTO.model_validate(user.model_dump())
 
-		is_password_valid = PasswordHelper.verify_password(password, user.password)
+		is_password_valid = PasswordHelper.verify_password(password, user.password or "")
 
 		if not is_password_valid:
 			raise LoginUsernamePasswordException
 
 		if not user.is_active:
 			raise UserInactiveException
+		
+		print(user.role)
 
 		user_response = UserLoginResponseDTO.model_validate(user.model_dump())
 		user_dump = jsonable_encoder(user_response)
+		permissions = await self.rbac_repository.get_all_permissions_from_role(user.role)
 		response = LoginResponseDTO(
 			user=user_response,
+			permissions=[permission.token for permission in permissions],
 			token=TokenHelper.encode(
 				payload=user_dump,
 				expire_period=TokenHelper.get_expiration_minutes()
@@ -67,7 +74,7 @@ class AuthService(AuthUseCase):
 				expire_period=TokenHelper.get_expiration_days()
 			),
 		)
-		await self.db_repository.create_user_session(response)
+		await self.auth_repository.create_user_session(response)
 		return response
 
 	@Transactional()

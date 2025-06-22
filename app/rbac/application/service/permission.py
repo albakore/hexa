@@ -30,7 +30,7 @@ class PermissionService(PermissionUseCase):
 		permissions = await self.permission_repository.get_all_permissions_from_role(
 			role
 		)
-		return permissions
+		return await self.extract_token_from_permissions(permissions)
 
 	async def modify_permission(self, permission: Permission) -> Permission | None:
 		raise NotImplementedError
@@ -92,6 +92,7 @@ class PermissionService(PermissionUseCase):
 	@Transactional()
 	async def delete_group(self, group: GroupPermission) -> None:
 		return await self.permission_repository.delete_group(group)
+
 
 	async def extract_token_from_permissions(self, permissions: List[Permission]) -> List[str]:
 		return [permission.token for permission in permissions]

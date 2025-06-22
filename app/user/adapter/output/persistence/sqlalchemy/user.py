@@ -63,13 +63,16 @@ class UserSQLAlchemyRepository(UserRepository):
 		self,
 		email: str,
 		nickname: str,
+		with_role : bool = False
 	) -> User | None:
-		async with session_factory() as read_session:
-			stmt = await read_session.execute(
-				select(User).where(or_(User.email == email, User.nickname == nickname)),
-			)
-			return stmt.scalars().first()
-
+		stmt = select(User).where(or_(User.email == email, User.nickname == nickname))
+		if with_role:
+			stmt = stmt.options(selectinload(User.role))  # type: ignore
+		
+		async with session_factory() as session:
+			
+			instance = await session.execute(stmt)
+		return instance.scalars().first()
 	async def set_user_password(self, user: User, password: str) -> None:
 		user.password = password
 		user.requires_password_reset = False

@@ -31,10 +31,11 @@ class UserLoginResponseDTO(BaseModel):
     name: str | None = None
     lastname: str | None = None
     job_position: str | None = None
-    role: Role | None = None
+    fk_role: int | None = None
 
 
 class LoginResponseDTO(BaseModel):
     user: UserLoginResponseDTO
+    permissions: List[str]
     token: str = Field(..., description="Token")
     refresh_token: str = Field(..., description="Refresh token")
