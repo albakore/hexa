@@ -1,6 +1,7 @@
 import json
 import os
 import importlib
+from dependency_injector.wiring import Provide
 from fastapi import APIRouter, Depends, FastAPI, Request
 from pprint import pprint
 from fastapi.middleware import Middleware
@@ -15,10 +16,11 @@ from core.fastapi.middlewares import (
 	AuthBackend,
 	AuthenticationMiddleware,
 	ResponseLogMiddleware,
-	SQLAlchemyMiddleware,
-	RBACMiddleware
+	SQLAlchemyMiddleware
 )
 from core.config.settings import env
+from core.fastapi.dependencies.permission import system_permission
+import core.fastapi.dependencies.user_permission.user
 
 
 def on_auth_error(request: Request, exc: Exception):
@@ -45,11 +47,10 @@ def make_middleware() -> list[Middleware]:
 		),
 		Middleware(
 			AuthenticationMiddleware,
-			backend=AuthBackend(),
+			backend=AuthBackend(auth_repository=MainContainer.auth.repository_adapter()),
 			on_error=on_auth_error,
 		),
 		Middleware(SQLAlchemyMiddleware),
-		Middleware(RBACMiddleware),
 		Middleware(ResponseLogMiddleware),
 	]
 	return middleware
@@ -73,8 +74,8 @@ def get_routes():
 			module = importlib.import_module(path)
 
 			if hasattr(module, "router"):
-				print(module.router.tags)
-				print(module.router.routes)
+				# print(module.router.tags)
+				# print(module.router.routes)
 				routes.append(module.router)
 
 	return routes
@@ -109,6 +110,7 @@ def create_app() -> FastAPI:
 	init_routers(app_=app_)
 	init_listeners(app_=app_)
 	export_openapi(app_=app_)
+	app_.include_router(system_permission)
 	return app_
 
 

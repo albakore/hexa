@@ -9,7 +9,7 @@ from app.auth.application.exception import (
 	LoginRequiresPasswordResetException,
 	LoginUsernamePasswordException,
 )
-from app.auth.domain.entity.auth import AuthRepository
+from app.auth.domain.repository.auth import AuthRepository
 from app.auth.domain.usecase.auth import AuthUseCase
 from app.rbac.domain.repository import PermissionRepository, RBACRepository,RoleRepository
 from app.user.application.dto import LoginResponseDTO
@@ -57,11 +57,13 @@ class AuthService(AuthUseCase):
 		if not user.is_active:
 			raise UserInactiveException
 		
-		print(user.role)
 
 		user_response = UserLoginResponseDTO.model_validate(user.model_dump())
 		user_dump = jsonable_encoder(user_response)
-		permissions = await self.rbac_repository.get_all_permissions_from_role(user.role)
+		permissions = []
+		if user.role:
+			permissions = await self.rbac_repository.get_all_permissions_from_role(user.role)
+			
 		response = LoginResponseDTO(
 			user=user_response,
 			permissions=[permission.token for permission in permissions],

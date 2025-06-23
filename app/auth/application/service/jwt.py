@@ -4,7 +4,7 @@ from fastapi.encoders import jsonable_encoder
 import rich
 from app.auth.application.dto import RefreshTokenResponseDTO
 from app.auth.application.exception import AuthSessionExpiredException, DecodeTokenException
-from app.auth.domain.entity.auth import AuthRepository
+from app.auth.domain.repository.auth import AuthRepository
 from app.auth.domain.usecase.jwt import JwtUseCase
 from app.rbac.domain.entity import permission
 from app.rbac.domain.repository import RBACRepository

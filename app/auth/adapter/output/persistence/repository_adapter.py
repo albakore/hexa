@@ -1,4 +1,4 @@
-from app.auth.domain.entity.auth import AuthRepository
+from app.auth.domain.repository.auth import AuthRepository
 from app.user.application.dto import LoginResponseDTO
 
 

@@ -1,5 +1,6 @@
 from typing import List
 import uuid
+from dependency_injector.wiring import inject
 import jwt
 from pydantic import BaseModel, Field
 import rich
@@ -9,6 +10,7 @@ from starlette.middleware.authentication import (
 )
 from starlette.requests import HTTPConnection
 from starlette.authentication import BaseUser, AuthCredentials
+from app.auth.domain.repository.auth import AuthRepository
 from core.config.settings import env
 
 
@@ -17,7 +19,6 @@ class CurrentUser(BaseModel):
 	nickname: str
 	email: str
 	role: str | None = None
-	tipo_usuario: str | None = None
 	permissions: List[str] | None = None
 
 
@@ -32,8 +33,12 @@ class User(BaseUser):
 	def __getattr__(self, item):
 		return getattr(self._user, item)
 
-
+@inject
 class AuthBackend(AuthenticationBackend):
+	
+	def __init__(self, auth_repository : AuthRepository):
+		self.auth_repository = auth_repository
+
 	async def authenticate(
 		self, conn: HTTPConnection
 	) -> tuple[AuthCredentials, User] | None:
@@ -59,7 +64,11 @@ class AuthBackend(AuthenticationBackend):
 				env.JWT_SECRET_KEY,
 				algorithms=[env.JWT_ALGORITHM],
 			)
+			user_uuid = payload["id"]
+			session = await self.auth_repository.get_user_session(user_uuid)
 			user = CurrentUser(**payload)
+			if session:
+				user.permissions = session.permissions
 			scopes = user.permissions
 
 		except jwt.exceptions.PyJWTError:

@@ -40,6 +40,9 @@ class RBACSQLAlchemyRepository(RBACRepository):
 		self, role: Role
 	) -> List[Permission] | Sequence[Permission] | None:
 		
+		if not role.id:
+			return []
+		
 		subq1 = select(RolePermissionLink.fk_permission).where(
 			RolePermissionLink.fk_role == role.id
 		)

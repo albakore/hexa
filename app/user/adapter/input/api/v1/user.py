@@ -7,12 +7,17 @@ from app.user.application.service.user import UserService
 from app.container import MainContainer
 from app.user.domain.command import CreateUserCommand
 
-from core.fastapi.dependencies import IsAdmin, PermissionDependency
+from core.fastapi.dependencies import PermissionDependency
+from core.fastapi.dependencies.user_permission.user import UserPermission
 
 user_router = APIRouter()
 
-@user_router.get("",dependencies=[Depends(PermissionDependency([IsAdmin]))])
+@user_router.get(
+	"",
+	dependencies=[UserPermission.read]
+)
 @inject
+# @TokenRegistry.register("user:read")
 async def get_user_list(
 	limit: int = Query(default=10, ge=1, le=50),
 	page: int = Query(default=0),

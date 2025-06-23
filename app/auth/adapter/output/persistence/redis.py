@@ -5,7 +5,7 @@ from fastapi.encoders import jsonable_encoder
 from lzl.api.aioreq import delete
 from redis.asyncio import Redis
 import rich
-from app.auth.domain.entity.auth import AuthRepository
+from app.auth.domain.repository.auth import AuthRepository
 from app.user.application.dto import LoginResponseDTO
 
 class RedisAuthRepository(AuthRepository):
