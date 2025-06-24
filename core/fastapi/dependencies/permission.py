@@ -11,10 +11,14 @@ from starlette import status
 from starlette.authentication import UnauthenticatedUser
 
 from app.container import MainContainer
+from app.models import Permission
 from app.user.domain.usecase.user import UserUseCase
+from core.db import session_factory
 from core.exceptions.base import CustomException
 from rich import print
 from fastapi import APIRouter
+
+from sqlmodel import select
 
 
 class UnauthorizedException(CustomException):
@@ -77,6 +81,30 @@ def get_all_grouped_permissions() -> dict[str, list[dict[str, str]]]:
             "description": description,
         })
     return dict(grouped)
+
+
+async def sync_permissions_to_db():
+	"""
+	Sincroniza los permisos definidos en código con la base de datos.
+	"""
+	async with session_factory() as session:
+		try:
+			for token, description in PERMISSIONS_REGISTRY.items():
+				result = await session.execute(select(Permission).where(Permission.token == token))
+				db_perm = result.scalars().first()
+
+				if db_perm:
+					if db_perm.description != description:
+						db_perm.description = description
+						session.add(db_perm)
+						print(f"📝 Actualizado: {token}")
+				else:
+					session.add(Permission(name=token.split(":")[0], token=token, description=description))
+					print(f"🆕 Insertado: {token}")
+
+			await session.commit()
+		except Exception as e:
+			print("❌ Hubo un error al sincronizar los permisos:", e)
 
 class PermissionDependency(SecurityBase):
 	def __init__(self, permission: PermissionToken):

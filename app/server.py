@@ -1,3 +1,5 @@
+import asyncio
+from contextlib import asynccontextmanager
 import json
 import os
 import importlib
@@ -19,9 +21,7 @@ from core.fastapi.middlewares import (
 	SQLAlchemyMiddleware
 )
 from core.config.settings import env
-from core.fastapi.dependencies.permission import system_permission
-import core.fastapi.dependencies.user_permission.user
-
+from core.fastapi.dependencies.permission import system_permission, sync_permissions_to_db
 
 def on_auth_error(request: Request, exc: Exception):
 	status_code, error_code, message = 401, None, str(exc)
@@ -99,10 +99,22 @@ def export_openapi(app_: FastAPI):
 	with open(env.OPENAPI_EXPORT_DIR, "w+") as f:
 		json.dump(schema, f, indent=2)
 
+@asynccontextmanager
+async def lifespan(app_: FastAPI):
+    # 🚀 Startup
+    await sync_permissions_to_db()
+    print("✅ Permisos sincronizados en base de datos")
+
+    yield  # 👉 La app corre a partir de aquí
+
+    # 🔚 Shutdown (opcional)
+    print("🧹 Limpieza al cerrar FastAPI")
+
 def create_app() -> FastAPI:
 	app_ = FastAPI(
 		dependencies=[Depends(Logging)],
 		middleware=make_middleware(),
+		lifespan=lifespan,
 		servers=[{
 			"url":"http://localhost:8000", "description": "development"
 		}]
@@ -112,6 +124,5 @@ def create_app() -> FastAPI:
 	export_openapi(app_=app_)
 	app_.include_router(system_permission)
 	return app_
-
 
 app = create_app()
