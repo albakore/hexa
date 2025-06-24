@@ -31,5 +31,8 @@ dev = [
     "ruff>=0.11.10",
 ]
 
+[tool.setuptools]
+packages = ["app", "core", "hexa"]
+
 [project.scripts]
 hexa = "hexa.__main__:cmd"
