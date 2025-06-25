@@ -36,7 +36,7 @@ services:
     container_name: backend
     build:
       context: .
-      dockerfile: docker/hexa/Dockerfile
+      dockerfile: docker/hexa/qa.Dockerfile
     command: /bin/sh -c "uv run alembic revision --autogenerate -m 'init' && uv run alembic upgrade head && uv run hexa api --dev"
     environment:
       BACKEND_PATH: ${BACKEND_PATH}
@@ -45,7 +45,6 @@ services:
     env_file:
       - .env
     volumes:
-      - .:/app
       - .env:/app/.env
     ports:
       - 8000:8000
@@ -66,9 +65,9 @@ services:
     command: /bin/sh -c "cat /etc/nginx/templates/default.conf.template &&  envsubst '$$HEXA_BACKEND_ADDR $$HEXA_FRONTEND_ADDR $$BACKEND_PATH' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
     build:
       context: ./docker/nginx
-      dockerfile: Dockerfile
+      dockerfile: qa.Dockerfile
     volumes:
-      - ./docker/nginx/default.conf:/etc/nginx/templates/default.conf.template
+      - ./docker/nginx/default.qa.conf:/etc/nginx/templates/default.conf.template
     restart: always
     ports:
       - 80:80
