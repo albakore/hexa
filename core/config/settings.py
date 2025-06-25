@@ -21,7 +21,7 @@ class Settings(BaseSettings):
 
 	OPENAPI_EXPORT_DIR : str = "docs/openapi.json"
 
-	model_config = SettingsConfigDict(env_file='.env', env_file_encoding='utf-8')
+	model_config = SettingsConfigDict(env_file='.env', env_file_encoding='utf-8', extra='ignore')
 
 class LocalSettings(Settings):
 	ENV : str = "local"
