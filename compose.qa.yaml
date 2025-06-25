@@ -37,7 +37,7 @@ services:
     build:
       context: .
       dockerfile: docker/hexa/qa.Dockerfile
-    command: /bin/sh -c "uv run alembic revision --autogenerate -m 'init' && uv run alembic upgrade head && uv run hexa api --dev"
+    command: /bin/sh -c "uv run hexa api --dev"
     environment:
       BACKEND_PATH: ${BACKEND_PATH}
       DATABASE_URL: ${DATABASE_URL}
@@ -72,6 +72,9 @@ services:
     ports:
       - 80:80
       - 8000:8000
+    depends_on:
+      backend:
+        condition: service_started
     networks:
       - frontnet
 

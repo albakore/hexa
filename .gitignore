@@ -188,7 +188,7 @@ cython_debug/
 .cursorindexingignore
 
 # Alembic
-migrations/versions/*
+# migrations/versions/*
 
 #SQLite
 *.sqlite3
