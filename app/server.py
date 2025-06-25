@@ -115,9 +115,11 @@ def create_app() -> FastAPI:
 		dependencies=[Depends(Logging)],
 		middleware=make_middleware(),
 		lifespan=lifespan,
+		root_path=env.BACKEND_PATH,
 		servers=[{
 			"url":"http://localhost:8000", "description": "development"
 		}]
+		
 	)
 	init_routers(app_=app_)
 	init_listeners(app_=app_)

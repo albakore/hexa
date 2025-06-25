@@ -5,6 +5,7 @@ from pathlib import Path
 import importlib.util
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 from core.db.session import session
+from core.config.settings import env
 
 from app.models import create_tables, drop_tables
 
@@ -17,7 +18,7 @@ def api(dev: bool = False):
     """Inicia el servidor FastAPI"""
     verify_project_structure()
     port = 8000 if dev else 8080
-    uvicorn.run("app.server:app", host="0.0.0.0", port=port, reload=dev)
+    uvicorn.run("app.server:app", host="0.0.0.0", port=port, reload=dev, root_path=env.BACKEND_PATH)
 
 # Comandos para la base de datos
 db_app = typer.Typer(help="Comandos para gestión de la base de datos")

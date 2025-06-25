@@ -10,6 +10,7 @@ class Environment(Enum):
 
 class Settings(BaseSettings):
 	ENV : str = "local"
+	BACKEND_PATH : str = ""
 	DATABASE_URL : str = "postgresql+asyncpg://hexa:hexa@localhost:5432/hexa" 
 	REDIS_URL : str = "redis://localhost:6379/0?password=eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81" 
 	# DATABASE_URL : str = "sqlite+aiosqlite:///db.sqlite"
