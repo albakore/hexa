@@ -8,13 +8,13 @@ from app.container import MainContainer
 from app.user.domain.command import CreateUserCommand
 
 from core.fastapi.dependencies import PermissionDependency
-from core.fastapi.dependencies.user_permission.user import UserPermission
+from core.fastapi.dependencies.user_permission.user import UserTokenPermission
 
 user_router = APIRouter()
 
 @user_router.get(
 	"",
-	dependencies=[UserPermission.read]
+	# dependencies=[UserTokenPermission.read]
 )
 @inject
 # @TokenRegistry.register("user:read")
