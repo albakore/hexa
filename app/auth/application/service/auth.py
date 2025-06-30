@@ -49,7 +49,7 @@ class AuthService(AuthUseCase):
 		if user.requires_password_reset and password == user.initial_password:
 			return AuthPasswordResetResponseDTO.model_validate(user.model_dump())
 
-		is_password_valid = PasswordHelper.verify_password(password, user.password or "")
+		is_password_valid = PasswordHelper.verify_password(password, user.password or None) #type: ignore
 
 		if not is_password_valid:
 			raise LoginUsernamePasswordException
