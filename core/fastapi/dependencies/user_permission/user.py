@@ -27,6 +27,6 @@ class GroupTokenPermission(PermissionGroup):
 class PermissionTokenPermission(PermissionGroup):
     group = "permission"
 
-    read = "Lee permission"
-    write = "Crea permission"
-    delete = "Elimina permission"
+    read = "Lee permisos"
+    write = "Crea permisos"
+    delete = "Elimina permisos"
