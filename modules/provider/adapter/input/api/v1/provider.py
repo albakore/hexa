@@ -1,5 +1,17 @@
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, Form, Response
 
+from modules.container import ModuleContainer
+from modules.provider.domain.usecase.provider import ProviderUseCase
+
+
+
 
 provider_router = APIRouter()
+
+@provider_router.get("")
+@inject
+async def get_all_providers(
+	service : ProviderUseCase = Depends(Provide[ModuleContainer.provider.service])
+):
+	return await service.get_all_providers()

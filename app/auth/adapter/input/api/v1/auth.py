@@ -11,7 +11,7 @@ from app.auth.adapter.input.api.v1.request import (
 from app.auth.adapter.input.api.v1.response import AuthPasswordResetResponse, RefreshTokenResponse
 from app.auth.domain.usecase.auth import AuthUseCase
 from app.auth.domain.usecase.jwt import JwtUseCase
-from app.container import MainContainer
+from app.container import SystemContainer
 
 auth_router = APIRouter()
 
@@ -23,7 +23,7 @@ auth_router = APIRouter()
 @inject
 async def refresh_token(
     request: RefreshTokenRequest,
-    usecase: JwtUseCase = Depends(Provide[MainContainer.auth.jwt_service]),
+    usecase: JwtUseCase = Depends(Provide[SystemContainer.auth.jwt_service]),
 ):
     token = await usecase.create_refresh_token(
         refresh_token=request.refresh_token
@@ -35,7 +35,7 @@ async def refresh_token(
 @inject
 async def verify_token(
     request: VerifyTokenRequest,
-    usecase: JwtUseCase = Depends(Provide[MainContainer.auth.jwt_service]),
+    usecase: JwtUseCase = Depends(Provide[SystemContainer.auth.jwt_service]),
 ):
     decoded_token = await usecase.verify_token(token=request.token)
     return decoded_token
@@ -45,7 +45,7 @@ async def verify_token(
 @inject
 async def login(
     request: AuthLoginRequest = Form(),
-    usecase: AuthUseCase = Depends(Provide[MainContainer.auth.service]),
+    usecase: AuthUseCase = Depends(Provide[SystemContainer.auth.service]),
 ):
     data = await usecase.login(
         request.nickname,
@@ -58,7 +58,7 @@ async def login(
 @inject
 async def register(
     request: AuthRegisterRequest = Form(),
-    usecase: AuthUseCase = Depends(Provide[MainContainer.auth.service]),
+    usecase: AuthUseCase = Depends(Provide[SystemContainer.auth.service]),
 ):
     data = await usecase.register(
         registration_data=request
@@ -69,7 +69,7 @@ async def register(
 @inject
 async def password_reset(
     request: AuthPasswordResetRequest = Form(),
-    usecase: AuthUseCase = Depends(Provide[MainContainer.auth.service]),
+    usecase: AuthUseCase = Depends(Provide[SystemContainer.auth.service]),
 ):
     await usecase.password_reset(
         request.id.hex,

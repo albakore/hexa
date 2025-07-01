@@ -2,7 +2,7 @@ from typing import Annotated
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 
-from app.container import MainContainer
+from app.container import SystemContainer
 from app.rbac.adapter.input.api.v1.request import (
 	AddGroupToRoleRequest,
 	AddPermissionToGroupRequest,
@@ -34,10 +34,10 @@ from app.rbac.domain.usecase import PermissionUseCase, RoleUseCase
 rbac_router = APIRouter()
 
 RoleUseCaseDependency = Annotated[
-	RoleUseCase, Depends(Provide[MainContainer.rbac.role_service])
+	RoleUseCase, Depends(Provide[SystemContainer.rbac.role_service])
 ]
 PermissionUseCaseDependency = Annotated[
-	PermissionUseCase, Depends(Provide[MainContainer.rbac.permission_service])
+	PermissionUseCase, Depends(Provide[SystemContainer.rbac.permission_service])
 ]
 
 

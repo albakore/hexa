@@ -5,11 +5,9 @@ from app.auth.container import AuthContainer
 from app.rbac.container import RBACContainer
 from app.user.container import UserContainer
 
-class MainContainer(DeclarativeContainer):
-	wiring_config = WiringConfiguration(
-		packages=["app"],
-		auto_wire=True
-	)
+
+class SystemContainer(DeclarativeContainer):
+	wiring_config = WiringConfiguration(packages=["app"], auto_wire=True)
 
 	rbac = Container(RBACContainer)
 	user = Container(UserContainer)

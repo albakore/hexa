@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Query
 
 from app.user.adapter.input.api.v1.request import CreateUserRequest, RoleRequest
 from app.user.application.service.user import UserService
-from app.container import MainContainer
+from app.container import SystemContainer
 from app.user.domain.command import CreateUserCommand
 
 from core.fastapi.dependencies import PermissionDependency
@@ -21,7 +21,7 @@ user_router = APIRouter()
 async def get_user_list(
 	limit: int = Query(default=10, ge=1, le=50),
 	page: int = Query(default=0),
-	user_service: UserService = Depends(Provide[MainContainer.user.service]),
+	user_service: UserService = Depends(Provide[SystemContainer.user.service]),
 ):
 	return await user_service.get_user_list(int(limit),int(page))
 
@@ -29,7 +29,7 @@ async def get_user_list(
 @inject
 async def get_user(
 	user_uuid: uuid.UUID,
-	user_service: UserService = Depends(Provide[MainContainer.user.service])
+	user_service: UserService = Depends(Provide[SystemContainer.user.service])
 ):
 	return await user_service.get_user_by_uuid(str(user_uuid))
 
@@ -38,7 +38,7 @@ async def get_user(
 @inject
 async def create_user(
 	request : CreateUserRequest,
-	user_service: UserService = Depends(Provide[MainContainer.user.service])
+	user_service: UserService = Depends(Provide[SystemContainer.user.service])
 ):
 	command = CreateUserCommand.model_validate(request.model_dump())
 	return await user_service.create_user(command=command)
@@ -49,6 +49,6 @@ async def create_user(
 async def asign_role(
 	user_uuid: uuid.UUID,
 	role : RoleRequest,
-	user_service: UserService = Depends(Provide[MainContainer.user.service])
+	user_service: UserService = Depends(Provide[SystemContainer.user.service])
 ):
 	return await user_service.asign_role_to_user(str(user_uuid), role.id)

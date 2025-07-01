@@ -10,7 +10,7 @@ from fastapi.security.base import SecurityBase
 from starlette import status
 from starlette.authentication import UnauthenticatedUser
 
-from app.container import MainContainer
+from app.container import SystemContainer
 from app.models import Permission
 from app.user.domain.usecase.user import UserUseCase
 from core.db import session_factory

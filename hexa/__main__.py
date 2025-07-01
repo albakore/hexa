@@ -18,7 +18,7 @@ def api(dev: bool = False):
     """Inicia el servidor FastAPI"""
     verify_project_structure()
     port = 8000 if dev else 8080
-    uvicorn.run("app.server:app", host="0.0.0.0", port=port, reload=dev, root_path=env.BACKEND_PATH)
+    uvicorn.run("core.fastapi.server:app", host="0.0.0.0", port=port, reload=dev, root_path=env.BACKEND_PATH)
 
 # Comandos para la base de datos
 db_app = typer.Typer(help="Comandos para gestión de la base de datos")
