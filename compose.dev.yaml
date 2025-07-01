@@ -47,7 +47,8 @@ services:
     env_file:
       - .env
     volumes:
-      - .:/app
+      - .:/app:cached
+      - /app/.venv
       - .env:/app/.env
     ports:
       - 8000:8000
