@@ -12,7 +12,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 from fastapi.responses import JSONResponse
 from rich import print
-from app.container import SystemContainer
 from core.exceptions.base import CustomException
 from core.fastapi.dependencies.logging import Logging
 from core.fastapi.middlewares import (
@@ -24,7 +23,7 @@ from core.fastapi.middlewares import (
 from core.config.settings import env
 from core.fastapi.dependencies.permission import system_permission, sync_permissions_to_db
 from .route_config import routes_pack
-from .container_config import container_pack
+from .container_config import CoreContainer
 
 def init_routes_pack(app_ : FastAPI):
 	for route in routes_pack:
@@ -54,7 +53,7 @@ def make_middleware() -> list[Middleware]:
 		),
 		Middleware(
 			AuthenticationMiddleware,
-			backend=AuthBackend(auth_repository=SystemContainer.auth.repository_adapter()),
+			backend=AuthBackend(auth_repository=CoreContainer.system.auth.repository_adapter()),
 			on_error=on_auth_error, #type: ignore
 		),
 		Middleware(SQLAlchemyMiddleware),
@@ -72,7 +71,7 @@ def init_listeners(app_: FastAPI) -> None:
 		)
 
 def init_containers(app_ : FastAPI) -> None:
-	container = SystemContainer()
+	container = CoreContainer()
 	app_.container = container  # type: ignore
 
 def export_openapi(app_: FastAPI):
