@@ -66,7 +66,15 @@ services:
     env_file:
       - .env
 
-    command: /bin/sh -c "cat /etc/nginx/templates/default.conf.template &&  envsubst '$$HEXA_BACKEND_ADDR $$HEXA_FRONTEND_ADDR $$BACKEND_PATH' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+    command: 
+      - /bin/sh 
+      - -c 
+      - |
+        envsubst '$$HEXA_BACKEND_ADDR $$HEXA_FRONTEND_ADDR $$BACKEND_PATH' \
+        < /etc/nginx/templates/default.conf.template \
+        > /etc/nginx/conf.d/default.conf
+
+        nginx -g 'daemon off;'
     build:
       context: ./docker/nginx
       dockerfile: dev.Dockerfile
@@ -83,7 +91,6 @@ services:
 
 networks:
   frontnet:
-    external: true
   db:
     driver: bridge
 
