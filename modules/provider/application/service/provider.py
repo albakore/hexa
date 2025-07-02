@@ -12,8 +12,8 @@ class ProviderService(ProviderUseCase):
 	def __init__(self, provider_repository : ProviderRepository):
 		self.provider_repository = provider_repository
 
-	async def get_all_providers(self) -> list[Provider] | Sequence[Provider]:
-		providers = await self.provider_repository.get_all_providers()
+	async def get_all_providers(self, limit: int = 20, page: int = 0) -> list[Provider] | Sequence[Provider]:
+		providers = await self.provider_repository.get_all_providers(int(limit),int(page))
 		return providers
 
 	async def get_provider_by_id(self, id_provider: int) -> Provider | None:
