@@ -47,9 +47,22 @@ services:
     env_file:
       - .env
     volumes:
-      - .:/app:cached
-      - /app/.venv
       - .env:/app/.env
+    develop:
+      watch:
+
+        # Sync the working directory with the `/app` directory in the container
+        - action: sync
+          path: .
+          target: /app
+          # Exclude the project virtual environment — it could be for a
+          # different platform in the container
+          ignore:
+            - .venv/
+
+        # Rebuild the image if dependencies change by checking uv.lock
+        - action: rebuild
+          path: ./uv.lock
     ports:
       - 8000:8000
     depends_on:

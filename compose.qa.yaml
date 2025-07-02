@@ -39,7 +39,7 @@ services:
     build:
       context: .
       dockerfile: docker/hexa/qa.Dockerfile
-    command: /bin/sh -c "uv run hexa api --dev"
+    command: /bin/sh -c "uv run hexa api"
     environment:
       BACKEND_PATH: ${BACKEND_PATH}
       DATABASE_URL: ${DATABASE_URL}
@@ -48,6 +48,20 @@ services:
       - .env
     volumes:
       - .env:/app/.env
+    develop:
+      watch:
+        # Sync the working directory with the `/app` directory in the container
+        - action: sync
+          path: .
+          target: /app
+          # Exclude the project virtual environment — it could be for a
+          # different platform in the container
+          ignore:
+            - .venv/
+
+        # Rebuild the image if dependencies change by checking uv.lock
+        - action: rebuild
+          path: ./uv.lock
     ports:
       - 8000:8000
     depends_on:
