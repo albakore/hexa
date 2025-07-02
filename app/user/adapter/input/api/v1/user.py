@@ -1,6 +1,7 @@
+from typing import Annotated
 import uuid
 from dependency_injector.wiring import Provide, inject
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Cookie, Depends, Query, WebSocket, WebSocketException,status
 
 from app.user.adapter.input.api.v1.request import CreateUserRequest, RoleRequest
 from app.user.application.service.user import UserService

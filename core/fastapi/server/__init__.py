@@ -24,6 +24,9 @@ from core.config.settings import env
 from core.fastapi.dependencies.permission import system_permission, sync_permissions_to_db
 from .route_config import routes_pack
 from .container_config import CoreContainer
+from core.config.modules import get_modules_setup
+
+get_modules_setup()
 
 def init_routes_pack(app_ : FastAPI):
 	for route in routes_pack:
