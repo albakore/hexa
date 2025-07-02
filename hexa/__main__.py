@@ -1,14 +1,13 @@
+import asyncio
 import typer
 import uvicorn
 import sys
 from pathlib import Path
 import importlib.util
 sys.path.append(str(Path(__file__).resolve().parents[1]))
-from core.db.session import session
+from core.db.session import session, session_factory
 from core.config.settings import env
 from sqlalchemy import text
-
-from app.models import create_tables, drop_tables
 
 # Configuración del CLI principal
 cmd = typer.Typer(rich_markup_mode="rich", help="Gestor del proyecto hexagonal")
@@ -23,11 +22,14 @@ def api(dev: bool = False):
 
 
 @cmd.command("delete-alembic-version")
-async def delete_alembic_version():
-
-    await session.execute(text("DELETE FROM alembic_version"))
-    await session.commit()
-    typer.echo("✅ Se eliminó el registro de la tabla alembic_version.")
+def delete_alembic_version():
+    """Borra ultima version guardada de la migracion de alembic"""
+    async def delete_version():
+        async with session_factory() as s:
+            await s.execute(text("DELETE FROM alembic_version"))
+            await s.commit()
+            typer.echo("✅ Se eliminó el registro de la tabla alembic_version.")
+    asyncio.run(delete_version())
 
 # Función de verificación común
 def verify_project_structure():

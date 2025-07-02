@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel, Relationship, Field
 
-class Provider(SQLModel):
+class Provider(SQLModel, table=True):
 	id : int | None = Field(None, primary_key=True)
 	name : str
 
