@@ -103,6 +103,7 @@ async def sync_permissions_to_db():
 					print(f"🆕 Insertado: {token}")
 
 			await session.commit()
+			print("✅ Permisos sincronizados en base de datos")
 		except Exception as e:
 			print("❌ Hubo un error al sincronizar los permisos:", e)
 

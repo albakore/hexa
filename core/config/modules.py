@@ -2,6 +2,7 @@
 import importlib
 import importlib.util
 import os
+from fastapi import APIRouter
 import rich as r
 from pathlib import Path
 
@@ -24,7 +25,7 @@ class ModuleSetup:
 		MODULE_REGISTRY[cls._name] = {
 			"name": cls.name,
 			"token": cls.token,
-			"cls.description" : cls.description
+			"description" : cls.description
 		}
 
 	@classmethod
@@ -60,14 +61,29 @@ async def sync_modules_to_db():
 
 				if db_module:
 					if db_module.description != item['description'] or db_module.name != item['name']:
-						db_module.name = item['name']
-						db_module.description = item['description']
+						if db_module.description != item['description']:
+							db_module.description = item['description']
+						if db_module.name != item['name']:
+							db_module.name = item['name']
 						session.add(db_module)
 						print(f"📝 Actualizado modulo: {item['name']}")
 				else:
-					session.add(Module(name=item['name'], token=item['token'], description=item['description']))
+					session.add(Module(name=item['name'], token=item['token'], description=item.get('description',None)))
 					print(f"🆕 Insertado modulo: {item['name']}")
 
 			await session.commit()
+			print("✅ Modulos sincronizados en base de datos")
 		except Exception as e:
 			print("❌ Hubo un error al sincronizar los modulos:", e)
+
+
+def get_all_system_modules():
+	values = MODULE_REGISTRY.values()
+	return list(values)
+
+
+system_modules = APIRouter(tags=["System"])
+
+@system_modules.get("/modules")
+def get_system_modules():
+	return get_all_system_modules()

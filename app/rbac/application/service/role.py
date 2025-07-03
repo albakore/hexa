@@ -2,6 +2,7 @@ from typing import List
 
 from sqlmodel import select
 from sqlalchemy.orm import selectinload
+from app.module.domain.entity.module import Module
 from app.rbac.application.exception import RoleNotFoundException
 from app.rbac.domain.command import CreateRoleCommand
 from app.rbac.domain.entity import Permission
@@ -17,6 +18,7 @@ class RoleService(RoleUseCase):
 		self,
 		role_repository: RoleRepository,
 		permission_repository: PermissionRepository,
+		module_repository: ModuleRepository,
 	):
 		self.role_repository = role_repository
 		self.permission_repository = permission_repository
@@ -94,4 +96,23 @@ class RoleService(RoleUseCase):
 			if group not in role.groups:
 				role.groups.append(group)
 
-		return await self.role_repository.save_role(role)  # type: ignore
+		return await self.role_repository.save_role(role)
+
+	@Transactional()
+	async def append_modules_to_role(self, modules: List[Module], id_role: int) -> Role:
+		role = await self.role_repository.get_role_by_id(id_role, with_modules=True)
+		if not role:
+			raise RoleNotFoundException
+
+		module_ids = [m.id for m in modules]
+
+		modules_from_db = await self.module_repository.get_modules_by_ids(
+			module_ids #type:ignore
+		)
+
+		for module in modules_from_db:
+			if module not in role.modules:
+				role.modules.append(module)
+
+		return await self.role_repository.save_role(role)
+	# type: ignore

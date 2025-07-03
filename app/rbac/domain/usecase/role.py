@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List
+from app.module.domain.entity.module import Module
 from app.rbac.domain.command import CreateRoleCommand
 from app.rbac.domain.entity import GroupPermission, Permission
 from app.rbac.domain.entity.role import Role
@@ -47,5 +48,11 @@ class RoleUseCase(ABC):
 	@abstractmethod
 	async def append_groups_to_role(
 		self, groups: List[GroupPermission], id_role: int
+	) -> Role:
+		raise NotImplementedError
+
+	@abstractmethod
+	async def append_modules_to_role(
+		self, modules: List[Module], id_role: int
 	) -> Role:
 		raise NotImplementedError

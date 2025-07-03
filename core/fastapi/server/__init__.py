@@ -24,7 +24,7 @@ from core.config.settings import env
 from core.fastapi.dependencies.permission import system_permission, sync_permissions_to_db
 from .route_config import routes_pack
 from .container_config import CoreContainer
-from core.config.modules import get_modules_setup
+from core.config.modules import get_modules_setup, sync_modules_to_db, system_modules
 
 get_modules_setup()
 
@@ -89,14 +89,14 @@ def export_openapi(app_: FastAPI):
 
 @asynccontextmanager
 async def lifespan(app_: FastAPI):
-    # 🚀 Startup
-    await sync_permissions_to_db()
-    print("✅ Permisos sincronizados en base de datos")
+	# 🚀 Startup
+	await sync_permissions_to_db()
+	await sync_modules_to_db()
 
-    yield  # 👉 La app corre a partir de aquí
+	yield  # 👉 La app corre a partir de aquí
 
-    # 🔚 Shutdown (opcional)
-    print("🧹 Limpieza al cerrar FastAPI")
+	# 🔚 Shutdown (opcional)
+	print("🧹 Limpieza al cerrar FastAPI")
 
 def create_app() -> FastAPI:
 	app_ = FastAPI(
@@ -115,6 +115,7 @@ def create_app() -> FastAPI:
 	init_listeners(app_=app_)
 	export_openapi(app_=app_)
 	app_.include_router(system_permission)
+	app_.include_router(system_modules)
 	return app_
 
 app = create_app()
