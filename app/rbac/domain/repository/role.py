@@ -34,3 +34,7 @@ class RoleRepository(ABC):
 
 	@abstractmethod
 	async def save_role(self, role: Role) -> Role: ...
+
+	
+	@abstractmethod
+	async def get_all_modules_from_role(self, role: Role) -> List[Module]: ...

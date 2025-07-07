@@ -1,7 +1,7 @@
 from sqlalchemy.orm import selectinload
 from sqlmodel import or_, select, col
 from typing import List, Sequence
-from app.module.domain.entity.module import Module
+from app.module.domain.entity.module import Module, ModuleRoleLink
 from app.rbac.application.exception import RoleNotFoundException
 from app.rbac.domain.entity.permission import Permission
 from app.rbac.domain.entity import (
@@ -179,3 +179,18 @@ class RBACSQLAlchemyRepository(RBACRepository):
 		for module in modules:
 			role.modules.append(module)
 		return role
+
+	async def get_all_modules_from_role(self, role: Role) -> List[Module] | Sequence[Module]:
+		if not role.id:
+			return []
+
+		subq1 = select(ModuleRoleLink.fk_module).where(
+			ModuleRoleLink.fk_role == role.id
+		)
+		subq2 = select(Module).where(
+			col(Module.id).in_(subq1)
+		)
+
+		async with session_factory() as session:
+			result = await session.execute(subq2)
+		return result.scalars().all()

@@ -91,3 +91,7 @@ class RBACRepositoryAdapter(RBACRepository):
 
 	async def append_modules_to_role(self, modules: List[Module], id_role: int) -> Role:
 		return await self.role_repository.append_modules_to_role(modules, id_role)
+
+	async def get_all_modules_from_role(self, role: Role) -> List[Module]:
+		return await self.role_repository.get_all_modules_from_role(role)
+

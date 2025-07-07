@@ -29,7 +29,7 @@ class AuthContainer(DeclarativeContainer):
 		AuthService,
 		auth_repository=repository_adapter,
 		user_repository=UserContainer.repository_adapter,
-		rbac_repository=RBACContainer.repository_adapter
+		rbac_repository=RBACContainer.repository_adapter,
 	)
 
 	jwt_service = Factory(

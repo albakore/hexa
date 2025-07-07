@@ -11,6 +11,8 @@ from app.auth.application.exception import (
 )
 from app.auth.domain.repository.auth import AuthRepository
 from app.auth.domain.usecase.auth import AuthUseCase
+from app.module.application.dto import ModuleViewDTO
+from app.rbac.container import RoleService
 from app.rbac.domain.repository import PermissionRepository, RBACRepository,RoleRepository
 from app.user.application.dto import LoginResponseDTO
 from app.user.application.dto.user import UserLoginResponseDTO
@@ -61,12 +63,15 @@ class AuthService(AuthUseCase):
 		user_response = UserLoginResponseDTO.model_validate(user.model_dump())
 		user_dump = jsonable_encoder(user_response)
 		permissions = []
+		modules = []
 		if user.role:
 			permissions = await self.rbac_repository.get_all_permissions_from_role(user.role)
+			modules = await self.rbac_repository.get_all_modules_from_role(user.role)
 			
 		response = LoginResponseDTO(
 			user=user_response,
 			permissions=[permission.token for permission in permissions],
+			modules=[ModuleViewDTO.model_validate(module.model_dump()) for module in modules],
 			token=TokenHelper.encode(
 				payload=user_dump,
 				expire_period=TokenHelper.get_expiration_minutes()

@@ -119,4 +119,6 @@ class RoleService(RoleUseCase):
 				role.modules.append(module)
 
 		return await self.role_repository.save_role(role)
-	# type: ignore
+
+	async def get_modules_from_role(self, role: Role) -> List[Module]:
+		return await self.role_repository.get_all_modules_from_role(role)

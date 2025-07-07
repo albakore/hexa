@@ -57,3 +57,9 @@ class RoleUseCase(ABC):
 		self, modules: List[Module], id_role: int
 	) -> Role:
 		raise NotImplementedError
+
+	@abstractmethod
+	async def get_modules_from_role(
+		self, role: Role
+	) -> List[Module]:
+		raise NotImplementedError
