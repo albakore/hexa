@@ -4,7 +4,7 @@ from typing import List
 from app.module.domain.entity import Module
 
 
-class ModuleRepository(ABC):
+class AppModuleRepository(ABC):
 
 
 	@abstractmethod

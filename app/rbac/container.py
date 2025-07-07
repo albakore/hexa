@@ -6,6 +6,7 @@ from app.rbac.adapter.output.persistence.sqlalchemy.rbac import RBACSQLAlchemyRe
 from app.rbac.application.service.role import RoleService
 from app.rbac.application.service.permission import PermissionService
 
+from app.module.container import AppModuleContainer
 class RBACContainer(DeclarativeContainer):
 
 	repository = Singleton(
@@ -21,7 +22,8 @@ class RBACContainer(DeclarativeContainer):
 	role_service = Factory(
 		RoleService,
 		role_repository=repository_adapter,
-		permission_repository=repository_adapter
+		permission_repository=repository_adapter,
+		module_repository=AppModuleContainer.repository_adapter
 	)
 
 	permission_service = Factory(
