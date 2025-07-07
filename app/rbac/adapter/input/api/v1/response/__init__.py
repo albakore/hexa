@@ -3,6 +3,7 @@
 from typing import List
 from pydantic import BaseModel
 
+from app.module.domain.entity.module import Module
 from app.rbac.domain.entity import GroupPermission, Permission
 
 class RoleResponse(BaseModel):
@@ -11,6 +12,7 @@ class RoleResponse(BaseModel):
 	description : str | None = None
 	groups : List[GroupPermission] | None = []
 	permissions : List[Permission] | None = []
+	modules: List[Module] | None = []
 
 class GroupResponse(BaseModel):
 	id: int | None = None
@@ -28,6 +30,11 @@ class RoleAddGroupsResponse(BaseModel):
 	id: int | None = None
 	name: str
 	groups : List[GroupPermission] | None = []
+
+class RoleAddModulesResponse(BaseModel):
+	id: int | None = None
+	name: str
+	modules : List[Module] | None = []
 
 class GroupAddPermissionResponse(BaseModel):
 	id: int | None = None

@@ -17,7 +17,8 @@ class RoleUseCase(ABC):
 		self,
 		id_role: int,
 		with_permissions: bool = False,
-		with_groups: bool = False
+		with_groups: bool = False,
+		with_modules: bool = False,
 	) -> Role | None:
 		raise NotImplementedError
 

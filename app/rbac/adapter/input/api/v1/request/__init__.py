@@ -1,6 +1,7 @@
 from typing import List
 from pydantic import BaseModel, Field
 
+from app.module.domain.entity.module import Module
 from app.rbac.domain.entity import GroupPermission, Permission
 
 
@@ -22,3 +23,5 @@ AddPermissionToRoleRequest = List[Permission]
 AddPermissionToGroupRequest = List[Permission]
 
 AddGroupToRoleRequest = List[GroupPermission]
+
+AddModuleToRoleRequest = List[Module]

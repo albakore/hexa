@@ -34,7 +34,10 @@ class PermissionRepository(ABC):
 
 	@abstractmethod
 	async def get_group_by_id(
-		self, id_group: int, with_permissions: bool = False, with_roles: bool = False
+		self,
+		id_group: int,
+		with_permissions: bool = False,
+		with_roles: bool = False,
 	) -> GroupPermission | None: ...
 
 	@abstractmethod

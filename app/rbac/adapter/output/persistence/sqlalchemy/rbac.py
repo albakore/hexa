@@ -1,6 +1,7 @@
 from sqlalchemy.orm import selectinload
 from sqlmodel import or_, select, col
 from typing import List, Sequence
+from app.module.domain.entity.module import Module
 from app.rbac.application.exception import RoleNotFoundException
 from app.rbac.domain.entity.permission import Permission
 from app.rbac.domain.entity import (
@@ -10,7 +11,11 @@ from app.rbac.domain.entity import (
 	RoleGroupPermissionLink,
 )
 from app.rbac.domain.entity.role import RolePermissionLink
-from app.rbac.domain.repository import RBACRepository, RoleRepository, PermissionRepository
+from app.rbac.domain.repository import (
+	RBACRepository,
+	RoleRepository,
+	PermissionRepository,
+)
 from core.db import session_factory, session as global_session
 
 
@@ -39,10 +44,9 @@ class RBACSQLAlchemyRepository(RBACRepository):
 	async def get_all_permissions_from_role(
 		self, role: Role
 	) -> List[Permission] | Sequence[Permission] | None:
-		
 		if not role.id:
 			return []
-		
+
 		subq1 = select(RolePermissionLink.fk_permission).where(
 			RolePermissionLink.fk_role == role.id
 		)
@@ -54,10 +58,7 @@ class RBACSQLAlchemyRepository(RBACRepository):
 		)
 
 		query = select(Permission).where(
-			or_(
-				col(Permission.id).in_(subq1),
-				col(Permission.id).in_(subq2)
-			)
+			or_(col(Permission.id).in_(subq1), col(Permission.id).in_(subq2))
 		)
 		async with session_factory() as session:
 			result = await session.execute(query)
@@ -79,7 +80,11 @@ class RBACSQLAlchemyRepository(RBACRepository):
 		return result.scalars().all()
 
 	async def get_role_by_id(
-		self, id_role: int, with_permissions: bool = False, with_groups: bool = False
+		self,
+		id_role: int,
+		with_permissions: bool = False,
+		with_groups: bool = False,
+		with_modules: bool = False,
 	) -> Role | None:
 		stmt = select(Role).where(Role.id == int(id_role))
 
@@ -88,6 +93,9 @@ class RBACSQLAlchemyRepository(RBACRepository):
 
 		if with_groups:
 			stmt = stmt.options(selectinload(Role.groups))  # type: ignore
+
+		if with_modules:
+			stmt = stmt.options(selectinload(Role.modules))  # type: ignore
 
 		async with session_factory() as session:
 			role = await session.execute(stmt)
@@ -163,3 +171,11 @@ class RBACSQLAlchemyRepository(RBACRepository):
 	async def delete_group(self, group: GroupPermission) -> None:
 		await global_session.delete(group)
 		await global_session.flush()
+
+	async def append_modules_to_role(self, modules: List[Module], id_role: int) -> Role:
+		role = await global_session.get(Role, int(id_role))
+		if not role:
+			raise RoleNotFoundException
+		for module in modules:
+			role.modules.append(module)
+		return role

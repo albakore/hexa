@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends
 from app.container import SystemContainer
 from app.rbac.adapter.input.api.v1.request import (
 	AddGroupToRoleRequest,
+	AddModuleToRoleRequest,
 	AddPermissionToGroupRequest,
 	AddPermissionToRoleRequest,
 	CreateGroupRequest,
@@ -15,6 +16,7 @@ from app.rbac.adapter.input.api.v1.response import (
 	GroupAddPermissionResponse,
 	GroupResponse,
 	RoleAddGroupsResponse,
+	RoleAddModulesResponse,
 	RoleAddPermissionResponse,
 	RoleResponse,
 	PermissionListResponse,
@@ -55,7 +57,7 @@ async def get_all_roles(role_usecase: RoleUseCaseDependency):
 @inject
 async def get_role(id_role: int, role_usecase: RoleUseCaseDependency):
 	return await role_usecase.get_role_by_id(
-		id_role, with_permissions=True, with_groups=True
+		id_role, with_permissions=True, with_groups=True, with_modules=True
 	)
 
 
@@ -104,6 +106,15 @@ async def add_groups_to_role(
 	role_usecase: RoleUseCaseDependency,
 ):
 	return await role_usecase.append_groups_to_role(groups, id_role)
+
+@rbac_router.put("/role/{id_role}/add/modules", response_model=RoleAddModulesResponse)
+@inject
+async def add_modules_to_role(
+	id_role: int,
+	modules: AddModuleToRoleRequest,
+	role_usecase: RoleUseCaseDependency,
+):
+	return await role_usecase.append_modules_to_role(modules, id_role)
 
 
 @rbac_router.delete("/role/{id_role}")

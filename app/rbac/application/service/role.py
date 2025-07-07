@@ -3,6 +3,7 @@ from typing import List
 from sqlmodel import select
 from sqlalchemy.orm import selectinload
 from app.module.domain.entity.module import Module
+from app.module.domain.repository.module import AppModuleRepository
 from app.rbac.application.exception import RoleNotFoundException
 from app.rbac.domain.command import CreateRoleCommand
 from app.rbac.domain.entity import Permission
@@ -18,10 +19,11 @@ class RoleService(RoleUseCase):
 		self,
 		role_repository: RoleRepository,
 		permission_repository: PermissionRepository,
-		module_repository: ModuleRepository,
+		module_repository: AppModuleRepository,
 	):
 		self.role_repository = role_repository
 		self.permission_repository = permission_repository
+		self.module_repository = module_repository
 
 	async def get_all_roles(self) -> list[Role]:
 		return await self.role_repository.get_all_roles()
@@ -30,12 +32,14 @@ class RoleService(RoleUseCase):
 		self,
 		id_role: int,
 		with_permissions: bool = False,
-		with_groups: bool = False
+		with_groups: bool = False,
+		with_modules: bool = False,
 	) -> Role | None:
 		return await self.role_repository.get_role_by_id(
 			id_role,
 			with_permissions,
-			with_groups
+			with_groups,
+			with_modules,
 		)
 
 

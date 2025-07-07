@@ -1,6 +1,11 @@
 from typing import List
+from app.module.domain.entity.module import Module
 from app.rbac.domain.entity import GroupPermission, Role, Permission
-from app.rbac.domain.repository import PermissionRepository, RBACRepository, RoleRepository
+from app.rbac.domain.repository import (
+	PermissionRepository,
+	RBACRepository,
+	RoleRepository,
+)
 
 
 class RBACRepositoryAdapter(RBACRepository):
@@ -22,10 +27,14 @@ class RBACRepositoryAdapter(RBACRepository):
 		return await self.role_repository.get_all_roles()
 
 	async def get_role_by_id(
-		self, id_role: int, with_permissions: bool = False, with_groups: bool = False
+		self,
+		id_role: int,
+		with_permissions: bool = False,
+		with_groups: bool = False,
+		with_modules: bool = False,
 	) -> Role | None:
 		return await self.role_repository.get_role_by_id(
-			id_role, with_permissions, with_groups
+			id_role, with_permissions, with_groups, with_modules
 		)
 
 	async def get_permissions_by_ids(self, ids: list[int]) -> List[Permission]:
@@ -62,7 +71,10 @@ class RBACRepositoryAdapter(RBACRepository):
 		return await self.permission_repository.get_all_groups()
 
 	async def get_group_by_id(
-		self, id_group: int, with_permissions: bool = False, with_roles: bool = False
+		self,
+		id_group: int,
+		with_permissions: bool = False,
+		with_roles: bool = False,
 	) -> GroupPermission | None:
 		return await self.permission_repository.get_group_by_id(
 			id_group, with_permissions, with_roles
@@ -76,3 +88,6 @@ class RBACRepositoryAdapter(RBACRepository):
 
 	async def delete_group(self, group: GroupPermission) -> None:
 		return await self.permission_repository.delete_group(group)
+
+	async def append_modules_to_role(self, modules: List[Module], id_role: int) -> Role:
+		return await self.role_repository.append_modules_to_role(modules, id_role)
