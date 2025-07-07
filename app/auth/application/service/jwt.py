@@ -3,9 +3,13 @@ from datetime import datetime, timedelta
 from fastapi.encoders import jsonable_encoder
 import rich
 from app.auth.application.dto import RefreshTokenResponseDTO
-from app.auth.application.exception import AuthSessionExpiredException, DecodeTokenException
+from app.auth.application.exception import (
+	AuthSessionExpiredException,
+	DecodeTokenException,
+)
 from app.auth.domain.repository.auth import AuthRepository
 from app.auth.domain.usecase.jwt import JwtUseCase
+from app.module.application.dto import ModuleViewDTO
 from app.rbac.domain.entity import permission
 from app.rbac.domain.repository import RBACRepository
 from app.user.application.dto import LoginResponseDTO
@@ -18,7 +22,9 @@ from core.helpers.token import (
 
 
 class JwtService(JwtUseCase):
-	def __init__(self, auth_repository: AuthRepository, rbac_repository : RBACRepository):
+	def __init__(
+		self, auth_repository: AuthRepository, rbac_repository: RBACRepository
+	):
 		self.auth_repository = auth_repository
 		self.rbac_repository = rbac_repository
 		self.access_token_expiration_minutes = 15
@@ -35,7 +41,7 @@ class JwtService(JwtUseCase):
 		refresh_token: str,
 	) -> RefreshTokenResponseDTO:
 		decoded_refresh_token = TokenHelper.decode(token=refresh_token)
-		
+
 		if decoded_refresh_token.get("sub") != "refresh":
 			raise DecodeTokenException
 
@@ -47,7 +53,7 @@ class JwtService(JwtUseCase):
 
 		if not session:
 			raise AuthSessionExpiredException
-		
+
 		if not refresh_token == session.refresh_token:
 			raise Exception
 
@@ -56,22 +62,35 @@ class JwtService(JwtUseCase):
 		if session.user.fk_role:
 			role = await self.rbac_repository.get_role_by_id(session.user.fk_role)
 			if role:
-				permissions_of_role = await self.rbac_repository.get_all_permissions_from_role(role)
+				permissions_of_role = (
+					await self.rbac_repository.get_all_permissions_from_role(role)
+				)
 				permissions = [permission.token for permission in permissions_of_role]
-
+				modules_of_role = await self.rbac_repository.get_all_modules_from_role(
+					role
+				)
+				modules = [
+					ModuleViewDTO.model_validate(module.model_dump())
+					for module in modules_of_role
+				]
 
 		new_login_response_dto = UserLoginResponseDTO.model_validate(session.user)
 		login_dump = jsonable_encoder(new_login_response_dto)
-		access_token = TokenHelper.encode(login_dump, TokenHelper.get_expiration_minutes())
+		access_token = TokenHelper.encode(
+			login_dump, TokenHelper.get_expiration_minutes()
+		)
 
 		login_dump["sub"] = "refresh"
-		new_refresh_token = TokenHelper.encode(login_dump, TokenHelper.get_expiration_days())
+		new_refresh_token = TokenHelper.encode(
+			login_dump, TokenHelper.get_expiration_days()
+		)
 
 		refresh_response = RefreshTokenResponseDTO(
-			user=session.user, 
+			user=session.user,
 			permissions=permissions,
-			token=access_token, 
-			refresh_token=new_refresh_token
+			modules=modules,
+			token=access_token,
+			refresh_token=new_refresh_token,
 		)
 
 		await self.auth_repository.revoque_user_session(refresh_response)
