@@ -25,21 +25,22 @@ from app.rbac.application.exception import (
 	PermissionNotFoundException,
 	RoleNotFoundException,
 )
+from app.rbac.application.service.role import RoleService
 from app.rbac.domain.command import (
 	CreateGroupCommand,
 	CreatePermissionCommand,
 	CreateRoleCommand,
 )
-from app.rbac.domain.usecase import PermissionUseCase, RoleUseCase
+from app.rbac.application.service.permission import PermissionService
 
 
 rbac_router = APIRouter()
 
 RoleUseCaseDependency = Annotated[
-	RoleUseCase, Depends(Provide[SystemContainer.rbac.role_service])
+	RoleService, Depends(Provide[SystemContainer.rbac.role_service])
 ]
 PermissionUseCaseDependency = Annotated[
-	PermissionUseCase, Depends(Provide[SystemContainer.rbac.permission_service])
+	PermissionService, Depends(Provide[SystemContainer.rbac.permission_service])
 ]
 
 

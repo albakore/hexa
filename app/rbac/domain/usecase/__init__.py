@@ -1,4 +1,4 @@
-from app.rbac.domain.usecase.permission import PermissionUseCase
-from app.rbac.domain.usecase.role import RoleUseCase
+from app.rbac.domain.usecase.permission import PermissionUseCaseFactory
+from app.rbac.domain.usecase.role import RoleUseCaseFactory
 
-__all__ = ["PermissionUseCase", "RoleUseCase"]
+__all__ = ["PermissionUseCaseFactory", "RoleUseCaseFactory"]

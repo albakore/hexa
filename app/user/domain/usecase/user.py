@@ -3,32 +3,105 @@ from abc import ABC, abstractmethod
 from app.user.domain.command import CreateUserCommand
 from app.user.domain.entity.user import User
 from app.rbac.domain.entity.role import Role
+from dataclasses import dataclass
+from app.user.domain.repository.user import UserRepository
+from core.db import Transactional
 
-class UserUseCase(ABC):
+from app.user.domain.exception import UserNotFoundException
 
-	@abstractmethod
-	async def get_user_list(self,) -> list[User]: ...
 
-	@abstractmethod
-	async def get_user_by_id(self,user_id:int, with_role:bool = False) -> User | None: ...
+@dataclass
+class GetUserListUseCase:
+	user_repository: UserRepository
 
-	@abstractmethod
-	async def get_user_by_uuid(self,user_uuid: str, with_role:bool = False) -> User | None: ...
+	async def __call__(self, limit: int = 20, page: int = 0) -> list[User]:
+		return await self.user_repository.get_user_list(limit, page)
 
-	@abstractmethod
-	async def get_user_by_email(self,) -> User | None: ...
 
-	@abstractmethod
-	async def create_user(self,command: CreateUserCommand) -> User | None: ...
+@dataclass
+class GetUserByIdUseCase:
+	user_repository: UserRepository
 
-	@abstractmethod
-	async def is_active(self,) -> bool: ...
+	async def __call__(self, user_id: int, with_role: bool = False) -> User | None:
+		return await self.user_repository.get_user_by_id(user_id, with_role)
 
-	@abstractmethod
-	async def is_admin(self,user_id) -> bool: ...
-	
-	@abstractmethod
-	async def is_owner(self,) -> bool: ...
 
-	@abstractmethod
-	async def asign_role_to_user(self, user: str, role: int) -> User: ...
+@dataclass
+class GetUserByUuidUseCase:
+	user_repository: UserRepository
+
+	async def __call__(self, user_uuid: str, with_role: bool = False) -> User | None:
+		return await self.user_repository.get_user_by_uuid(user_uuid, with_role)
+
+
+@dataclass
+class GetUserByEmailUseCase:
+	user_repository: UserRepository
+
+	async def __call__(self, email: str) -> User | None:
+		return await self.user_repository.get_user_by_email(email)
+
+
+@dataclass
+class CreateUserUseCase:
+	user_repository: UserRepository
+
+	@Transactional()
+	async def __call__(self, command: CreateUserCommand) -> User | None:
+		user = User.model_validate(command)
+		new_user = await self.user_repository.save(user=user)
+		return new_user
+
+
+@dataclass
+class IsActiveUseCase:
+	user_repository: UserRepository
+
+	async def __call__(self, user_id: int) -> bool:
+		raise NotImplementedError
+
+
+@dataclass
+class IsAdminUseCase:
+	user_repository: UserRepository
+
+	async def __call__(self, user_id: int) -> bool:
+		raise NotImplementedError
+
+
+@dataclass
+class IsOwnerUseCase:
+	user_repository: UserRepository
+
+	async def __call__(self, user_id: int) -> bool:
+		raise NotImplementedError
+
+
+@dataclass
+class AssignRoleToUserUseCase:
+	user_repository: UserRepository
+
+	@Transactional()
+	async def __call__(self, user_uuid: str, role_id: int) -> User:
+		user = await self.user_repository.get_user_by_uuid(user_uuid)
+		if not user:
+			raise UserNotFoundException
+		user.fk_role = role_id
+		user = await self.user_repository.save(user)
+		return user
+
+
+@dataclass
+class UserUseCaseFactory:
+	user_repository: UserRepository
+
+	def __post_init__(self):
+		self.get_user_list = GetUserListUseCase(self.user_repository)
+		self.get_user_by_id = GetUserByIdUseCase(self.user_repository)
+		self.get_user_by_uuid = GetUserByUuidUseCase(self.user_repository)
+		self.get_user_by_email = GetUserByEmailUseCase(self.user_repository)
+		self.create_user = CreateUserUseCase(self.user_repository)
+		self.is_active = IsActiveUseCase(self.user_repository)
+		self.is_admin = IsAdminUseCase(self.user_repository)
+		self.is_owner = IsOwnerUseCase(self.user_repository)
+		self.assign_role_to_user = AssignRoleToUserUseCase(self.user_repository)
