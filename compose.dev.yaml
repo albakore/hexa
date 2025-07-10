@@ -40,14 +40,14 @@ services:
       context: .
       dockerfile: docker/hexa/dev.Dockerfile
     command: /bin/sh -c "uv run hexa api --dev"
-    environment:
-      BACKEND_PATH: ${BACKEND_PATH}
-      DATABASE_URL: ${DATABASE_URL}
-      REDIS_URL: ${REDIS_URL}
+    # environment:
+    #   BACKEND_PATH: ${BACKEND_PATH}
+    #   DATABASE_URL: ${DATABASE_URL}
+    #   REDIS_URL: ${REDIS_URL}
     env_file:
       - .env
-    volumes:
-      - .env:/app/.env
+    # volumes:
+    #   - .env:/app/.env
     develop:
       watch:
 

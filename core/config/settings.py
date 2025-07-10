@@ -35,13 +35,13 @@ class ProductionSettings(Settings):
 
 def get_config(env_type: str | None) -> Settings:
 	env_list = {
-		Environment.LOCAL: LocalSettings(),
-		Environment.DEVELOPMENT: DevelopmentSettings(),
-		Environment.PRODUCTION: ProductionSettings(),
+		Environment.LOCAL: LocalSettings,
+		Environment.DEVELOPMENT: DevelopmentSettings,
+		Environment.PRODUCTION: ProductionSettings,
 	}
 	if not env_type:
-		return env_list[Environment.LOCAL]
+		return env_list[Environment.LOCAL]()
 
-	return env_list[Environment(env_type)]
+	return env_list[Environment(env_type)]()
 
 env = get_config(os.environ.get("ENV"))

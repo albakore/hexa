@@ -26,6 +26,7 @@ class GroupPermission(SQLModel, table=True):
 
 class Permission(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
+    group_name : str | None = Field(default=None)
     name: str
     token: str
     description: str | None = Field(default=None)
