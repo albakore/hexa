@@ -1,6 +1,7 @@
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from typing import Callable
 
 from core.db import Transactional
 from modules.provider.domain.command import CreateProviderCommand

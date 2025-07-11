@@ -1,35 +1,31 @@
 
+from dataclasses import dataclass
 from typing import Sequence
 from core.db import Transactional
 from modules.provider.domain.command import CreateProviderCommand
 from modules.provider.domain.entity.provider import Provider
 from modules.provider.domain.repository.provider import ProviderRepository
-from modules.provider.domain.usecase.provider import ProviderUseCase
+from modules.provider.domain.usecase.provider import ProviderUseCaseFactory
 
-
-class ProviderService(ProviderUseCase):
-	
-	def __init__(self, provider_repository : ProviderRepository):
-		self.provider_repository = provider_repository
+@dataclass
+class ProviderService:
+	provider_repository : ProviderRepository
+	def __post_init__(self):
+		self.provider_usecase = ProviderUseCaseFactory(self.provider_repository)
 
 	async def get_all_providers(self, limit: int = 20, page: int = 0) -> list[Provider] | Sequence[Provider]:
-		providers = await self.provider_repository.get_all_providers(int(limit),int(page))
-		return providers
+		return await self.provider_usecase.get_all_providers(limit,page)
 
 	async def get_provider_by_id(self, id_provider: int) -> Provider | None:
-		provider = await self.provider_repository.get_provider_by_id(id_provider)
-		return provider
-
+		return await self.provider_usecase.get_provider_by_id(id_provider)
 	async def create_provider(self, command: CreateProviderCommand) -> Provider:
-		return Provider.model_validate(command)
+		return await self.provider_usecase.create_provider(command)
+	
+	async def save_provider(self, provider: Provider):
+		await self.provider_usecase.save_provider(provider)
 
-	@Transactional()
-	async def save(self, provider: Provider):
-		await self.provider_repository.save(provider)
-
-	@Transactional()
-	async def delete(self, provider: Provider):
-		await self.provider_repository.delete(provider)
+	async def delete_provider(self, provider: Provider):
+		await self.provider_usecase.delete_provider(provider)
 
 
 	

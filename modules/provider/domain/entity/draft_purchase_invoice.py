@@ -5,8 +5,8 @@ class DraftPurchaseInvoice(SQLModel, table=True):
 	id : int | None = Field(None, primary_key=True)
 	numero : str = Field(default=None, description="Numero de la factura")
 	concepto : str | None = Field(default=None, description="Concepto")
-	fk_proveedor : int | None = Field(default=None, foreign_key="provider.id")
-	fk_servicio : int | None = Field(default=None, foreign_key="invoiceservice.id")
+	fk_proveedor : int | None = Field(default=None, )
+	fk_servicio : int | None = Field(default=None,)
 	fk_moneda : int | None = Field(default=None, description="EL tipo de moneda")
 
 	awb : str | None = Field(default=None)
