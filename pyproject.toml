@@ -28,11 +28,29 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.0.0",
+    "pytest-rich>=0.2.0",
     "ruff>=0.11.10",
 ]
 
-[tool.setuptools]
-packages = ["app", "core", "hexa"]
+# [tool.setuptools]
+# packages = ["app", "core", "hexa"]
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["docker*", "migrations*", "docs*"]
+
+# [tool.uv]
+# package = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+addopts = [
+    #"-n 0",                  # Desactiva ejecución paralela
+    #"--max-asyncio-tasks=1",  # Solo 1 tarea asíncrona a la vez
+    "--verbose",              # Opcional: muestra más detalles
+    "--tb=short"             # Opcional: formato de tracebacks
+]
 
 [project.scripts]
 hexa = "hexa.__main__:cmd"

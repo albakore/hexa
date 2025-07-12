@@ -3,6 +3,9 @@ FROM ghcr.io/astral-sh/uv:python3.11-alpine
 # Install the project into `/app`
 WORKDIR /app
 
+# Set Python import root
+ENV PYTHONPATH=/app
+
 # Enable bytecode compilation
 ENV UV_COMPILE_BYTECODE=1
 
