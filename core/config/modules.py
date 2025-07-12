@@ -66,15 +66,15 @@ async def sync_modules_to_db():
 						if db_module.name != item['name']:
 							db_module.name = item['name']
 						session.add(db_module)
-						print(f"📝 Actualizado modulo: {item['name']}")
+						print(f"📝 Actualizado modulo: {item['name']}",flush=True)
 				else:
 					session.add(Module(name=item['name'], token=item['token'], description=item.get('description',None)))
-					print(f"🆕 Insertado modulo: {item['name']}")
+					print(f"🆕 Insertado modulo: {item['name']}",flush=True)
 
 			await session.commit()
-			print("✅ Modulos sincronizados en base de datos")
+			print("✅ Modulos sincronizados en base de datos",flush=True)
 		except Exception as e:
-			print("❌ Hubo un error al sincronizar los modulos:", e)
+			print("❌ Hubo un error al sincronizar los modulos:", e,flush=True)
 
 
 def get_all_system_modules():

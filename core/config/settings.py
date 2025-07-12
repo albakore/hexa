@@ -21,6 +21,11 @@ class Settings(BaseSettings):
 
 	OPENAPI_EXPORT_DIR : str = "docs/openapi.json"
 
+	YIQI_BASE_URL : str = "ooolee"
+	YIQI_API_TOKEN : str = "uooleeee"
+	YIQI_LAST_INVOICE_UPDATE : list = [2025,4,7]
+	YIQI_ENV : int = 000
+
 	model_config = SettingsConfigDict(env_file='.env', env_file_encoding='utf-8', extra='ignore')
 
 class LocalSettings(Settings):
