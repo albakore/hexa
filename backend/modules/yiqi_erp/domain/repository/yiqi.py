@@ -31,9 +31,9 @@ class YiqiRepository(ABC):
 		self,
 		command: CreateYiqiInvoiceCommand,
 		id_schema: int,
-		id_parent: bool | None,
-		id_child: bool | None,
-		id_entity: int,
+		id_parent: bool | None = None,
+		id_child: bool | None = None,
+		id_entity: int = 660,
 	) : ...
 
 	@abstractmethod

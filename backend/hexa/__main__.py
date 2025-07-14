@@ -31,6 +31,11 @@ def delete_alembic_version():
             typer.echo("✅ Se eliminó el registro de la tabla alembic_version.")
     asyncio.run(delete_version())
 
+@cmd.command("makeuser")
+def create_user():
+    """Crea un usuario"""
+    ...
+
 # Función de verificación común
 def verify_project_structure():
     if not importlib.util.find_spec("core.fastapi.server"):

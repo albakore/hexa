@@ -1,6 +1,7 @@
 from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Singleton,Factory,Configuration
 
+from modules.yiqi_erp.application.yiqi import YiqiService
 from modules.yiqi_erp.adapter.output.api.http_client import YiqiHttpClient
 from core.config.settings import env
 from modules.yiqi_erp.adapter.output.api.yiqi_rest import YiqiApiRepository
@@ -17,6 +18,11 @@ class YiqiContainer(DeclarativeContainer):
     repository = Factory(
         YiqiApiRepository,
         client=client,
+    )
+
+    service = Factory(
+        YiqiService,
+        yiqi_repository=repository
     )
 
     async def shutdown(self):
