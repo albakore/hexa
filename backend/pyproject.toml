@@ -5,11 +5,12 @@ description = "Add your description here."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "aiokeydb[all]>=0.2.1",
     "aiopg[sa]>=1.1.0",
     "aiosqlite>=0.21.0",
     "alembic>=1.16.1",
     "asyncpg>=0.30.0",
+    "boto3>=1.39.4",
+    "botocore>=1.39.4",
     "dependency-injector>=4.46.0",
     "faker>=37.3.0",
     "fastapi[all]>=0.115.13",
