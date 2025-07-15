@@ -24,13 +24,9 @@ export const createClient = (config: Config = {}): Client => {
     return getConfig();
   };
 
-  const interceptors = createInterceptors<
-    Request,
-    Response,
-    unknown,
-    RequestOptions
-  >();
+  const interceptors = createInterceptors<Response, unknown, RequestOptions>();
 
+  // @ts-expect-error
   const request: Client["request"] = async (options) => {
     const opts = {
       ..._config,
@@ -59,33 +55,28 @@ export const createClient = (config: Config = {}): Client => {
       opts.headers.delete("Content-Type");
     }
 
-    const url = buildUrl(opts);
-    const requestInit: ReqInit = {
-      redirect: "follow",
-      ...opts,
-    };
-
-    let request = new Request(url, requestInit);
-
     for (const fn of interceptors.request._fns) {
       if (fn) {
-        request = await fn(request, opts);
+        await fn(opts);
       }
     }
 
+    const url = buildUrl(opts);
     // fetch must be assigned here, otherwise it would throw the error:
     // TypeError: Failed to execute 'fetch' on 'Window': Illegal invocation
     const _fetch = opts.fetch!;
-    let response = await _fetch(request);
+    let response = await _fetch(url, {
+      ...opts,
+      body: opts.body as ReqInit["body"],
+    });
 
     for (const fn of interceptors.response._fns) {
       if (fn) {
-        response = await fn(response, request, opts);
+        response = await fn(response, opts);
       }
     }
 
     const result = {
-      request,
       response,
     };
 
@@ -94,12 +85,10 @@ export const createClient = (config: Config = {}): Client => {
         response.status === 204 ||
         response.headers.get("Content-Length") === "0"
       ) {
-        return opts.responseStyle === "data"
-          ? {}
-          : {
-              data: {},
-              ...result,
-            };
+        return {
+          data: {},
+          ...result,
+        };
       }
 
       const parseAs =
@@ -117,12 +106,10 @@ export const createClient = (config: Config = {}): Client => {
           data = await response[parseAs]();
           break;
         case "stream":
-          return opts.responseStyle === "data"
-            ? response.body
-            : {
-                data: response.body,
-                ...result,
-              };
+          return {
+            data: response.body,
+            ...result,
+          };
       }
 
       if (parseAs === "json") {
@@ -135,12 +122,10 @@ export const createClient = (config: Config = {}): Client => {
         }
       }
 
-      return opts.responseStyle === "data"
-        ? data
-        : {
-            data,
-            ...result,
-          };
+      return {
+        data,
+        ...result,
+      };
     }
 
     const textError = await response.text();
@@ -157,7 +142,7 @@ export const createClient = (config: Config = {}): Client => {
 
     for (const fn of interceptors.error._fns) {
       if (fn) {
-        finalError = (await fn(error, response, request, opts)) as string;
+        finalError = (await fn(error, response, opts)) as string;
       }
     }
 
@@ -167,13 +152,10 @@ export const createClient = (config: Config = {}): Client => {
       throw finalError;
     }
 
-    // TODO: we probably want to return error and improve types
-    return opts.responseStyle === "data"
-      ? undefined
-      : {
-          error: finalError,
-          ...result,
-        };
+    return {
+      error: finalError,
+      ...result,
+    };
   };
 
   return {

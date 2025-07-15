@@ -4,6 +4,8 @@ import json
 import os
 import importlib
 from typing import List
+
+from fastapi.routing import APIRoute
 from dependency_injector.wiring import Provide
 from fastapi import APIRouter, Depends, FastAPI, Request
 from pprint import pprint
@@ -27,6 +29,24 @@ from .container_config import CoreContainer
 from core.config.modules import get_modules_setup, sync_modules_to_db, system_modules
 
 get_modules_setup()
+
+def custom_generate_unique_id(route: APIRoute):
+    return f"{route.tags[0]}-{route.name}"
+
+def generate_openapi_for_frontend(app_: FastAPI):
+
+	@app_.get("/system/openapi_schema", tags=['System'])
+	def get_backend_schema():
+		openapi_content = app_.openapi()
+		for path_data in openapi_content["paths"].values():
+			for operation in path_data.values():
+				tag = operation["tags"][0]
+				operation_id = operation["operationId"]
+				to_remove = f"{tag}-"
+				new_operation_id = operation_id[len(to_remove) :]
+				operation["operationId"] = new_operation_id
+		return openapi_content
+
 
 def init_routes_pack(app_ : FastAPI):
 	for route in routes_pack:
@@ -100,6 +120,7 @@ async def lifespan(app_: FastAPI):
 
 def create_app() -> FastAPI:
 	app_ = FastAPI(
+		generate_unique_id_function=custom_generate_unique_id,
 		dependencies=[Depends(Logging)],
 		middleware=make_middleware(),
 		lifespan=lifespan,
@@ -114,6 +135,7 @@ def create_app() -> FastAPI:
 	# init_routers(app_=app_)
 	init_listeners(app_=app_)
 	export_openapi(app_=app_)
+	generate_openapi_for_frontend(app_=app_)
 	app_.include_router(system_permission)
 	app_.include_router(system_modules)
 	return app_

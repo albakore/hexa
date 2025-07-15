@@ -7,130 +7,133 @@ import {
   urlSearchParamsBodySerializer,
 } from "./client";
 import type {
-  RefreshTokenAuthV1AuthRefreshPostData,
-  RefreshTokenAuthV1AuthRefreshPostResponses,
-  RefreshTokenAuthV1AuthRefreshPostErrors,
-  VerifyTokenAuthV1AuthVerifyPostData,
-  VerifyTokenAuthV1AuthVerifyPostResponses,
-  VerifyTokenAuthV1AuthVerifyPostErrors,
-  LoginAuthV1AuthLoginPostData,
-  LoginAuthV1AuthLoginPostResponses,
-  LoginAuthV1AuthLoginPostErrors,
-  RegisterAuthV1AuthRegisterPostData,
-  RegisterAuthV1AuthRegisterPostResponses,
-  RegisterAuthV1AuthRegisterPostErrors,
-  PasswordResetAuthV1AuthPasswordResetPostData,
-  PasswordResetAuthV1AuthPasswordResetPostResponses,
-  PasswordResetAuthV1AuthPasswordResetPostErrors,
-  GetAllRolesRbacV1RbacRoleGetData,
-  GetAllRolesRbacV1RbacRoleGetResponses,
-  CreateRoleRbacV1RbacRolePostData,
-  CreateRoleRbacV1RbacRolePostResponses,
-  CreateRoleRbacV1RbacRolePostErrors,
-  EditRoleRbacV1RbacRolePutData,
-  EditRoleRbacV1RbacRolePutResponses,
-  DeleteRoleRbacV1RbacRoleIdRoleDeleteData,
-  DeleteRoleRbacV1RbacRoleIdRoleDeleteResponses,
-  DeleteRoleRbacV1RbacRoleIdRoleDeleteErrors,
-  GetRoleRbacV1RbacRoleIdRoleGetData,
-  GetRoleRbacV1RbacRoleIdRoleGetResponses,
-  GetRoleRbacV1RbacRoleIdRoleGetErrors,
-  GetAllRolePermissionsRbacV1RbacRoleIdRolePermissionGetData,
-  GetAllRolePermissionsRbacV1RbacRoleIdRolePermissionGetResponses,
-  GetAllRolePermissionsRbacV1RbacRoleIdRolePermissionGetErrors,
-  AddPermissionsToRoleRbacV1RbacRoleIdRoleAddPermissionPutData,
-  AddPermissionsToRoleRbacV1RbacRoleIdRoleAddPermissionPutResponses,
-  AddPermissionsToRoleRbacV1RbacRoleIdRoleAddPermissionPutErrors,
-  AddGroupsToRoleRbacV1RbacRoleIdRoleAddGroupsPutData,
-  AddGroupsToRoleRbacV1RbacRoleIdRoleAddGroupsPutResponses,
-  AddGroupsToRoleRbacV1RbacRoleIdRoleAddGroupsPutErrors,
-  AddModulesToRoleRbacV1RbacRoleIdRoleAddModulesPutData,
-  AddModulesToRoleRbacV1RbacRoleIdRoleAddModulesPutResponses,
-  AddModulesToRoleRbacV1RbacRoleIdRoleAddModulesPutErrors,
-  GetAllPermissionsRbacV1RbacPermissionGetData,
-  GetAllPermissionsRbacV1RbacPermissionGetResponses,
-  CreatePermissionRbacV1RbacPermissionPostData,
-  CreatePermissionRbacV1RbacPermissionPostResponses,
-  CreatePermissionRbacV1RbacPermissionPostErrors,
-  EditPermissionRbacV1RbacPermissionPutData,
-  EditPermissionRbacV1RbacPermissionPutResponses,
-  EditPermissionRbacV1RbacPermissionPutErrors,
-  DeletePermissionRbacV1RbacPermissionIdPermissionDeleteData,
-  DeletePermissionRbacV1RbacPermissionIdPermissionDeleteResponses,
-  DeletePermissionRbacV1RbacPermissionIdPermissionDeleteErrors,
-  GetPermissionRbacV1RbacPermissionIdPermissionGetData,
-  GetPermissionRbacV1RbacPermissionIdPermissionGetResponses,
-  GetPermissionRbacV1RbacPermissionIdPermissionGetErrors,
-  GetAllGroupsRbacV1RbacGroupGetData,
-  GetAllGroupsRbacV1RbacGroupGetResponses,
-  CreateGroupRbacV1RbacGroupPostData,
-  CreateGroupRbacV1RbacGroupPostResponses,
-  CreateGroupRbacV1RbacGroupPostErrors,
-  GetGroupRbacV1RbacGroupIdGroupGetData,
-  GetGroupRbacV1RbacGroupIdGroupGetResponses,
-  GetGroupRbacV1RbacGroupIdGroupGetErrors,
-  AddPermissionsToGroupRbacV1RbacGroupIdGroupAddPermissionPutData,
-  AddPermissionsToGroupRbacV1RbacGroupIdGroupAddPermissionPutResponses,
-  AddPermissionsToGroupRbacV1RbacGroupIdGroupAddPermissionPutErrors,
-  GetUserListUsersV1UsersGetData,
-  GetUserListUsersV1UsersGetResponses,
-  GetUserListUsersV1UsersGetErrors,
-  CreateUserUsersV1UsersPostData,
-  CreateUserUsersV1UsersPostResponses,
-  CreateUserUsersV1UsersPostErrors,
-  GetUserUsersV1UsersUserIdGetData,
-  GetUserUsersV1UsersUserIdGetResponses,
-  GetUserUsersV1UsersUserIdGetErrors,
-  AsignRoleUsersV1UsersUserUuidRolePutData,
-  AsignRoleUsersV1UsersUserUuidRolePutResponses,
-  AsignRoleUsersV1UsersUserUuidRolePutErrors,
-  GetAllProvidersProvidersV1ProvidersGetData,
-  GetAllProvidersProvidersV1ProvidersGetResponses,
-  GetAllProvidersProvidersV1ProvidersGetErrors,
-  GetSystemPermissionsPermissionsGetData,
-  GetSystemPermissionsPermissionsGetResponses,
-  GetSystemModulesModulesGetData,
-  GetSystemModulesModulesGetResponses,
+  RefreshTokenData,
+  RefreshTokenResponses,
+  RefreshTokenErrors,
+  VerifyTokenData,
+  VerifyTokenResponses,
+  VerifyTokenErrors,
+  LoginData,
+  LoginResponses,
+  LoginErrors,
+  RegisterData,
+  RegisterResponses,
+  RegisterErrors,
+  PasswordResetData,
+  PasswordResetResponses,
+  PasswordResetErrors,
+  GetAllRolesData,
+  GetAllRolesResponses,
+  CreateRoleData,
+  CreateRoleResponses,
+  CreateRoleErrors,
+  EditRoleData,
+  EditRoleResponses,
+  DeleteRoleData,
+  DeleteRoleResponses,
+  DeleteRoleErrors,
+  GetRoleData,
+  GetRoleResponses,
+  GetRoleErrors,
+  GetAllRolePermissionsData,
+  GetAllRolePermissionsResponses,
+  GetAllRolePermissionsErrors,
+  AddPermissionsToRoleData,
+  AddPermissionsToRoleResponses,
+  AddPermissionsToRoleErrors,
+  AddGroupsToRoleData,
+  AddGroupsToRoleResponses,
+  AddGroupsToRoleErrors,
+  AddModulesToRoleData,
+  AddModulesToRoleResponses,
+  AddModulesToRoleErrors,
+  GetAllPermissionsData,
+  GetAllPermissionsResponses,
+  CreatePermissionData,
+  CreatePermissionResponses,
+  CreatePermissionErrors,
+  EditPermissionData,
+  EditPermissionResponses,
+  EditPermissionErrors,
+  DeletePermissionData,
+  DeletePermissionResponses,
+  DeletePermissionErrors,
+  GetPermissionData,
+  GetPermissionResponses,
+  GetPermissionErrors,
+  GetAllGroupsData,
+  GetAllGroupsResponses,
+  CreateGroupData,
+  CreateGroupResponses,
+  CreateGroupErrors,
+  GetGroupData,
+  GetGroupResponses,
+  GetGroupErrors,
+  AddPermissionsToGroupData,
+  AddPermissionsToGroupResponses,
+  AddPermissionsToGroupErrors,
+  GetUserListData,
+  GetUserListResponses,
+  GetUserListErrors,
+  CreateUserData,
+  CreateUserResponses,
+  CreateUserErrors,
+  GetUserData,
+  GetUserResponses,
+  GetUserErrors,
+  AsignRoleData,
+  AsignRoleResponses,
+  AsignRoleErrors,
+  GetAllProvidersData,
+  GetAllProvidersResponses,
+  GetAllProvidersErrors,
+  GetBackendSchemaData,
+  GetBackendSchemaResponses,
+  GetSystemPermissionsData,
+  GetSystemPermissionsResponses,
+  GetSystemModulesData,
+  GetSystemModulesResponses,
 } from "./types.gen";
 import {
-  zRefreshTokenAuthV1AuthRefreshPostData,
-  zRefreshTokenAuthV1AuthRefreshPostResponse,
-  zVerifyTokenAuthV1AuthVerifyPostData,
-  zLoginAuthV1AuthLoginPostData,
-  zRegisterAuthV1AuthRegisterPostData,
-  zPasswordResetAuthV1AuthPasswordResetPostData,
-  zGetAllRolesRbacV1RbacRoleGetData,
-  zCreateRoleRbacV1RbacRolePostData,
-  zEditRoleRbacV1RbacRolePutData,
-  zDeleteRoleRbacV1RbacRoleIdRoleDeleteData,
-  zGetRoleRbacV1RbacRoleIdRoleGetData,
-  zGetRoleRbacV1RbacRoleIdRoleGetResponse,
-  zGetAllRolePermissionsRbacV1RbacRoleIdRolePermissionGetData,
-  zGetAllRolePermissionsRbacV1RbacRoleIdRolePermissionGetResponse,
-  zAddPermissionsToRoleRbacV1RbacRoleIdRoleAddPermissionPutData,
-  zAddPermissionsToRoleRbacV1RbacRoleIdRoleAddPermissionPutResponse,
-  zAddGroupsToRoleRbacV1RbacRoleIdRoleAddGroupsPutData,
-  zAddGroupsToRoleRbacV1RbacRoleIdRoleAddGroupsPutResponse,
-  zAddModulesToRoleRbacV1RbacRoleIdRoleAddModulesPutData,
-  zAddModulesToRoleRbacV1RbacRoleIdRoleAddModulesPutResponse,
-  zGetAllPermissionsRbacV1RbacPermissionGetData,
-  zCreatePermissionRbacV1RbacPermissionPostData,
-  zEditPermissionRbacV1RbacPermissionPutData,
-  zDeletePermissionRbacV1RbacPermissionIdPermissionDeleteData,
-  zGetPermissionRbacV1RbacPermissionIdPermissionGetData,
-  zGetAllGroupsRbacV1RbacGroupGetData,
-  zCreateGroupRbacV1RbacGroupPostData,
-  zGetGroupRbacV1RbacGroupIdGroupGetData,
-  zGetGroupRbacV1RbacGroupIdGroupGetResponse,
-  zAddPermissionsToGroupRbacV1RbacGroupIdGroupAddPermissionPutData,
-  zAddPermissionsToGroupRbacV1RbacGroupIdGroupAddPermissionPutResponse,
-  zGetUserListUsersV1UsersGetData,
-  zCreateUserUsersV1UsersPostData,
-  zGetUserUsersV1UsersUserIdGetData,
-  zAsignRoleUsersV1UsersUserUuidRolePutData,
-  zGetAllProvidersProvidersV1ProvidersGetData,
-  zGetSystemPermissionsPermissionsGetData,
-  zGetSystemModulesModulesGetData,
+  zRefreshTokenData,
+  zRefreshTokenResponse2,
+  zVerifyTokenData,
+  zLoginData,
+  zRegisterData,
+  zPasswordResetData,
+  zGetAllRolesData,
+  zCreateRoleData,
+  zEditRoleData,
+  zDeleteRoleData,
+  zGetRoleData,
+  zGetRoleResponse,
+  zGetAllRolePermissionsData,
+  zGetAllRolePermissionsResponse,
+  zAddPermissionsToRoleData,
+  zAddPermissionsToRoleResponse,
+  zAddGroupsToRoleData,
+  zAddGroupsToRoleResponse,
+  zAddModulesToRoleData,
+  zAddModulesToRoleResponse,
+  zGetAllPermissionsData,
+  zCreatePermissionData,
+  zEditPermissionData,
+  zDeletePermissionData,
+  zGetPermissionData,
+  zGetAllGroupsData,
+  zCreateGroupData,
+  zGetGroupData,
+  zGetGroupResponse,
+  zAddPermissionsToGroupData,
+  zAddPermissionsToGroupResponse,
+  zGetUserListData,
+  zCreateUserData,
+  zGetUserData,
+  zAsignRoleData,
+  zGetAllProvidersData,
+  zGetBackendSchemaData,
+  zGetSystemPermissionsData,
+  zGetSystemModulesData,
 } from "./zod.gen";
 import { client as _heyApiClient } from "./client.gen";
 
@@ -155,21 +158,19 @@ export class Auth {
   /**
    * Refresh Token
    */
-  public static refreshTokenAuthV1AuthRefreshPost<
-    ThrowOnError extends boolean = false,
-  >(options: Options<RefreshTokenAuthV1AuthRefreshPostData, ThrowOnError>) {
+  public static refreshToken<ThrowOnError extends boolean = false>(
+    options: Options<RefreshTokenData, ThrowOnError>,
+  ) {
     return (options.client ?? _heyApiClient).post<
-      RefreshTokenAuthV1AuthRefreshPostResponses,
-      RefreshTokenAuthV1AuthRefreshPostErrors,
+      RefreshTokenResponses,
+      RefreshTokenErrors,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zRefreshTokenAuthV1AuthRefreshPostData.parseAsync(data);
+        return await zRefreshTokenData.parseAsync(data);
       },
       responseValidator: async (data) => {
-        return await zRefreshTokenAuthV1AuthRefreshPostResponse.parseAsync(
-          data,
-        );
+        return await zRefreshTokenResponse2.parseAsync(data);
       },
       url: "/auth/v1/auth/refresh",
       ...options,
@@ -183,16 +184,16 @@ export class Auth {
   /**
    * Verify Token
    */
-  public static verifyTokenAuthV1AuthVerifyPost<
-    ThrowOnError extends boolean = false,
-  >(options: Options<VerifyTokenAuthV1AuthVerifyPostData, ThrowOnError>) {
+  public static verifyToken<ThrowOnError extends boolean = false>(
+    options: Options<VerifyTokenData, ThrowOnError>,
+  ) {
     return (options.client ?? _heyApiClient).post<
-      VerifyTokenAuthV1AuthVerifyPostResponses,
-      VerifyTokenAuthV1AuthVerifyPostErrors,
+      VerifyTokenResponses,
+      VerifyTokenErrors,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zVerifyTokenAuthV1AuthVerifyPostData.parseAsync(data);
+        return await zVerifyTokenData.parseAsync(data);
       },
       url: "/auth/v1/auth/verify",
       ...options,
@@ -206,17 +207,17 @@ export class Auth {
   /**
    * Login
    */
-  public static loginAuthV1AuthLoginPost<ThrowOnError extends boolean = false>(
-    options: Options<LoginAuthV1AuthLoginPostData, ThrowOnError>,
+  public static login<ThrowOnError extends boolean = false>(
+    options: Options<LoginData, ThrowOnError>,
   ) {
     return (options.client ?? _heyApiClient).post<
-      LoginAuthV1AuthLoginPostResponses,
-      LoginAuthV1AuthLoginPostErrors,
+      LoginResponses,
+      LoginErrors,
       ThrowOnError
     >({
       ...urlSearchParamsBodySerializer,
       requestValidator: async (data) => {
-        return await zLoginAuthV1AuthLoginPostData.parseAsync(data);
+        return await zLoginData.parseAsync(data);
       },
       url: "/auth/v1/auth/login",
       ...options,
@@ -230,17 +231,17 @@ export class Auth {
   /**
    * Register
    */
-  public static registerAuthV1AuthRegisterPost<
-    ThrowOnError extends boolean = false,
-  >(options: Options<RegisterAuthV1AuthRegisterPostData, ThrowOnError>) {
+  public static register<ThrowOnError extends boolean = false>(
+    options: Options<RegisterData, ThrowOnError>,
+  ) {
     return (options.client ?? _heyApiClient).post<
-      RegisterAuthV1AuthRegisterPostResponses,
-      RegisterAuthV1AuthRegisterPostErrors,
+      RegisterResponses,
+      RegisterErrors,
       ThrowOnError
     >({
       ...urlSearchParamsBodySerializer,
       requestValidator: async (data) => {
-        return await zRegisterAuthV1AuthRegisterPostData.parseAsync(data);
+        return await zRegisterData.parseAsync(data);
       },
       url: "/auth/v1/auth/register",
       ...options,
@@ -254,24 +255,17 @@ export class Auth {
   /**
    * Password Reset
    */
-  public static passwordResetAuthV1AuthPasswordResetPost<
-    ThrowOnError extends boolean = false,
-  >(
-    options: Options<
-      PasswordResetAuthV1AuthPasswordResetPostData,
-      ThrowOnError
-    >,
+  public static passwordReset<ThrowOnError extends boolean = false>(
+    options: Options<PasswordResetData, ThrowOnError>,
   ) {
     return (options.client ?? _heyApiClient).post<
-      PasswordResetAuthV1AuthPasswordResetPostResponses,
-      PasswordResetAuthV1AuthPasswordResetPostErrors,
+      PasswordResetResponses,
+      PasswordResetErrors,
       ThrowOnError
     >({
       ...urlSearchParamsBodySerializer,
       requestValidator: async (data) => {
-        return await zPasswordResetAuthV1AuthPasswordResetPostData.parseAsync(
-          data,
-        );
+        return await zPasswordResetData.parseAsync(data);
       },
       url: "/auth/v1/auth/password_reset",
       ...options,
@@ -287,16 +281,16 @@ export class Rbac {
   /**
    * Get All Roles
    */
-  public static getAllRolesRbacV1RbacRoleGet<
-    ThrowOnError extends boolean = false,
-  >(options?: Options<GetAllRolesRbacV1RbacRoleGetData, ThrowOnError>) {
+  public static getAllRoles<ThrowOnError extends boolean = false>(
+    options?: Options<GetAllRolesData, ThrowOnError>,
+  ) {
     return (options?.client ?? _heyApiClient).get<
-      GetAllRolesRbacV1RbacRoleGetResponses,
+      GetAllRolesResponses,
       unknown,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zGetAllRolesRbacV1RbacRoleGetData.parseAsync(data);
+        return await zGetAllRolesData.parseAsync(data);
       },
       url: "/rbac/v1/rbac/role",
       ...options,
@@ -306,16 +300,16 @@ export class Rbac {
   /**
    * Create Role
    */
-  public static createRoleRbacV1RbacRolePost<
-    ThrowOnError extends boolean = false,
-  >(options: Options<CreateRoleRbacV1RbacRolePostData, ThrowOnError>) {
+  public static createRole<ThrowOnError extends boolean = false>(
+    options: Options<CreateRoleData, ThrowOnError>,
+  ) {
     return (options.client ?? _heyApiClient).post<
-      CreateRoleRbacV1RbacRolePostResponses,
-      CreateRoleRbacV1RbacRolePostErrors,
+      CreateRoleResponses,
+      CreateRoleErrors,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zCreateRoleRbacV1RbacRolePostData.parseAsync(data);
+        return await zCreateRoleData.parseAsync(data);
       },
       url: "/rbac/v1/rbac/role",
       ...options,
@@ -329,16 +323,16 @@ export class Rbac {
   /**
    * Edit Role
    */
-  public static editRoleRbacV1RbacRolePut<ThrowOnError extends boolean = false>(
-    options?: Options<EditRoleRbacV1RbacRolePutData, ThrowOnError>,
+  public static editRole<ThrowOnError extends boolean = false>(
+    options?: Options<EditRoleData, ThrowOnError>,
   ) {
     return (options?.client ?? _heyApiClient).put<
-      EditRoleRbacV1RbacRolePutResponses,
+      EditRoleResponses,
       unknown,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zEditRoleRbacV1RbacRolePutData.parseAsync(data);
+        return await zEditRoleData.parseAsync(data);
       },
       url: "/rbac/v1/rbac/role",
       ...options,
@@ -348,16 +342,16 @@ export class Rbac {
   /**
    * Delete Role
    */
-  public static deleteRoleRbacV1RbacRoleIdRoleDelete<
-    ThrowOnError extends boolean = false,
-  >(options: Options<DeleteRoleRbacV1RbacRoleIdRoleDeleteData, ThrowOnError>) {
+  public static deleteRole<ThrowOnError extends boolean = false>(
+    options: Options<DeleteRoleData, ThrowOnError>,
+  ) {
     return (options.client ?? _heyApiClient).delete<
-      DeleteRoleRbacV1RbacRoleIdRoleDeleteResponses,
-      DeleteRoleRbacV1RbacRoleIdRoleDeleteErrors,
+      DeleteRoleResponses,
+      DeleteRoleErrors,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zDeleteRoleRbacV1RbacRoleIdRoleDeleteData.parseAsync(data);
+        return await zDeleteRoleData.parseAsync(data);
       },
       url: "/rbac/v1/rbac/role/{id_role}",
       ...options,
@@ -367,19 +361,19 @@ export class Rbac {
   /**
    * Get Role
    */
-  public static getRoleRbacV1RbacRoleIdRoleGet<
-    ThrowOnError extends boolean = false,
-  >(options: Options<GetRoleRbacV1RbacRoleIdRoleGetData, ThrowOnError>) {
+  public static getRole<ThrowOnError extends boolean = false>(
+    options: Options<GetRoleData, ThrowOnError>,
+  ) {
     return (options.client ?? _heyApiClient).get<
-      GetRoleRbacV1RbacRoleIdRoleGetResponses,
-      GetRoleRbacV1RbacRoleIdRoleGetErrors,
+      GetRoleResponses,
+      GetRoleErrors,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zGetRoleRbacV1RbacRoleIdRoleGetData.parseAsync(data);
+        return await zGetRoleData.parseAsync(data);
       },
       responseValidator: async (data) => {
-        return await zGetRoleRbacV1RbacRoleIdRoleGetResponse.parseAsync(data);
+        return await zGetRoleResponse.parseAsync(data);
       },
       url: "/rbac/v1/rbac/role/{id_role}",
       ...options,
@@ -389,28 +383,19 @@ export class Rbac {
   /**
    * Get All Role Permissions
    */
-  public static getAllRolePermissionsRbacV1RbacRoleIdRolePermissionGet<
-    ThrowOnError extends boolean = false,
-  >(
-    options: Options<
-      GetAllRolePermissionsRbacV1RbacRoleIdRolePermissionGetData,
-      ThrowOnError
-    >,
+  public static getAllRolePermissions<ThrowOnError extends boolean = false>(
+    options: Options<GetAllRolePermissionsData, ThrowOnError>,
   ) {
     return (options.client ?? _heyApiClient).get<
-      GetAllRolePermissionsRbacV1RbacRoleIdRolePermissionGetResponses,
-      GetAllRolePermissionsRbacV1RbacRoleIdRolePermissionGetErrors,
+      GetAllRolePermissionsResponses,
+      GetAllRolePermissionsErrors,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zGetAllRolePermissionsRbacV1RbacRoleIdRolePermissionGetData.parseAsync(
-          data,
-        );
+        return await zGetAllRolePermissionsData.parseAsync(data);
       },
       responseValidator: async (data) => {
-        return await zGetAllRolePermissionsRbacV1RbacRoleIdRolePermissionGetResponse.parseAsync(
-          data,
-        );
+        return await zGetAllRolePermissionsResponse.parseAsync(data);
       },
       url: "/rbac/v1/rbac/role/{id_role}/permission",
       ...options,
@@ -420,28 +405,19 @@ export class Rbac {
   /**
    * Add Permissions To Role
    */
-  public static addPermissionsToRoleRbacV1RbacRoleIdRoleAddPermissionPut<
-    ThrowOnError extends boolean = false,
-  >(
-    options: Options<
-      AddPermissionsToRoleRbacV1RbacRoleIdRoleAddPermissionPutData,
-      ThrowOnError
-    >,
+  public static addPermissionsToRole<ThrowOnError extends boolean = false>(
+    options: Options<AddPermissionsToRoleData, ThrowOnError>,
   ) {
     return (options.client ?? _heyApiClient).put<
-      AddPermissionsToRoleRbacV1RbacRoleIdRoleAddPermissionPutResponses,
-      AddPermissionsToRoleRbacV1RbacRoleIdRoleAddPermissionPutErrors,
+      AddPermissionsToRoleResponses,
+      AddPermissionsToRoleErrors,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zAddPermissionsToRoleRbacV1RbacRoleIdRoleAddPermissionPutData.parseAsync(
-          data,
-        );
+        return await zAddPermissionsToRoleData.parseAsync(data);
       },
       responseValidator: async (data) => {
-        return await zAddPermissionsToRoleRbacV1RbacRoleIdRoleAddPermissionPutResponse.parseAsync(
-          data,
-        );
+        return await zAddPermissionsToRoleResponse.parseAsync(data);
       },
       url: "/rbac/v1/rbac/role/{id_role}/add/permission",
       ...options,
@@ -455,28 +431,19 @@ export class Rbac {
   /**
    * Add Groups To Role
    */
-  public static addGroupsToRoleRbacV1RbacRoleIdRoleAddGroupsPut<
-    ThrowOnError extends boolean = false,
-  >(
-    options: Options<
-      AddGroupsToRoleRbacV1RbacRoleIdRoleAddGroupsPutData,
-      ThrowOnError
-    >,
+  public static addGroupsToRole<ThrowOnError extends boolean = false>(
+    options: Options<AddGroupsToRoleData, ThrowOnError>,
   ) {
     return (options.client ?? _heyApiClient).put<
-      AddGroupsToRoleRbacV1RbacRoleIdRoleAddGroupsPutResponses,
-      AddGroupsToRoleRbacV1RbacRoleIdRoleAddGroupsPutErrors,
+      AddGroupsToRoleResponses,
+      AddGroupsToRoleErrors,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zAddGroupsToRoleRbacV1RbacRoleIdRoleAddGroupsPutData.parseAsync(
-          data,
-        );
+        return await zAddGroupsToRoleData.parseAsync(data);
       },
       responseValidator: async (data) => {
-        return await zAddGroupsToRoleRbacV1RbacRoleIdRoleAddGroupsPutResponse.parseAsync(
-          data,
-        );
+        return await zAddGroupsToRoleResponse.parseAsync(data);
       },
       url: "/rbac/v1/rbac/role/{id_role}/add/groups",
       ...options,
@@ -490,28 +457,19 @@ export class Rbac {
   /**
    * Add Modules To Role
    */
-  public static addModulesToRoleRbacV1RbacRoleIdRoleAddModulesPut<
-    ThrowOnError extends boolean = false,
-  >(
-    options: Options<
-      AddModulesToRoleRbacV1RbacRoleIdRoleAddModulesPutData,
-      ThrowOnError
-    >,
+  public static addModulesToRole<ThrowOnError extends boolean = false>(
+    options: Options<AddModulesToRoleData, ThrowOnError>,
   ) {
     return (options.client ?? _heyApiClient).put<
-      AddModulesToRoleRbacV1RbacRoleIdRoleAddModulesPutResponses,
-      AddModulesToRoleRbacV1RbacRoleIdRoleAddModulesPutErrors,
+      AddModulesToRoleResponses,
+      AddModulesToRoleErrors,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zAddModulesToRoleRbacV1RbacRoleIdRoleAddModulesPutData.parseAsync(
-          data,
-        );
+        return await zAddModulesToRoleData.parseAsync(data);
       },
       responseValidator: async (data) => {
-        return await zAddModulesToRoleRbacV1RbacRoleIdRoleAddModulesPutResponse.parseAsync(
-          data,
-        );
+        return await zAddModulesToRoleResponse.parseAsync(data);
       },
       url: "/rbac/v1/rbac/role/{id_role}/add/modules",
       ...options,
@@ -525,23 +483,16 @@ export class Rbac {
   /**
    * Get All Permissions
    */
-  public static getAllPermissionsRbacV1RbacPermissionGet<
-    ThrowOnError extends boolean = false,
-  >(
-    options?: Options<
-      GetAllPermissionsRbacV1RbacPermissionGetData,
-      ThrowOnError
-    >,
+  public static getAllPermissions<ThrowOnError extends boolean = false>(
+    options?: Options<GetAllPermissionsData, ThrowOnError>,
   ) {
     return (options?.client ?? _heyApiClient).get<
-      GetAllPermissionsRbacV1RbacPermissionGetResponses,
+      GetAllPermissionsResponses,
       unknown,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zGetAllPermissionsRbacV1RbacPermissionGetData.parseAsync(
-          data,
-        );
+        return await zGetAllPermissionsData.parseAsync(data);
       },
       url: "/rbac/v1/rbac/permission",
       ...options,
@@ -551,23 +502,16 @@ export class Rbac {
   /**
    * Create Permission
    */
-  public static createPermissionRbacV1RbacPermissionPost<
-    ThrowOnError extends boolean = false,
-  >(
-    options: Options<
-      CreatePermissionRbacV1RbacPermissionPostData,
-      ThrowOnError
-    >,
+  public static createPermission<ThrowOnError extends boolean = false>(
+    options: Options<CreatePermissionData, ThrowOnError>,
   ) {
     return (options.client ?? _heyApiClient).post<
-      CreatePermissionRbacV1RbacPermissionPostResponses,
-      CreatePermissionRbacV1RbacPermissionPostErrors,
+      CreatePermissionResponses,
+      CreatePermissionErrors,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zCreatePermissionRbacV1RbacPermissionPostData.parseAsync(
-          data,
-        );
+        return await zCreatePermissionData.parseAsync(data);
       },
       url: "/rbac/v1/rbac/permission",
       ...options,
@@ -581,18 +525,16 @@ export class Rbac {
   /**
    * Edit Permission
    */
-  public static editPermissionRbacV1RbacPermissionPut<
-    ThrowOnError extends boolean = false,
-  >(options: Options<EditPermissionRbacV1RbacPermissionPutData, ThrowOnError>) {
+  public static editPermission<ThrowOnError extends boolean = false>(
+    options: Options<EditPermissionData, ThrowOnError>,
+  ) {
     return (options.client ?? _heyApiClient).put<
-      EditPermissionRbacV1RbacPermissionPutResponses,
-      EditPermissionRbacV1RbacPermissionPutErrors,
+      EditPermissionResponses,
+      EditPermissionErrors,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zEditPermissionRbacV1RbacPermissionPutData.parseAsync(
-          data,
-        );
+        return await zEditPermissionData.parseAsync(data);
       },
       url: "/rbac/v1/rbac/permission",
       ...options,
@@ -602,23 +544,16 @@ export class Rbac {
   /**
    * Delete Permission
    */
-  public static deletePermissionRbacV1RbacPermissionIdPermissionDelete<
-    ThrowOnError extends boolean = false,
-  >(
-    options: Options<
-      DeletePermissionRbacV1RbacPermissionIdPermissionDeleteData,
-      ThrowOnError
-    >,
+  public static deletePermission<ThrowOnError extends boolean = false>(
+    options: Options<DeletePermissionData, ThrowOnError>,
   ) {
     return (options.client ?? _heyApiClient).delete<
-      DeletePermissionRbacV1RbacPermissionIdPermissionDeleteResponses,
-      DeletePermissionRbacV1RbacPermissionIdPermissionDeleteErrors,
+      DeletePermissionResponses,
+      DeletePermissionErrors,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zDeletePermissionRbacV1RbacPermissionIdPermissionDeleteData.parseAsync(
-          data,
-        );
+        return await zDeletePermissionData.parseAsync(data);
       },
       url: "/rbac/v1/rbac/permission/{id_permission}",
       ...options,
@@ -628,23 +563,16 @@ export class Rbac {
   /**
    * Get Permission
    */
-  public static getPermissionRbacV1RbacPermissionIdPermissionGet<
-    ThrowOnError extends boolean = false,
-  >(
-    options: Options<
-      GetPermissionRbacV1RbacPermissionIdPermissionGetData,
-      ThrowOnError
-    >,
+  public static getPermission<ThrowOnError extends boolean = false>(
+    options: Options<GetPermissionData, ThrowOnError>,
   ) {
     return (options.client ?? _heyApiClient).get<
-      GetPermissionRbacV1RbacPermissionIdPermissionGetResponses,
-      GetPermissionRbacV1RbacPermissionIdPermissionGetErrors,
+      GetPermissionResponses,
+      GetPermissionErrors,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zGetPermissionRbacV1RbacPermissionIdPermissionGetData.parseAsync(
-          data,
-        );
+        return await zGetPermissionData.parseAsync(data);
       },
       url: "/rbac/v1/rbac/permission/{id_permission}",
       ...options,
@@ -654,16 +582,16 @@ export class Rbac {
   /**
    * Get All Groups
    */
-  public static getAllGroupsRbacV1RbacGroupGet<
-    ThrowOnError extends boolean = false,
-  >(options?: Options<GetAllGroupsRbacV1RbacGroupGetData, ThrowOnError>) {
+  public static getAllGroups<ThrowOnError extends boolean = false>(
+    options?: Options<GetAllGroupsData, ThrowOnError>,
+  ) {
     return (options?.client ?? _heyApiClient).get<
-      GetAllGroupsRbacV1RbacGroupGetResponses,
+      GetAllGroupsResponses,
       unknown,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zGetAllGroupsRbacV1RbacGroupGetData.parseAsync(data);
+        return await zGetAllGroupsData.parseAsync(data);
       },
       url: "/rbac/v1/rbac/group",
       ...options,
@@ -673,16 +601,16 @@ export class Rbac {
   /**
    * Create Group
    */
-  public static createGroupRbacV1RbacGroupPost<
-    ThrowOnError extends boolean = false,
-  >(options: Options<CreateGroupRbacV1RbacGroupPostData, ThrowOnError>) {
+  public static createGroup<ThrowOnError extends boolean = false>(
+    options: Options<CreateGroupData, ThrowOnError>,
+  ) {
     return (options.client ?? _heyApiClient).post<
-      CreateGroupRbacV1RbacGroupPostResponses,
-      CreateGroupRbacV1RbacGroupPostErrors,
+      CreateGroupResponses,
+      CreateGroupErrors,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zCreateGroupRbacV1RbacGroupPostData.parseAsync(data);
+        return await zCreateGroupData.parseAsync(data);
       },
       url: "/rbac/v1/rbac/group",
       ...options,
@@ -696,21 +624,19 @@ export class Rbac {
   /**
    * Get Group
    */
-  public static getGroupRbacV1RbacGroupIdGroupGet<
-    ThrowOnError extends boolean = false,
-  >(options: Options<GetGroupRbacV1RbacGroupIdGroupGetData, ThrowOnError>) {
+  public static getGroup<ThrowOnError extends boolean = false>(
+    options: Options<GetGroupData, ThrowOnError>,
+  ) {
     return (options.client ?? _heyApiClient).get<
-      GetGroupRbacV1RbacGroupIdGroupGetResponses,
-      GetGroupRbacV1RbacGroupIdGroupGetErrors,
+      GetGroupResponses,
+      GetGroupErrors,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zGetGroupRbacV1RbacGroupIdGroupGetData.parseAsync(data);
+        return await zGetGroupData.parseAsync(data);
       },
       responseValidator: async (data) => {
-        return await zGetGroupRbacV1RbacGroupIdGroupGetResponse.parseAsync(
-          data,
-        );
+        return await zGetGroupResponse.parseAsync(data);
       },
       url: "/rbac/v1/rbac/group/{id_group}",
       ...options,
@@ -720,28 +646,19 @@ export class Rbac {
   /**
    * Add Permissions To Group
    */
-  public static addPermissionsToGroupRbacV1RbacGroupIdGroupAddPermissionPut<
-    ThrowOnError extends boolean = false,
-  >(
-    options: Options<
-      AddPermissionsToGroupRbacV1RbacGroupIdGroupAddPermissionPutData,
-      ThrowOnError
-    >,
+  public static addPermissionsToGroup<ThrowOnError extends boolean = false>(
+    options: Options<AddPermissionsToGroupData, ThrowOnError>,
   ) {
     return (options.client ?? _heyApiClient).put<
-      AddPermissionsToGroupRbacV1RbacGroupIdGroupAddPermissionPutResponses,
-      AddPermissionsToGroupRbacV1RbacGroupIdGroupAddPermissionPutErrors,
+      AddPermissionsToGroupResponses,
+      AddPermissionsToGroupErrors,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zAddPermissionsToGroupRbacV1RbacGroupIdGroupAddPermissionPutData.parseAsync(
-          data,
-        );
+        return await zAddPermissionsToGroupData.parseAsync(data);
       },
       responseValidator: async (data) => {
-        return await zAddPermissionsToGroupRbacV1RbacGroupIdGroupAddPermissionPutResponse.parseAsync(
-          data,
-        );
+        return await zAddPermissionsToGroupResponse.parseAsync(data);
       },
       url: "/rbac/v1/rbac/group/{id_group}/add/permission",
       ...options,
@@ -757,16 +674,16 @@ export class Users {
   /**
    * Get User List
    */
-  public static getUserListUsersV1UsersGet<
-    ThrowOnError extends boolean = false,
-  >(options?: Options<GetUserListUsersV1UsersGetData, ThrowOnError>) {
+  public static getUserList<ThrowOnError extends boolean = false>(
+    options?: Options<GetUserListData, ThrowOnError>,
+  ) {
     return (options?.client ?? _heyApiClient).get<
-      GetUserListUsersV1UsersGetResponses,
-      GetUserListUsersV1UsersGetErrors,
+      GetUserListResponses,
+      GetUserListErrors,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zGetUserListUsersV1UsersGetData.parseAsync(data);
+        return await zGetUserListData.parseAsync(data);
       },
       url: "/users/v1/users",
       ...options,
@@ -776,16 +693,16 @@ export class Users {
   /**
    * Create User
    */
-  public static createUserUsersV1UsersPost<
-    ThrowOnError extends boolean = false,
-  >(options: Options<CreateUserUsersV1UsersPostData, ThrowOnError>) {
+  public static createUser<ThrowOnError extends boolean = false>(
+    options: Options<CreateUserData, ThrowOnError>,
+  ) {
     return (options.client ?? _heyApiClient).post<
-      CreateUserUsersV1UsersPostResponses,
-      CreateUserUsersV1UsersPostErrors,
+      CreateUserResponses,
+      CreateUserErrors,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zCreateUserUsersV1UsersPostData.parseAsync(data);
+        return await zCreateUserData.parseAsync(data);
       },
       url: "/users/v1/users",
       ...options,
@@ -799,16 +716,16 @@ export class Users {
   /**
    * Get User
    */
-  public static getUserUsersV1UsersUserIdGet<
-    ThrowOnError extends boolean = false,
-  >(options: Options<GetUserUsersV1UsersUserIdGetData, ThrowOnError>) {
+  public static getUser<ThrowOnError extends boolean = false>(
+    options: Options<GetUserData, ThrowOnError>,
+  ) {
     return (options.client ?? _heyApiClient).get<
-      GetUserUsersV1UsersUserIdGetResponses,
-      GetUserUsersV1UsersUserIdGetErrors,
+      GetUserResponses,
+      GetUserErrors,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zGetUserUsersV1UsersUserIdGetData.parseAsync(data);
+        return await zGetUserData.parseAsync(data);
       },
       url: "/users/v1/users/{user_id}",
       ...options,
@@ -818,16 +735,16 @@ export class Users {
   /**
    * Asign Role
    */
-  public static asignRoleUsersV1UsersUserUuidRolePut<
-    ThrowOnError extends boolean = false,
-  >(options: Options<AsignRoleUsersV1UsersUserUuidRolePutData, ThrowOnError>) {
+  public static asignRole<ThrowOnError extends boolean = false>(
+    options: Options<AsignRoleData, ThrowOnError>,
+  ) {
     return (options.client ?? _heyApiClient).put<
-      AsignRoleUsersV1UsersUserUuidRolePutResponses,
-      AsignRoleUsersV1UsersUserUuidRolePutErrors,
+      AsignRoleResponses,
+      AsignRoleErrors,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zAsignRoleUsersV1UsersUserUuidRolePutData.parseAsync(data);
+        return await zAsignRoleData.parseAsync(data);
       },
       url: "/users/v1/users/{user_uuid}/role",
       ...options,
@@ -843,20 +760,16 @@ export class Providers {
   /**
    * Get All Providers
    */
-  public static getAllProvidersProvidersV1ProvidersGet<
-    ThrowOnError extends boolean = false,
-  >(
-    options?: Options<GetAllProvidersProvidersV1ProvidersGetData, ThrowOnError>,
+  public static getAllProviders<ThrowOnError extends boolean = false>(
+    options?: Options<GetAllProvidersData, ThrowOnError>,
   ) {
     return (options?.client ?? _heyApiClient).get<
-      GetAllProvidersProvidersV1ProvidersGetResponses,
-      GetAllProvidersProvidersV1ProvidersGetErrors,
+      GetAllProvidersResponses,
+      GetAllProvidersErrors,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zGetAllProvidersProvidersV1ProvidersGetData.parseAsync(
-          data,
-        );
+        return await zGetAllProvidersData.parseAsync(data);
       },
       url: "/providers/v1/providers",
       ...options,
@@ -866,18 +779,37 @@ export class Providers {
 
 export class System {
   /**
-   * Get System Permissions
+   * Get Backend Schema
    */
-  public static getSystemPermissionsPermissionsGet<
-    ThrowOnError extends boolean = false,
-  >(options?: Options<GetSystemPermissionsPermissionsGetData, ThrowOnError>) {
+  public static getBackendSchema<ThrowOnError extends boolean = false>(
+    options?: Options<GetBackendSchemaData, ThrowOnError>,
+  ) {
     return (options?.client ?? _heyApiClient).get<
-      GetSystemPermissionsPermissionsGetResponses,
+      GetBackendSchemaResponses,
       unknown,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zGetSystemPermissionsPermissionsGetData.parseAsync(data);
+        return await zGetBackendSchemaData.parseAsync(data);
+      },
+      url: "/system/openapi_schema",
+      ...options,
+    });
+  }
+
+  /**
+   * Get System Permissions
+   */
+  public static getSystemPermissions<ThrowOnError extends boolean = false>(
+    options?: Options<GetSystemPermissionsData, ThrowOnError>,
+  ) {
+    return (options?.client ?? _heyApiClient).get<
+      GetSystemPermissionsResponses,
+      unknown,
+      ThrowOnError
+    >({
+      requestValidator: async (data) => {
+        return await zGetSystemPermissionsData.parseAsync(data);
       },
       url: "/permissions",
       ...options,
@@ -887,16 +819,16 @@ export class System {
   /**
    * Get System Modules
    */
-  public static getSystemModulesModulesGet<
-    ThrowOnError extends boolean = false,
-  >(options?: Options<GetSystemModulesModulesGetData, ThrowOnError>) {
+  public static getSystemModules<ThrowOnError extends boolean = false>(
+    options?: Options<GetSystemModulesData, ThrowOnError>,
+  ) {
     return (options?.client ?? _heyApiClient).get<
-      GetSystemModulesModulesGetResponses,
+      GetSystemModulesResponses,
       unknown,
       ThrowOnError
     >({
       requestValidator: async (data) => {
-        return await zGetSystemModulesModulesGetData.parseAsync(data);
+        return await zGetSystemModulesData.parseAsync(data);
       },
       url: "/modules",
       ...options,

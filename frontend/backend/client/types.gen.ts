@@ -452,182 +452,176 @@ export type VerifyTokenRequest = {
   token: string;
 };
 
-export type RefreshTokenAuthV1AuthRefreshPostData = {
+export type RefreshTokenData = {
   body: RefreshTokenRequest;
   path?: never;
   query?: never;
   url: "/auth/v1/auth/refresh";
 };
 
-export type RefreshTokenAuthV1AuthRefreshPostErrors = {
+export type RefreshTokenErrors = {
   /**
    * Validation Error
    */
   422: HttpValidationError;
 };
 
-export type RefreshTokenAuthV1AuthRefreshPostError =
-  RefreshTokenAuthV1AuthRefreshPostErrors[keyof RefreshTokenAuthV1AuthRefreshPostErrors];
+export type RefreshTokenError = RefreshTokenErrors[keyof RefreshTokenErrors];
 
-export type RefreshTokenAuthV1AuthRefreshPostResponses = {
+export type RefreshTokenResponses = {
   /**
    * Successful Response
    */
   200: RefreshTokenResponse;
 };
 
-export type RefreshTokenAuthV1AuthRefreshPostResponse =
-  RefreshTokenAuthV1AuthRefreshPostResponses[keyof RefreshTokenAuthV1AuthRefreshPostResponses];
+export type RefreshTokenResponse2 =
+  RefreshTokenResponses[keyof RefreshTokenResponses];
 
-export type VerifyTokenAuthV1AuthVerifyPostData = {
+export type VerifyTokenData = {
   body: VerifyTokenRequest;
   path?: never;
   query?: never;
   url: "/auth/v1/auth/verify";
 };
 
-export type VerifyTokenAuthV1AuthVerifyPostErrors = {
+export type VerifyTokenErrors = {
   /**
    * Validation Error
    */
   422: HttpValidationError;
 };
 
-export type VerifyTokenAuthV1AuthVerifyPostError =
-  VerifyTokenAuthV1AuthVerifyPostErrors[keyof VerifyTokenAuthV1AuthVerifyPostErrors];
+export type VerifyTokenError = VerifyTokenErrors[keyof VerifyTokenErrors];
 
-export type VerifyTokenAuthV1AuthVerifyPostResponses = {
+export type VerifyTokenResponses = {
   /**
    * Successful Response
    */
   200: unknown;
 };
 
-export type LoginAuthV1AuthLoginPostData = {
+export type LoginData = {
   body: AuthLoginRequest;
   path?: never;
   query?: never;
   url: "/auth/v1/auth/login";
 };
 
-export type LoginAuthV1AuthLoginPostErrors = {
+export type LoginErrors = {
   /**
    * Validation Error
    */
   422: HttpValidationError;
 };
 
-export type LoginAuthV1AuthLoginPostError =
-  LoginAuthV1AuthLoginPostErrors[keyof LoginAuthV1AuthLoginPostErrors];
+export type LoginError = LoginErrors[keyof LoginErrors];
 
-export type LoginAuthV1AuthLoginPostResponses = {
+export type LoginResponses = {
   /**
    * Successful Response
    */
   200: unknown;
 };
 
-export type RegisterAuthV1AuthRegisterPostData = {
+export type RegisterData = {
   body: AuthRegisterRequest;
   path?: never;
   query?: never;
   url: "/auth/v1/auth/register";
 };
 
-export type RegisterAuthV1AuthRegisterPostErrors = {
+export type RegisterErrors = {
   /**
    * Validation Error
    */
   422: HttpValidationError;
 };
 
-export type RegisterAuthV1AuthRegisterPostError =
-  RegisterAuthV1AuthRegisterPostErrors[keyof RegisterAuthV1AuthRegisterPostErrors];
+export type RegisterError = RegisterErrors[keyof RegisterErrors];
 
-export type RegisterAuthV1AuthRegisterPostResponses = {
+export type RegisterResponses = {
   /**
    * Successful Response
    */
   200: unknown;
 };
 
-export type PasswordResetAuthV1AuthPasswordResetPostData = {
+export type PasswordResetData = {
   body: AuthPasswordResetRequest;
   path?: never;
   query?: never;
   url: "/auth/v1/auth/password_reset";
 };
 
-export type PasswordResetAuthV1AuthPasswordResetPostErrors = {
+export type PasswordResetErrors = {
   /**
    * Validation Error
    */
   422: HttpValidationError;
 };
 
-export type PasswordResetAuthV1AuthPasswordResetPostError =
-  PasswordResetAuthV1AuthPasswordResetPostErrors[keyof PasswordResetAuthV1AuthPasswordResetPostErrors];
+export type PasswordResetError = PasswordResetErrors[keyof PasswordResetErrors];
 
-export type PasswordResetAuthV1AuthPasswordResetPostResponses = {
+export type PasswordResetResponses = {
   /**
    * Successful Response
    */
   200: unknown;
 };
 
-export type GetAllRolesRbacV1RbacRoleGetData = {
+export type GetAllRolesData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/rbac/v1/rbac/role";
 };
 
-export type GetAllRolesRbacV1RbacRoleGetResponses = {
+export type GetAllRolesResponses = {
   /**
    * Successful Response
    */
   200: unknown;
 };
 
-export type CreateRoleRbacV1RbacRolePostData = {
+export type CreateRoleData = {
   body: CreateRoleRequest;
   path?: never;
   query?: never;
   url: "/rbac/v1/rbac/role";
 };
 
-export type CreateRoleRbacV1RbacRolePostErrors = {
+export type CreateRoleErrors = {
   /**
    * Validation Error
    */
   422: HttpValidationError;
 };
 
-export type CreateRoleRbacV1RbacRolePostError =
-  CreateRoleRbacV1RbacRolePostErrors[keyof CreateRoleRbacV1RbacRolePostErrors];
+export type CreateRoleError = CreateRoleErrors[keyof CreateRoleErrors];
 
-export type CreateRoleRbacV1RbacRolePostResponses = {
+export type CreateRoleResponses = {
   /**
    * Successful Response
    */
   200: unknown;
 };
 
-export type EditRoleRbacV1RbacRolePutData = {
+export type EditRoleData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/rbac/v1/rbac/role";
 };
 
-export type EditRoleRbacV1RbacRolePutResponses = {
+export type EditRoleResponses = {
   /**
    * Successful Response
    */
   200: unknown;
 };
 
-export type DeleteRoleRbacV1RbacRoleIdRoleDeleteData = {
+export type DeleteRoleData = {
   body?: never;
   path: {
     /**
@@ -639,24 +633,23 @@ export type DeleteRoleRbacV1RbacRoleIdRoleDeleteData = {
   url: "/rbac/v1/rbac/role/{id_role}";
 };
 
-export type DeleteRoleRbacV1RbacRoleIdRoleDeleteErrors = {
+export type DeleteRoleErrors = {
   /**
    * Validation Error
    */
   422: HttpValidationError;
 };
 
-export type DeleteRoleRbacV1RbacRoleIdRoleDeleteError =
-  DeleteRoleRbacV1RbacRoleIdRoleDeleteErrors[keyof DeleteRoleRbacV1RbacRoleIdRoleDeleteErrors];
+export type DeleteRoleError = DeleteRoleErrors[keyof DeleteRoleErrors];
 
-export type DeleteRoleRbacV1RbacRoleIdRoleDeleteResponses = {
+export type DeleteRoleResponses = {
   /**
    * Successful Response
    */
   200: unknown;
 };
 
-export type GetRoleRbacV1RbacRoleIdRoleGetData = {
+export type GetRoleData = {
   body?: never;
   path: {
     /**
@@ -668,27 +661,25 @@ export type GetRoleRbacV1RbacRoleIdRoleGetData = {
   url: "/rbac/v1/rbac/role/{id_role}";
 };
 
-export type GetRoleRbacV1RbacRoleIdRoleGetErrors = {
+export type GetRoleErrors = {
   /**
    * Validation Error
    */
   422: HttpValidationError;
 };
 
-export type GetRoleRbacV1RbacRoleIdRoleGetError =
-  GetRoleRbacV1RbacRoleIdRoleGetErrors[keyof GetRoleRbacV1RbacRoleIdRoleGetErrors];
+export type GetRoleError = GetRoleErrors[keyof GetRoleErrors];
 
-export type GetRoleRbacV1RbacRoleIdRoleGetResponses = {
+export type GetRoleResponses = {
   /**
    * Successful Response
    */
   200: RoleResponse;
 };
 
-export type GetRoleRbacV1RbacRoleIdRoleGetResponse =
-  GetRoleRbacV1RbacRoleIdRoleGetResponses[keyof GetRoleRbacV1RbacRoleIdRoleGetResponses];
+export type GetRoleResponse = GetRoleResponses[keyof GetRoleResponses];
 
-export type GetAllRolePermissionsRbacV1RbacRoleIdRolePermissionGetData = {
+export type GetAllRolePermissionsData = {
   body?: never;
   path: {
     /**
@@ -700,28 +691,28 @@ export type GetAllRolePermissionsRbacV1RbacRoleIdRolePermissionGetData = {
   url: "/rbac/v1/rbac/role/{id_role}/permission";
 };
 
-export type GetAllRolePermissionsRbacV1RbacRoleIdRolePermissionGetErrors = {
+export type GetAllRolePermissionsErrors = {
   /**
    * Validation Error
    */
   422: HttpValidationError;
 };
 
-export type GetAllRolePermissionsRbacV1RbacRoleIdRolePermissionGetError =
-  GetAllRolePermissionsRbacV1RbacRoleIdRolePermissionGetErrors[keyof GetAllRolePermissionsRbacV1RbacRoleIdRolePermissionGetErrors];
+export type GetAllRolePermissionsError =
+  GetAllRolePermissionsErrors[keyof GetAllRolePermissionsErrors];
 
-export type GetAllRolePermissionsRbacV1RbacRoleIdRolePermissionGetResponses = {
+export type GetAllRolePermissionsResponses = {
   /**
-   * Response Get All Role Permissions Rbac V1 Rbac Role  Id Role  Permission Get
+   * Response Rbac-Get All Role Permissions
    * Successful Response
    */
   200: Array<Permission>;
 };
 
-export type GetAllRolePermissionsRbacV1RbacRoleIdRolePermissionGetResponse =
-  GetAllRolePermissionsRbacV1RbacRoleIdRolePermissionGetResponses[keyof GetAllRolePermissionsRbacV1RbacRoleIdRolePermissionGetResponses];
+export type GetAllRolePermissionsResponse =
+  GetAllRolePermissionsResponses[keyof GetAllRolePermissionsResponses];
 
-export type AddPermissionsToRoleRbacV1RbacRoleIdRoleAddPermissionPutData = {
+export type AddPermissionsToRoleData = {
   /**
    * Permissions
    */
@@ -736,28 +727,27 @@ export type AddPermissionsToRoleRbacV1RbacRoleIdRoleAddPermissionPutData = {
   url: "/rbac/v1/rbac/role/{id_role}/add/permission";
 };
 
-export type AddPermissionsToRoleRbacV1RbacRoleIdRoleAddPermissionPutErrors = {
+export type AddPermissionsToRoleErrors = {
   /**
    * Validation Error
    */
   422: HttpValidationError;
 };
 
-export type AddPermissionsToRoleRbacV1RbacRoleIdRoleAddPermissionPutError =
-  AddPermissionsToRoleRbacV1RbacRoleIdRoleAddPermissionPutErrors[keyof AddPermissionsToRoleRbacV1RbacRoleIdRoleAddPermissionPutErrors];
+export type AddPermissionsToRoleError =
+  AddPermissionsToRoleErrors[keyof AddPermissionsToRoleErrors];
 
-export type AddPermissionsToRoleRbacV1RbacRoleIdRoleAddPermissionPutResponses =
-  {
-    /**
-     * Successful Response
-     */
-    200: RoleAddPermissionResponse;
-  };
+export type AddPermissionsToRoleResponses = {
+  /**
+   * Successful Response
+   */
+  200: RoleAddPermissionResponse;
+};
 
-export type AddPermissionsToRoleRbacV1RbacRoleIdRoleAddPermissionPutResponse =
-  AddPermissionsToRoleRbacV1RbacRoleIdRoleAddPermissionPutResponses[keyof AddPermissionsToRoleRbacV1RbacRoleIdRoleAddPermissionPutResponses];
+export type AddPermissionsToRoleResponse =
+  AddPermissionsToRoleResponses[keyof AddPermissionsToRoleResponses];
 
-export type AddGroupsToRoleRbacV1RbacRoleIdRoleAddGroupsPutData = {
+export type AddGroupsToRoleData = {
   /**
    * Groups
    */
@@ -772,27 +762,27 @@ export type AddGroupsToRoleRbacV1RbacRoleIdRoleAddGroupsPutData = {
   url: "/rbac/v1/rbac/role/{id_role}/add/groups";
 };
 
-export type AddGroupsToRoleRbacV1RbacRoleIdRoleAddGroupsPutErrors = {
+export type AddGroupsToRoleErrors = {
   /**
    * Validation Error
    */
   422: HttpValidationError;
 };
 
-export type AddGroupsToRoleRbacV1RbacRoleIdRoleAddGroupsPutError =
-  AddGroupsToRoleRbacV1RbacRoleIdRoleAddGroupsPutErrors[keyof AddGroupsToRoleRbacV1RbacRoleIdRoleAddGroupsPutErrors];
+export type AddGroupsToRoleError =
+  AddGroupsToRoleErrors[keyof AddGroupsToRoleErrors];
 
-export type AddGroupsToRoleRbacV1RbacRoleIdRoleAddGroupsPutResponses = {
+export type AddGroupsToRoleResponses = {
   /**
    * Successful Response
    */
   200: RoleAddGroupsResponse;
 };
 
-export type AddGroupsToRoleRbacV1RbacRoleIdRoleAddGroupsPutResponse =
-  AddGroupsToRoleRbacV1RbacRoleIdRoleAddGroupsPutResponses[keyof AddGroupsToRoleRbacV1RbacRoleIdRoleAddGroupsPutResponses];
+export type AddGroupsToRoleResponse =
+  AddGroupsToRoleResponses[keyof AddGroupsToRoleResponses];
 
-export type AddModulesToRoleRbacV1RbacRoleIdRoleAddModulesPutData = {
+export type AddModulesToRoleData = {
   /**
    * Modules
    */
@@ -807,65 +797,65 @@ export type AddModulesToRoleRbacV1RbacRoleIdRoleAddModulesPutData = {
   url: "/rbac/v1/rbac/role/{id_role}/add/modules";
 };
 
-export type AddModulesToRoleRbacV1RbacRoleIdRoleAddModulesPutErrors = {
+export type AddModulesToRoleErrors = {
   /**
    * Validation Error
    */
   422: HttpValidationError;
 };
 
-export type AddModulesToRoleRbacV1RbacRoleIdRoleAddModulesPutError =
-  AddModulesToRoleRbacV1RbacRoleIdRoleAddModulesPutErrors[keyof AddModulesToRoleRbacV1RbacRoleIdRoleAddModulesPutErrors];
+export type AddModulesToRoleError =
+  AddModulesToRoleErrors[keyof AddModulesToRoleErrors];
 
-export type AddModulesToRoleRbacV1RbacRoleIdRoleAddModulesPutResponses = {
+export type AddModulesToRoleResponses = {
   /**
    * Successful Response
    */
   200: RoleAddModulesResponse;
 };
 
-export type AddModulesToRoleRbacV1RbacRoleIdRoleAddModulesPutResponse =
-  AddModulesToRoleRbacV1RbacRoleIdRoleAddModulesPutResponses[keyof AddModulesToRoleRbacV1RbacRoleIdRoleAddModulesPutResponses];
+export type AddModulesToRoleResponse =
+  AddModulesToRoleResponses[keyof AddModulesToRoleResponses];
 
-export type GetAllPermissionsRbacV1RbacPermissionGetData = {
+export type GetAllPermissionsData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/rbac/v1/rbac/permission";
 };
 
-export type GetAllPermissionsRbacV1RbacPermissionGetResponses = {
+export type GetAllPermissionsResponses = {
   /**
    * Successful Response
    */
   200: unknown;
 };
 
-export type CreatePermissionRbacV1RbacPermissionPostData = {
+export type CreatePermissionData = {
   body: CreatePermissionRequest;
   path?: never;
   query?: never;
   url: "/rbac/v1/rbac/permission";
 };
 
-export type CreatePermissionRbacV1RbacPermissionPostErrors = {
+export type CreatePermissionErrors = {
   /**
    * Validation Error
    */
   422: HttpValidationError;
 };
 
-export type CreatePermissionRbacV1RbacPermissionPostError =
-  CreatePermissionRbacV1RbacPermissionPostErrors[keyof CreatePermissionRbacV1RbacPermissionPostErrors];
+export type CreatePermissionError =
+  CreatePermissionErrors[keyof CreatePermissionErrors];
 
-export type CreatePermissionRbacV1RbacPermissionPostResponses = {
+export type CreatePermissionResponses = {
   /**
    * Successful Response
    */
   200: unknown;
 };
 
-export type EditPermissionRbacV1RbacPermissionPutData = {
+export type EditPermissionData = {
   body?: never;
   path?: never;
   query: {
@@ -877,24 +867,24 @@ export type EditPermissionRbacV1RbacPermissionPutData = {
   url: "/rbac/v1/rbac/permission";
 };
 
-export type EditPermissionRbacV1RbacPermissionPutErrors = {
+export type EditPermissionErrors = {
   /**
    * Validation Error
    */
   422: HttpValidationError;
 };
 
-export type EditPermissionRbacV1RbacPermissionPutError =
-  EditPermissionRbacV1RbacPermissionPutErrors[keyof EditPermissionRbacV1RbacPermissionPutErrors];
+export type EditPermissionError =
+  EditPermissionErrors[keyof EditPermissionErrors];
 
-export type EditPermissionRbacV1RbacPermissionPutResponses = {
+export type EditPermissionResponses = {
   /**
    * Successful Response
    */
   200: unknown;
 };
 
-export type DeletePermissionRbacV1RbacPermissionIdPermissionDeleteData = {
+export type DeletePermissionData = {
   body?: never;
   path: {
     /**
@@ -906,24 +896,24 @@ export type DeletePermissionRbacV1RbacPermissionIdPermissionDeleteData = {
   url: "/rbac/v1/rbac/permission/{id_permission}";
 };
 
-export type DeletePermissionRbacV1RbacPermissionIdPermissionDeleteErrors = {
+export type DeletePermissionErrors = {
   /**
    * Validation Error
    */
   422: HttpValidationError;
 };
 
-export type DeletePermissionRbacV1RbacPermissionIdPermissionDeleteError =
-  DeletePermissionRbacV1RbacPermissionIdPermissionDeleteErrors[keyof DeletePermissionRbacV1RbacPermissionIdPermissionDeleteErrors];
+export type DeletePermissionError =
+  DeletePermissionErrors[keyof DeletePermissionErrors];
 
-export type DeletePermissionRbacV1RbacPermissionIdPermissionDeleteResponses = {
+export type DeletePermissionResponses = {
   /**
    * Successful Response
    */
   200: unknown;
 };
 
-export type GetPermissionRbacV1RbacPermissionIdPermissionGetData = {
+export type GetPermissionData = {
   body?: never;
   path: {
     /**
@@ -935,62 +925,60 @@ export type GetPermissionRbacV1RbacPermissionIdPermissionGetData = {
   url: "/rbac/v1/rbac/permission/{id_permission}";
 };
 
-export type GetPermissionRbacV1RbacPermissionIdPermissionGetErrors = {
+export type GetPermissionErrors = {
   /**
    * Validation Error
    */
   422: HttpValidationError;
 };
 
-export type GetPermissionRbacV1RbacPermissionIdPermissionGetError =
-  GetPermissionRbacV1RbacPermissionIdPermissionGetErrors[keyof GetPermissionRbacV1RbacPermissionIdPermissionGetErrors];
+export type GetPermissionError = GetPermissionErrors[keyof GetPermissionErrors];
 
-export type GetPermissionRbacV1RbacPermissionIdPermissionGetResponses = {
+export type GetPermissionResponses = {
   /**
    * Successful Response
    */
   200: unknown;
 };
 
-export type GetAllGroupsRbacV1RbacGroupGetData = {
+export type GetAllGroupsData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/rbac/v1/rbac/group";
 };
 
-export type GetAllGroupsRbacV1RbacGroupGetResponses = {
+export type GetAllGroupsResponses = {
   /**
    * Successful Response
    */
   200: unknown;
 };
 
-export type CreateGroupRbacV1RbacGroupPostData = {
+export type CreateGroupData = {
   body: CreateGroupRequest;
   path?: never;
   query?: never;
   url: "/rbac/v1/rbac/group";
 };
 
-export type CreateGroupRbacV1RbacGroupPostErrors = {
+export type CreateGroupErrors = {
   /**
    * Validation Error
    */
   422: HttpValidationError;
 };
 
-export type CreateGroupRbacV1RbacGroupPostError =
-  CreateGroupRbacV1RbacGroupPostErrors[keyof CreateGroupRbacV1RbacGroupPostErrors];
+export type CreateGroupError = CreateGroupErrors[keyof CreateGroupErrors];
 
-export type CreateGroupRbacV1RbacGroupPostResponses = {
+export type CreateGroupResponses = {
   /**
    * Successful Response
    */
   200: unknown;
 };
 
-export type GetGroupRbacV1RbacGroupIdGroupGetData = {
+export type GetGroupData = {
   body?: never;
   path: {
     /**
@@ -1002,27 +990,25 @@ export type GetGroupRbacV1RbacGroupIdGroupGetData = {
   url: "/rbac/v1/rbac/group/{id_group}";
 };
 
-export type GetGroupRbacV1RbacGroupIdGroupGetErrors = {
+export type GetGroupErrors = {
   /**
    * Validation Error
    */
   422: HttpValidationError;
 };
 
-export type GetGroupRbacV1RbacGroupIdGroupGetError =
-  GetGroupRbacV1RbacGroupIdGroupGetErrors[keyof GetGroupRbacV1RbacGroupIdGroupGetErrors];
+export type GetGroupError = GetGroupErrors[keyof GetGroupErrors];
 
-export type GetGroupRbacV1RbacGroupIdGroupGetResponses = {
+export type GetGroupResponses = {
   /**
    * Successful Response
    */
   200: GroupResponse;
 };
 
-export type GetGroupRbacV1RbacGroupIdGroupGetResponse =
-  GetGroupRbacV1RbacGroupIdGroupGetResponses[keyof GetGroupRbacV1RbacGroupIdGroupGetResponses];
+export type GetGroupResponse = GetGroupResponses[keyof GetGroupResponses];
 
-export type AddPermissionsToGroupRbacV1RbacGroupIdGroupAddPermissionPutData = {
+export type AddPermissionsToGroupData = {
   /**
    * Permissions
    */
@@ -1037,29 +1023,27 @@ export type AddPermissionsToGroupRbacV1RbacGroupIdGroupAddPermissionPutData = {
   url: "/rbac/v1/rbac/group/{id_group}/add/permission";
 };
 
-export type AddPermissionsToGroupRbacV1RbacGroupIdGroupAddPermissionPutErrors =
-  {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-  };
+export type AddPermissionsToGroupErrors = {
+  /**
+   * Validation Error
+   */
+  422: HttpValidationError;
+};
 
-export type AddPermissionsToGroupRbacV1RbacGroupIdGroupAddPermissionPutError =
-  AddPermissionsToGroupRbacV1RbacGroupIdGroupAddPermissionPutErrors[keyof AddPermissionsToGroupRbacV1RbacGroupIdGroupAddPermissionPutErrors];
+export type AddPermissionsToGroupError =
+  AddPermissionsToGroupErrors[keyof AddPermissionsToGroupErrors];
 
-export type AddPermissionsToGroupRbacV1RbacGroupIdGroupAddPermissionPutResponses =
-  {
-    /**
-     * Successful Response
-     */
-    200: GroupAddPermissionResponse;
-  };
+export type AddPermissionsToGroupResponses = {
+  /**
+   * Successful Response
+   */
+  200: GroupAddPermissionResponse;
+};
 
-export type AddPermissionsToGroupRbacV1RbacGroupIdGroupAddPermissionPutResponse =
-  AddPermissionsToGroupRbacV1RbacGroupIdGroupAddPermissionPutResponses[keyof AddPermissionsToGroupRbacV1RbacGroupIdGroupAddPermissionPutResponses];
+export type AddPermissionsToGroupResponse =
+  AddPermissionsToGroupResponses[keyof AddPermissionsToGroupResponses];
 
-export type GetUserListUsersV1UsersGetData = {
+export type GetUserListData = {
   body?: never;
   path?: never;
   query?: {
@@ -1075,48 +1059,46 @@ export type GetUserListUsersV1UsersGetData = {
   url: "/users/v1/users";
 };
 
-export type GetUserListUsersV1UsersGetErrors = {
+export type GetUserListErrors = {
   /**
    * Validation Error
    */
   422: HttpValidationError;
 };
 
-export type GetUserListUsersV1UsersGetError =
-  GetUserListUsersV1UsersGetErrors[keyof GetUserListUsersV1UsersGetErrors];
+export type GetUserListError = GetUserListErrors[keyof GetUserListErrors];
 
-export type GetUserListUsersV1UsersGetResponses = {
+export type GetUserListResponses = {
   /**
    * Successful Response
    */
   200: unknown;
 };
 
-export type CreateUserUsersV1UsersPostData = {
+export type CreateUserData = {
   body: CreateUserRequest;
   path?: never;
   query?: never;
   url: "/users/v1/users";
 };
 
-export type CreateUserUsersV1UsersPostErrors = {
+export type CreateUserErrors = {
   /**
    * Validation Error
    */
   422: HttpValidationError;
 };
 
-export type CreateUserUsersV1UsersPostError =
-  CreateUserUsersV1UsersPostErrors[keyof CreateUserUsersV1UsersPostErrors];
+export type CreateUserError = CreateUserErrors[keyof CreateUserErrors];
 
-export type CreateUserUsersV1UsersPostResponses = {
+export type CreateUserResponses = {
   /**
    * Successful Response
    */
   200: unknown;
 };
 
-export type GetUserUsersV1UsersUserIdGetData = {
+export type GetUserData = {
   body?: never;
   path?: never;
   query: {
@@ -1128,24 +1110,23 @@ export type GetUserUsersV1UsersUserIdGetData = {
   url: "/users/v1/users/{user_id}";
 };
 
-export type GetUserUsersV1UsersUserIdGetErrors = {
+export type GetUserErrors = {
   /**
    * Validation Error
    */
   422: HttpValidationError;
 };
 
-export type GetUserUsersV1UsersUserIdGetError =
-  GetUserUsersV1UsersUserIdGetErrors[keyof GetUserUsersV1UsersUserIdGetErrors];
+export type GetUserError = GetUserErrors[keyof GetUserErrors];
 
-export type GetUserUsersV1UsersUserIdGetResponses = {
+export type GetUserResponses = {
   /**
    * Successful Response
    */
   200: unknown;
 };
 
-export type AsignRoleUsersV1UsersUserUuidRolePutData = {
+export type AsignRoleData = {
   body: RoleRequest;
   path: {
     /**
@@ -1157,24 +1138,23 @@ export type AsignRoleUsersV1UsersUserUuidRolePutData = {
   url: "/users/v1/users/{user_uuid}/role";
 };
 
-export type AsignRoleUsersV1UsersUserUuidRolePutErrors = {
+export type AsignRoleErrors = {
   /**
    * Validation Error
    */
   422: HttpValidationError;
 };
 
-export type AsignRoleUsersV1UsersUserUuidRolePutError =
-  AsignRoleUsersV1UsersUserUuidRolePutErrors[keyof AsignRoleUsersV1UsersUserUuidRolePutErrors];
+export type AsignRoleError = AsignRoleErrors[keyof AsignRoleErrors];
 
-export type AsignRoleUsersV1UsersUserUuidRolePutResponses = {
+export type AsignRoleResponses = {
   /**
    * Successful Response
    */
   200: unknown;
 };
 
-export type GetAllProvidersProvidersV1ProvidersGetData = {
+export type GetAllProvidersData = {
   body?: never;
   path?: never;
   query?: {
@@ -1190,45 +1170,59 @@ export type GetAllProvidersProvidersV1ProvidersGetData = {
   url: "/providers/v1/providers";
 };
 
-export type GetAllProvidersProvidersV1ProvidersGetErrors = {
+export type GetAllProvidersErrors = {
   /**
    * Validation Error
    */
   422: HttpValidationError;
 };
 
-export type GetAllProvidersProvidersV1ProvidersGetError =
-  GetAllProvidersProvidersV1ProvidersGetErrors[keyof GetAllProvidersProvidersV1ProvidersGetErrors];
+export type GetAllProvidersError =
+  GetAllProvidersErrors[keyof GetAllProvidersErrors];
 
-export type GetAllProvidersProvidersV1ProvidersGetResponses = {
+export type GetAllProvidersResponses = {
   /**
    * Successful Response
    */
   200: unknown;
 };
 
-export type GetSystemPermissionsPermissionsGetData = {
+export type GetBackendSchemaData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/system/openapi_schema";
+};
+
+export type GetBackendSchemaResponses = {
+  /**
+   * Successful Response
+   */
+  200: unknown;
+};
+
+export type GetSystemPermissionsData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/permissions";
 };
 
-export type GetSystemPermissionsPermissionsGetResponses = {
+export type GetSystemPermissionsResponses = {
   /**
    * Successful Response
    */
   200: unknown;
 };
 
-export type GetSystemModulesModulesGetData = {
+export type GetSystemModulesData = {
   body?: never;
   path?: never;
   query?: never;
   url: "/modules";
 };
 
-export type GetSystemModulesModulesGetResponses = {
+export type GetSystemModulesResponses = {
   /**
    * Successful Response
    */
@@ -1236,8 +1230,5 @@ export type GetSystemModulesModulesGetResponses = {
 };
 
 export type ClientOptions = {
-  baseUrl:
-    | `${string}://${string}/api`
-    | "http://localhost:8000"
-    | (string & {});
+  baseUrl: "http://localhost:8000" | (string & {});
 };

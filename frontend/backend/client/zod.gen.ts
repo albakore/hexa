@@ -60,9 +60,9 @@ export const zCreateRoleRequest = z.object({
  * CreateUserRequest
  */
 export const zCreateUserRequest = z.object({
-  name: z.string().optional().default("Denise Grimes"),
-  lastname: z.string().optional().default("Cooke"),
-  email: z.string().optional().default("prose@example.net"),
+  name: z.string().optional().default("Melissa Griffin"),
+  lastname: z.string().optional().default("Johnson"),
+  email: z.string().optional().default("geoffrey82@example.net"),
 });
 
 /**
@@ -214,7 +214,7 @@ export const zVerifyTokenRequest = z.object({
   token: z.string(),
 });
 
-export const zRefreshTokenAuthV1AuthRefreshPostData = z.object({
+export const zRefreshTokenData = z.object({
   body: zRefreshTokenRequest,
   path: z.never().optional(),
   query: z.never().optional(),
@@ -223,51 +223,51 @@ export const zRefreshTokenAuthV1AuthRefreshPostData = z.object({
 /**
  * Successful Response
  */
-export const zRefreshTokenAuthV1AuthRefreshPostResponse = zRefreshTokenResponse;
+export const zRefreshTokenResponse2 = zRefreshTokenResponse;
 
-export const zVerifyTokenAuthV1AuthVerifyPostData = z.object({
+export const zVerifyTokenData = z.object({
   body: zVerifyTokenRequest,
   path: z.never().optional(),
   query: z.never().optional(),
 });
 
-export const zLoginAuthV1AuthLoginPostData = z.object({
+export const zLoginData = z.object({
   body: zAuthLoginRequest,
   path: z.never().optional(),
   query: z.never().optional(),
 });
 
-export const zRegisterAuthV1AuthRegisterPostData = z.object({
+export const zRegisterData = z.object({
   body: zAuthRegisterRequest,
   path: z.never().optional(),
   query: z.never().optional(),
 });
 
-export const zPasswordResetAuthV1AuthPasswordResetPostData = z.object({
+export const zPasswordResetData = z.object({
   body: zAuthPasswordResetRequest,
   path: z.never().optional(),
   query: z.never().optional(),
 });
 
-export const zGetAllRolesRbacV1RbacRoleGetData = z.object({
+export const zGetAllRolesData = z.object({
   body: z.never().optional(),
   path: z.never().optional(),
   query: z.never().optional(),
 });
 
-export const zCreateRoleRbacV1RbacRolePostData = z.object({
+export const zCreateRoleData = z.object({
   body: zCreateRoleRequest,
   path: z.never().optional(),
   query: z.never().optional(),
 });
 
-export const zEditRoleRbacV1RbacRolePutData = z.object({
+export const zEditRoleData = z.object({
   body: z.never().optional(),
   path: z.never().optional(),
   query: z.never().optional(),
 });
 
-export const zDeleteRoleRbacV1RbacRoleIdRoleDeleteData = z.object({
+export const zDeleteRoleData = z.object({
   body: z.never().optional(),
   path: z.object({
     id_role: z.number().int(),
@@ -275,7 +275,7 @@ export const zDeleteRoleRbacV1RbacRoleIdRoleDeleteData = z.object({
   query: z.never().optional(),
 });
 
-export const zGetRoleRbacV1RbacRoleIdRoleGetData = z.object({
+export const zGetRoleData = z.object({
   body: z.never().optional(),
   path: z.object({
     id_role: z.number().int(),
@@ -286,40 +286,36 @@ export const zGetRoleRbacV1RbacRoleIdRoleGetData = z.object({
 /**
  * Successful Response
  */
-export const zGetRoleRbacV1RbacRoleIdRoleGetResponse = zRoleResponse;
+export const zGetRoleResponse = zRoleResponse;
 
-export const zGetAllRolePermissionsRbacV1RbacRoleIdRolePermissionGetData =
-  z.object({
-    body: z.never().optional(),
-    path: z.object({
-      id_role: z.number().int(),
-    }),
-    query: z.never().optional(),
-  });
+export const zGetAllRolePermissionsData = z.object({
+  body: z.never().optional(),
+  path: z.object({
+    id_role: z.number().int(),
+  }),
+  query: z.never().optional(),
+});
 
 /**
- * Response Get All Role Permissions Rbac V1 Rbac Role  Id Role  Permission Get
+ * Response Rbac-Get All Role Permissions
  * Successful Response
  */
-export const zGetAllRolePermissionsRbacV1RbacRoleIdRolePermissionGetResponse =
-  z.array(zPermission);
+export const zGetAllRolePermissionsResponse = z.array(zPermission);
 
-export const zAddPermissionsToRoleRbacV1RbacRoleIdRoleAddPermissionPutData =
-  z.object({
-    body: z.array(zPermission),
-    path: z.object({
-      id_role: z.number().int(),
-    }),
-    query: z.never().optional(),
-  });
+export const zAddPermissionsToRoleData = z.object({
+  body: z.array(zPermission),
+  path: z.object({
+    id_role: z.number().int(),
+  }),
+  query: z.never().optional(),
+});
 
 /**
  * Successful Response
  */
-export const zAddPermissionsToRoleRbacV1RbacRoleIdRoleAddPermissionPutResponse =
-  zRoleAddPermissionResponse;
+export const zAddPermissionsToRoleResponse = zRoleAddPermissionResponse;
 
-export const zAddGroupsToRoleRbacV1RbacRoleIdRoleAddGroupsPutData = z.object({
+export const zAddGroupsToRoleData = z.object({
   body: z.array(zGroupPermission),
   path: z.object({
     id_role: z.number().int(),
@@ -330,10 +326,9 @@ export const zAddGroupsToRoleRbacV1RbacRoleIdRoleAddGroupsPutData = z.object({
 /**
  * Successful Response
  */
-export const zAddGroupsToRoleRbacV1RbacRoleIdRoleAddGroupsPutResponse =
-  zRoleAddGroupsResponse;
+export const zAddGroupsToRoleResponse = zRoleAddGroupsResponse;
 
-export const zAddModulesToRoleRbacV1RbacRoleIdRoleAddModulesPutData = z.object({
+export const zAddModulesToRoleData = z.object({
   body: z.array(zModule),
   path: z.object({
     id_role: z.number().int(),
@@ -344,22 +339,21 @@ export const zAddModulesToRoleRbacV1RbacRoleIdRoleAddModulesPutData = z.object({
 /**
  * Successful Response
  */
-export const zAddModulesToRoleRbacV1RbacRoleIdRoleAddModulesPutResponse =
-  zRoleAddModulesResponse;
+export const zAddModulesToRoleResponse = zRoleAddModulesResponse;
 
-export const zGetAllPermissionsRbacV1RbacPermissionGetData = z.object({
+export const zGetAllPermissionsData = z.object({
   body: z.never().optional(),
   path: z.never().optional(),
   query: z.never().optional(),
 });
 
-export const zCreatePermissionRbacV1RbacPermissionPostData = z.object({
+export const zCreatePermissionData = z.object({
   body: zCreatePermissionRequest,
   path: z.never().optional(),
   query: z.never().optional(),
 });
 
-export const zEditPermissionRbacV1RbacPermissionPutData = z.object({
+export const zEditPermissionData = z.object({
   body: z.never().optional(),
   path: z.never().optional(),
   query: z.object({
@@ -367,16 +361,7 @@ export const zEditPermissionRbacV1RbacPermissionPutData = z.object({
   }),
 });
 
-export const zDeletePermissionRbacV1RbacPermissionIdPermissionDeleteData =
-  z.object({
-    body: z.never().optional(),
-    path: z.object({
-      id_permission: z.number().int(),
-    }),
-    query: z.never().optional(),
-  });
-
-export const zGetPermissionRbacV1RbacPermissionIdPermissionGetData = z.object({
+export const zDeletePermissionData = z.object({
   body: z.never().optional(),
   path: z.object({
     id_permission: z.number().int(),
@@ -384,19 +369,27 @@ export const zGetPermissionRbacV1RbacPermissionIdPermissionGetData = z.object({
   query: z.never().optional(),
 });
 
-export const zGetAllGroupsRbacV1RbacGroupGetData = z.object({
+export const zGetPermissionData = z.object({
+  body: z.never().optional(),
+  path: z.object({
+    id_permission: z.number().int(),
+  }),
+  query: z.never().optional(),
+});
+
+export const zGetAllGroupsData = z.object({
   body: z.never().optional(),
   path: z.never().optional(),
   query: z.never().optional(),
 });
 
-export const zCreateGroupRbacV1RbacGroupPostData = z.object({
+export const zCreateGroupData = z.object({
   body: zCreateGroupRequest,
   path: z.never().optional(),
   query: z.never().optional(),
 });
 
-export const zGetGroupRbacV1RbacGroupIdGroupGetData = z.object({
+export const zGetGroupData = z.object({
   body: z.never().optional(),
   path: z.object({
     id_group: z.number().int(),
@@ -407,24 +400,22 @@ export const zGetGroupRbacV1RbacGroupIdGroupGetData = z.object({
 /**
  * Successful Response
  */
-export const zGetGroupRbacV1RbacGroupIdGroupGetResponse = zGroupResponse;
+export const zGetGroupResponse = zGroupResponse;
 
-export const zAddPermissionsToGroupRbacV1RbacGroupIdGroupAddPermissionPutData =
-  z.object({
-    body: z.array(zPermission),
-    path: z.object({
-      id_group: z.number().int(),
-    }),
-    query: z.never().optional(),
-  });
+export const zAddPermissionsToGroupData = z.object({
+  body: z.array(zPermission),
+  path: z.object({
+    id_group: z.number().int(),
+  }),
+  query: z.never().optional(),
+});
 
 /**
  * Successful Response
  */
-export const zAddPermissionsToGroupRbacV1RbacGroupIdGroupAddPermissionPutResponse =
-  zGroupAddPermissionResponse;
+export const zAddPermissionsToGroupResponse = zGroupAddPermissionResponse;
 
-export const zGetUserListUsersV1UsersGetData = z.object({
+export const zGetUserListData = z.object({
   body: z.never().optional(),
   path: z.never().optional(),
   query: z
@@ -435,13 +426,13 @@ export const zGetUserListUsersV1UsersGetData = z.object({
     .optional(),
 });
 
-export const zCreateUserUsersV1UsersPostData = z.object({
+export const zCreateUserData = z.object({
   body: zCreateUserRequest,
   path: z.never().optional(),
   query: z.never().optional(),
 });
 
-export const zGetUserUsersV1UsersUserIdGetData = z.object({
+export const zGetUserData = z.object({
   body: z.never().optional(),
   path: z.never().optional(),
   query: z.object({
@@ -449,7 +440,7 @@ export const zGetUserUsersV1UsersUserIdGetData = z.object({
   }),
 });
 
-export const zAsignRoleUsersV1UsersUserUuidRolePutData = z.object({
+export const zAsignRoleData = z.object({
   body: zRoleRequest,
   path: z.object({
     user_uuid: z.string().uuid(),
@@ -457,7 +448,7 @@ export const zAsignRoleUsersV1UsersUserUuidRolePutData = z.object({
   query: z.never().optional(),
 });
 
-export const zGetAllProvidersProvidersV1ProvidersGetData = z.object({
+export const zGetAllProvidersData = z.object({
   body: z.never().optional(),
   path: z.never().optional(),
   query: z
@@ -468,13 +459,19 @@ export const zGetAllProvidersProvidersV1ProvidersGetData = z.object({
     .optional(),
 });
 
-export const zGetSystemPermissionsPermissionsGetData = z.object({
+export const zGetBackendSchemaData = z.object({
   body: z.never().optional(),
   path: z.never().optional(),
   query: z.never().optional(),
 });
 
-export const zGetSystemModulesModulesGetData = z.object({
+export const zGetSystemPermissionsData = z.object({
+  body: z.never().optional(),
+  path: z.never().optional(),
+  query: z.never().optional(),
+});
+
+export const zGetSystemModulesData = z.object({
   body: z.never().optional(),
   path: z.never().optional(),
   query: z.never().optional(),

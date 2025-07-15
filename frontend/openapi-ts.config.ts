@@ -2,7 +2,7 @@ import { defineConfig, defaultPlugins } from '@hey-api/openapi-ts';
 
 export default defineConfig({
 	input:
-		'http://localhost:8000/openapi.json',
+		'http://localhost:8000/system/openapi_schema',
 	output: {
 		format: 'prettier',
 		lint: 'eslint',
@@ -10,6 +10,11 @@ export default defineConfig({
 	},
 	plugins: [
 		...defaultPlugins,
+		{
+			name: '@hey-api/client-next',
+			// runtimeConfigPath: './hey-api.ts',
+			// baseUrl: 'http://localhost:8000'
+		},
 		{
 			name: '@hey-api/sdk',
 			validator: 'zod',
