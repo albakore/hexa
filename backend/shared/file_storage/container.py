@@ -12,7 +12,7 @@ class FileStorageContainer(DeclarativeContainer):
 
 	config = Configuration(pydantic_settings=[env])
 
-	s3_storage = Singleton(
+	s3_storage_repo = Singleton(
 		S3FileStorage,
 		bucket_name=config.AWS_ACCESS_BUCKET_NAME,
 		region=config.AWS_ACCESS_REGION,
@@ -22,7 +22,7 @@ class FileStorageContainer(DeclarativeContainer):
 	
 	file_storage_adapter = Factory(
 		FileStorageAdapter,
-		file_storage_repository=s3_storage
+		file_storage_repository=s3_storage_repo
 	)
 
 

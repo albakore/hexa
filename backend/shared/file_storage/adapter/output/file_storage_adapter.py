@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 from typing import BinaryIO
 
-from backend.shared.file_storage.domain.repository.file_storage import FileStorageRepository
+from shared.file_storage.domain.repository.file_storage import FileStorageRepository
 
 
 

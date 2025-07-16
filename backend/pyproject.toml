@@ -52,6 +52,9 @@ addopts = [
     "--verbose",              # Opcional: muestra más detalles
     "--tb=short"             # Opcional: formato de tracebacks
 ]
+pythonpath = [
+  "."
+]
 
 [project.scripts]
 hexa = "hexa.__main__:cmd"
