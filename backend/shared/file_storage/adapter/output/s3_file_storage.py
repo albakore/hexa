@@ -1,7 +1,8 @@
 from typing import BinaryIO
 import boto3
+from shared.file_storage.application.exceptions import FileStorageUploadException, FileStorageDownloadException
 from shared.file_storage.domain.repository.file_storage import FileStorageRepository
-
+from botocore.exceptions import ClientError
 
 class S3FileStorage(FileStorageRepository):
 	def __init__(
@@ -23,19 +24,26 @@ class S3FileStorage(FileStorageRepository):
 	async def upload_file(
 		self, file: BinaryIO, filename: str
 	) -> str:
-		self._s3.upload_fileobj(
-			Fileobj=file,
-			Bucket=self.bucket_name,
-			Key=filename
-		)
+		try: 
+			self._s3.upload_fileobj(
+				Fileobj=file,
+				Bucket=self.bucket_name,
+				Key=filename
+			)
+		except ClientError as e:
+			raise FileStorageUploadException(message=e)
+
 		return (
 			f"https://{self.bucket_name}.s3."
 			f"{self._s3.meta.region_name}.amazonaws.com/{filename}"
 		)
 	
 	async def download_file(self, filename: str) -> dict:
-		response = self._s3.get_object(
-			Bucket=self.bucket_name,
-			Key=filename,
-		)
-		return response
+		try: 
+			response = self._s3.get_object(
+				Bucket=self.bucket_name,
+				Key=filename,
+			)
+			return response
+		except ClientError as e:
+			raise FileStorageDownloadException(message=e)

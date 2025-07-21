@@ -5,7 +5,7 @@ from typing import BinaryIO
 class FileStorageRepository(ABC):
 	@abstractmethod
 	async def upload_file(
-		self, file: BinaryIO, filename: str, content_type: str
+		self, file: BinaryIO, filename: str
 	) -> str:  # URL
 		...
 
