@@ -78,6 +78,9 @@ class PermissionService:
 	#FIXME: Esto no deberia llamar a permission_repository
 	@Transactional()
 	async def delete_group(self, group: GroupPermission) -> None:
+		group = await self.permission_usecase.permission_repository.get_group_by_id(group.id)
+		if not group:
+			raise GroupNotFoundException
 		return await self.permission_usecase.permission_repository.delete_group(group)
 
 	async def extract_token_from_permissions(self, permissions: List[Permission]) -> List[str]:

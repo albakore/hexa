@@ -18,6 +18,11 @@ class CreateGroupRequest(BaseModel):
 	name: str = Field(..., description="Name of group")
 	description: str | None = Field(None,description="Description of group")
 
+class DeleteGroupRequest(BaseModel):
+	id: int
+	name: str = Field(..., description="Name of group")
+
+
 AddPermissionToRoleRequest = List[Permission]
 
 AddPermissionToGroupRequest = List[Permission]

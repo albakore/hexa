@@ -11,6 +11,7 @@ from app.rbac.adapter.input.api.v1.request import (
 	CreateGroupRequest,
 	CreatePermissionRequest,
 	CreateRoleRequest,
+	DeleteGroupRequest,
 )
 from app.rbac.adapter.input.api.v1.response import (
 	GroupAddPermissionResponse,
@@ -32,6 +33,7 @@ from app.rbac.domain.command import (
 	CreateRoleCommand,
 )
 from app.rbac.application.service.permission import PermissionService
+from app.rbac.domain.entity import GroupPermission
 
 
 rbac_router = APIRouter()
@@ -138,7 +140,7 @@ async def get_all_permissions(permission_usecase: PermissionUseCaseDependency):
 	return await permission_usecase.get_all_permissions()
 
 
-@rbac_router.get("/permission/{id_permission}")
+@rbac_router.get("/permission/{id_permission}",deprecated=True)
 @inject
 async def get_permission(
 	id_permission: int, permission_usecase: PermissionUseCaseDependency
@@ -155,11 +157,11 @@ async def create_permission(
 	return await permission_usecase.save(permission)
 
 
-@rbac_router.put("/permission")
+@rbac_router.put("/permission",deprecated=True)
 async def edit_permission(permission): ...
 
 
-@rbac_router.delete("/permission/{id_permission}")
+@rbac_router.delete("/permission/{id_permission}",deprecated=True)
 async def delete_permission(id_permission: int): ...
 
 
@@ -199,3 +201,12 @@ async def add_permissions_to_group(
 	permission_usecase: PermissionUseCaseDependency,
 ):
 	return await permission_usecase.append_permissions_to_group(permissions, id_group)
+
+@rbac_router.delete("/group/{id_group}")
+@inject
+async def delete_group(
+	command: DeleteGroupRequest, permission_usecase: PermissionUseCaseDependency
+):
+	group = GroupPermission.model_validate(command)
+	await permission_usecase.delete_group(group)
+	return {'status':'ok'}

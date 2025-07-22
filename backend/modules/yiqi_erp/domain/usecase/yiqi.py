@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from fastapi import UploadFile
 import httpx
 
-from modules.yiqi_erp.application.exception import YiqiServiceException
+from modules.yiqi_erp.application.exception import YiqiEntityNotFoundException, YiqiServiceException
 from modules.yiqi_erp.domain.command import CreateYiqiInvoiceCommand, UploadFileCommand
 from modules.yiqi_erp.domain.repository.yiqi import YiqiRepository
 
@@ -24,6 +24,9 @@ class GetProviderByIdUseCase:
 		provider = await self.yiqi_repository.get_provider_by_id(id_provider, id_schema)
 		if provider.is_success:
 			return provider.json()
+		if provider.is_client_error:
+			raise YiqiEntityNotFoundException
+
 		raise YiqiServiceException
 
 @dataclass
