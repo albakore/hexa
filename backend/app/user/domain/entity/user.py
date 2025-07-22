@@ -26,6 +26,8 @@ class User(SQLModel, table=True):
 	date_last_session: datetime = Field(default_factory=datetime.now)
 	date_registration: datetime = Field(default_factory=datetime.now)
 	fk_role: int | None = Field(default=None, foreign_key="role.id")
+	is_admin: bool = Field(default=False)
+	is_owner: bool = Field(default=False)
 	
 	role: 'Role' = Relationship(back_populates='users')
 	

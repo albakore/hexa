@@ -10,6 +10,8 @@ class GetUserListResponseDTO(BaseModel):
     id: uuid.UUID = Field(..., description="ID")
     email: str = Field(..., description="Email")
     nickname: str = Field(..., description="Nickname")
+    is_admin: bool | None = Field(default=False, description="Set as admin")
+    is_owner: bool | None = Field(default=False, description="Set as super admin")
 
 
 class CreateUserRequestDTO(BaseModel):
@@ -19,6 +21,8 @@ class CreateUserRequestDTO(BaseModel):
     lastname : str | None = Field(default=None, description="Lastname")
     job_position : str | None = Field(default=None, description="Job Position")
     phone_number : str | None = Field(default=None, description="Phone Number")
+    is_admin: bool = Field(default=False, description="Set as admin")
+    is_owner: bool = Field(default=False, description="Set as super admin")
 
 
 class CreateUserResponseDTO(BaseModel):
@@ -33,6 +37,9 @@ class UserLoginResponseDTO(BaseModel):
     lastname: str | None = None
     job_position: str | None = None
     fk_role: int | None = None
+    is_admin: bool | None = None
+    is_owner: bool | None = None
+
 
 
 class LoginResponseDTO(BaseModel):
@@ -41,3 +48,5 @@ class LoginResponseDTO(BaseModel):
     modules: List[ModuleViewDTO]
     token: str = Field(..., description="Token")
     refresh_token: str = Field(..., description="Refresh token")
+    is_admin: bool | None = None
+    is_owner: bool | None = None
