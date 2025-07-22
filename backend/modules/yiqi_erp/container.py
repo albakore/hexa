@@ -1,29 +1,26 @@
-from dependency_injector.containers import DeclarativeContainer
-from dependency_injector.providers import Singleton,Factory,Configuration
+from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
+from dependency_injector.providers import Singleton, Factory, Configuration
 
-from modules.yiqi_erp.application.yiqi import YiqiService
+from modules.yiqi_erp.application.service.yiqi import YiqiService
 from modules.yiqi_erp.adapter.output.api.http_client import YiqiHttpClient
 from core.config.settings import env
 from modules.yiqi_erp.adapter.output.api.yiqi_rest import YiqiApiRepository
 class YiqiContainer(DeclarativeContainer):
-    config = Configuration(pydantic_settings=[env])
-    
-    client = Singleton(
-        YiqiHttpClient,
-        base_url=config.YIQI_BASE_URL,
-        api_key=config.YIQI_API_TOKEN,
-        api_timeout=200.0
-    )
+	config = Configuration(pydantic_settings=[env])
 
-    repository = Factory(
-        YiqiApiRepository,
-        client=client,
-    )
+	client = Singleton(
+		YiqiHttpClient,
+		base_url=config.YIQI_BASE_URL,
+		api_key=config.YIQI_API_TOKEN,
+		api_timeout=200.0,
+	)
 
-    service = Factory(
-        YiqiService,
-        yiqi_repository=repository
-    )
+	repository = Factory(
+		YiqiApiRepository,
+		client=client,
+	)
 
-    async def shutdown(self):
-        await self.client().close()
+	service = Factory(YiqiService, yiqi_repository=repository)
+
+	async def shutdown(self):
+		await self.client().close()

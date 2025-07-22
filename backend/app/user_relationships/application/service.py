@@ -1,21 +1,27 @@
+from dataclasses import dataclass
+import uuid
 from sqlmodel import Session, select
 from typing import List
 from uuid import UUID
-from app.user_relationships.infra.output.registry import EntidadRelacionRegistry
-from .models import UsuarioEntidadLink
 
+from app.user_relationships.domain.ports import EntityResolver
+from app.user_relationships.domain.repository import UserRelationshipRepository
+from app.user_relationships.domain.usecase import UserRelationshipUseCaseFactory
+
+@dataclass
 class UserRelationshipService:
-    def __init__(self, session: Session):
-        self.session = session
+    resolver : EntityResolver
+    user_relationship_repository : UserRelationshipRepository
 
-    def obtener_entidades(self, usuario_id: UUID, tipo: str) -> List:
-        modelo = EntidadRelacionRegistry.obtener_modelo(tipo)
-        stmt = (
-            select(modelo)
-            .join(UsuarioEntidadLink, UsuarioEntidadLink.entidad_id == modelo.id)
-            .where(
-                (UsuarioEntidadLink.usuario_id == usuario_id)
-                & (UsuarioEntidadLink.entidad_tipo == tipo)
-            )
+    def __post_init__(self):
+        self.usecase = UserRelationshipUseCaseFactory(
+            self.resolver,
+            self.user_relationship_repository
         )
-        return self.session.exec(stmt).all()
+
+    async def get_entities(self, user_uuid : uuid.UUID, entity_type : str):
+        entities = await self.usecase.get_user_entities(
+            user_uuid,
+            entity_type
+        )
+        return entities

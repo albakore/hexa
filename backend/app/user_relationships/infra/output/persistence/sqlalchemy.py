@@ -1,10 +1,12 @@
-from typing import Any
+from ast import List
+from typing import Any, Sequence
 from uuid import UUID
 from app.user_relationships.domain.entity import UserRelationshipLink
 from app.user_relationships.domain.repository import UserRelationshipRepository
 from core.db import session_factory, Transactional, session
 
-from sqlmodel import delete, col
+from sqlmodel import delete, col, select, SQLModel
+from pydantic import BaseModel
 
 
 class UserRelationshipSQLAlchemyRepository(UserRelationshipRepository):
@@ -28,6 +30,18 @@ class UserRelationshipSQLAlchemyRepository(UserRelationshipRepository):
 		await session.execute(stmt)
 
 	async def get_by_user_and_entity(
-		self, user_id: UUID, tipo: str, entity: type
-	) -> list[Any]:
-		raise NotImplementedError
+		self, user_id: UUID, entity_name: str, entity: type
+	) -> list[Any] | Sequence[SQLModel]:
+		stmt = (
+			select(entity)
+			.join(
+				UserRelationshipLink,
+				UserRelationshipLink.fk_entity == entity.id
+			)
+			.where(
+				(UserRelationshipLink.fk_user == user_id)
+				& (UserRelationshipLink.entity_name == entity_name)
+			)
+		)
+		result = await session.execute(stmt)
+		return result.scalars().all()

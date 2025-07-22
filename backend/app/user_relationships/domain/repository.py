@@ -16,5 +16,5 @@ class UserRelationshipRepository(ABC):
 
 	@abstractmethod
 	async def get_by_user_and_entity(
-		self, user_id: uuid.UUID, tipo: str, entity: type
+		self, user_id: uuid.UUID, entity_name: str, entity: type
 	) -> list[Any]: ...

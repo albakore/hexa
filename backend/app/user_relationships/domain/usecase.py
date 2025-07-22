@@ -17,4 +17,11 @@ class GetUserEntitiesUseCase:
 
 @dataclass
 class UserRelationshipUseCaseFactory:
+	resolver: EntityResolver
 	user_relationship_repository: UserRelationshipRepository
+
+	def __post_init__(self):
+		self.get_user_entities = GetUserEntitiesUseCase(
+			self.resolver,
+			self.user_relationship_repository
+		)

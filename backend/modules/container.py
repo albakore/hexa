@@ -1,6 +1,7 @@
 from dependency_injector.providers import Container, Factory
 from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
 
+from modules.yiqi_erp.container import YiqiContainer
 from modules.provider.container import ProviderContainer
 
 class ModuleContainer(DeclarativeContainer):
@@ -10,3 +11,4 @@ class ModuleContainer(DeclarativeContainer):
 	)
 	
 	provider = Container(ProviderContainer)
+	yiqi_erp = Container(YiqiContainer)
