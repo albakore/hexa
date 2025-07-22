@@ -2,6 +2,7 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, Form, Query, Response
 
 from modules.container import ModuleContainer
+from modules.provider.adapter.input.api.v1.request import ProviderCreateRequest, ProviderUpdateRequest
 from modules.provider.application.service.provider import ProviderService
 
 
@@ -17,3 +18,36 @@ async def get_all_providers(
 	service : ProviderService = Depends(Provide[ModuleContainer.provider.service])
 ):
 	return await service.get_all_providers(limit,page)
+
+@provider_router.get("{id_provider}")
+@inject
+async def get_provider_by_id(
+	id_provider : int,
+	service : ProviderService = Depends(Provide[ModuleContainer.provider.service])
+):
+	return await service.get_provider_by_id(id_provider)
+
+@provider_router.post("")
+@inject
+async def create_provider(
+	command : ProviderCreateRequest,
+	service : ProviderService = Depends(Provide[ModuleContainer.provider.service])
+):
+	provider = await service.create_provider(command)
+	return await service.save_provider(provider)
+
+@provider_router.put("")
+@inject
+async def update_provider(
+	command : ProviderUpdateRequest,
+	service : ProviderService = Depends(Provide[ModuleContainer.provider.service])
+):
+	return await service.update_provider(command)
+
+@provider_router.delete("{id_provider}")
+@inject
+async def delete_provider(
+	id_provider : int,
+	service : ProviderService = Depends(Provide[ModuleContainer.provider.service])
+):
+	return await service.delete_provider(id_provider)

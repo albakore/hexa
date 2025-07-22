@@ -1,5 +1,6 @@
-from modules.provider.domain.entity.provider import Provider
+from modules.provider.domain.entity.provider import Provider, UserProviderLink
 
 __all__ = [
-	'Provider'
+	'Provider',
+	'UserProviderLink'
 ]
