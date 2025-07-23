@@ -1,6 +1,6 @@
 from typing import Type
 from sqlmodel import SQLModel
-from app.user_relationships.infra.output.registry import EntityRelationshipRegistry
+from app.user_relationships.adapter.output.registry import EntityRelationshipRegistry
 
 def user_relationship(entity_name: str):
     def wrapper(cls: Type[SQLModel]):

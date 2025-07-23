@@ -4,6 +4,7 @@ from dependency_injector.containers import DeclarativeContainer, WiringConfigura
 from app.auth.container import AuthContainer
 from app.rbac.container import RBACContainer
 from app.user.container import UserContainer
+from app.user_relationships.container import UserRelationshipContainer
 
 
 class SystemContainer(DeclarativeContainer):
@@ -11,4 +12,5 @@ class SystemContainer(DeclarativeContainer):
 
 	rbac = Container(RBACContainer)
 	user = Container(UserContainer)
+	user_relationship = Container(UserRelationshipContainer)
 	auth = Container(AuthContainer)

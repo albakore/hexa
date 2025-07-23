@@ -37,8 +37,8 @@ class UserLoginResponseDTO(BaseModel):
     lastname: str | None = None
     job_position: str | None = None
     fk_role: int | None = None
-    is_admin: bool | None = None
-    is_owner: bool | None = None
+    is_admin: bool
+    is_owner: bool
 
 
 
@@ -48,5 +48,3 @@ class LoginResponseDTO(BaseModel):
     modules: List[ModuleViewDTO]
     token: str = Field(..., description="Token")
     refresh_token: str = Field(..., description="Refresh token")
-    is_admin: bool | None = None
-    is_owner: bool | None = None

@@ -2,6 +2,7 @@ from dataclasses import dataclass
 import urllib.parse
 
 from fastapi import UploadFile
+# from backend.modules.yiqi_erp.domain.entity import FacturaDeCompra
 from modules.yiqi_erp.adapter.output.api.http_client import YiqiHttpClient
 from modules.yiqi_erp.domain.command import CreateYiqiInvoiceCommand, YiqiInvoice, YiqiInvoiceAttach
 from modules.yiqi_erp.domain.repository.yiqi import YiqiRepository
@@ -98,6 +99,8 @@ class YiqiApiRepository(YiqiRepository):
 				"operating": str(id_provider),
 			}
 		]
+
+		# attributes = FacturaDeCompra.attibutes()
 
 		attributes = [
 			"FACO_ID_FACTURA",
