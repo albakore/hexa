@@ -1,8 +1,11 @@
 from ast import List
-from typing import Any, Sequence
+from typing import Any, Sequence, Type, cast
 from uuid import UUID
+
+from sqlalchemy.orm import DeclarativeMeta
 from app.user_relationships.domain.entity import UserRelationshipLink
 from app.user_relationships.domain.repository import UserRelationshipRepository
+from app.user_relationships.adapter.output.persistence.exception import OutputPortException
 from core.db import session_factory, Transactional, session
 
 from sqlmodel import delete, col, select, SQLModel
@@ -45,3 +48,13 @@ class UserRelationshipSQLAlchemyRepository(UserRelationshipRepository):
 		)
 		result = await session.execute(stmt)
 		return result.scalars().all()
+
+	async def get_entity_by_id(self, id: int, entity: type) -> Type[Any] | None:
+		if not isinstance(entity,DeclarativeMeta):
+			raise OutputPortException
+		
+		async with session_factory() as session:
+			entity_record = await session.get(entity,int(id))
+		
+		return entity_record
+

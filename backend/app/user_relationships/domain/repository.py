@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, Type
 import uuid
 
 
@@ -18,3 +18,8 @@ class UserRelationshipRepository(ABC):
 	async def get_by_user_and_entity(
 		self, user_id: uuid.UUID, entity_name: str, entity: type
 	) -> list[Any]: ...
+
+	@abstractmethod
+	async def get_entity_by_id(
+		self, id: int, entity: type
+	) -> Type[Any] | None: ...
