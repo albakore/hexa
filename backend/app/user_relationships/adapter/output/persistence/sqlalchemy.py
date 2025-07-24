@@ -24,13 +24,14 @@ class UserRelationshipSQLAlchemyRepository(UserRelationshipRepository):
 		await session.commit()
 
 	@Transactional()
-	async def unlink_user_entity(self, fk_user: UUID, fk_entity: int, entity_type: str):
+	async def unlink_user_entity(self, fk_user: UUID, fk_entity: int, entity_type: str) -> bool:
 		stmt = delete(UserRelationshipLink)\
 			.where(col(UserRelationshipLink.fk_user) == fk_user)\
 			.where(col(UserRelationshipLink.fk_entity) == fk_entity)\
 			.where(col(UserRelationshipLink.entity_name) == entity_type)
 
-		await session.execute(stmt)
+		result = await session.execute(stmt)
+		return bool(result.rowcount)
 
 	async def get_by_user_and_entity(
 		self, user_id: UUID, entity_name: str, entity: type
@@ -49,7 +50,7 @@ class UserRelationshipSQLAlchemyRepository(UserRelationshipRepository):
 		result = await session.execute(stmt)
 		return result.scalars().all()
 
-	async def get_entity_by_id(self, id: int, entity: type) -> Type[Any] | None:
+	async def get_entity_instance_by_id(self, id: int, entity: type) -> Type[Any] | None:
 		if not isinstance(entity,DeclarativeMeta):
 			raise OutputPortException
 		

@@ -2,7 +2,7 @@ from typing import Dict, Type
 from sqlmodel import SQLModel
 
 from app.user_relationships.domain.ports import EntityResolver
-from app.user_relationships.application.exception import EntityRelationShipNotFoundException
+from app.user_relationships.domain.exception import EntityRelationShipNotFoundException
 
 
 class EntityRelationshipRegistry(EntityResolver):

@@ -7,12 +7,12 @@ class UserRelationshipRepository(ABC):
 	@abstractmethod
 	async def link_user_entity(
 		self, fk_user: uuid.UUID, fk_entity: int, entity_type: str
-	): ...
+	) -> bool: ...
 
 	@abstractmethod
 	async def unlink_user_entity(
 		self, fk_user: uuid.UUID, fk_entity: int, entity_type: str
-	): ...
+	) -> bool: ...
 
 	@abstractmethod
 	async def get_by_user_and_entity(
@@ -20,6 +20,6 @@ class UserRelationshipRepository(ABC):
 	) -> list[Any]: ...
 
 	@abstractmethod
-	async def get_entity_by_id(
+	async def get_entity_instance_by_id(
 		self, id: int, entity: type
 	) -> Type[Any] | None: ...

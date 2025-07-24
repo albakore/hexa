@@ -26,3 +26,24 @@ async def get_relationship(
 	service : UserRelationshipService = Depends(Provide[SystemContainer.user_relationship.service])
 ):
 	return await service.get_entities(user_uuid, entity_key)
+
+@user_relationship_router.post("/{user_uuid}/link")
+@inject
+async def associate_user_with_entity(
+	user_uuid: uuid.UUID,
+	entity_key: str = Header(...),
+	entity_id: int = Header(...),
+	service : UserRelationshipService = Depends(Provide[SystemContainer.user_relationship.service])
+):
+	return await service.associate_user_with_entity(user_uuid, entity_id, entity_key)
+
+
+@user_relationship_router.delete("/{user_uuid}/link")
+@inject
+async def delete_association_user_with_entity(
+	user_uuid: uuid.UUID,
+	entity_key: str = Header(...),
+	entity_id: int = Header(...),
+	service : UserRelationshipService = Depends(Provide[SystemContainer.user_relationship.service])
+):
+	return await service.delete_association_user_with_entity(user_uuid, entity_id, entity_key)
