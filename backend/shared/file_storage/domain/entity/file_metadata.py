@@ -2,7 +2,7 @@ from typing import Optional
 from sqlmodel import SQLModel, Field
 from datetime import datetime
 import uuid
-class FileMetadata(SQLModel):
+class FileMetadata(SQLModel, table=True):
 	id : uuid.UUID = Field(default=None, primary_key=True)
 	path_target : Optional[str] = Field(default=None)
 	filename : str = Field(default=None)
