@@ -22,12 +22,13 @@ class ResponseLogMiddleware:
         response_info = ResponseInfo()
 
         async def _logging_send(message: Message) -> None:
-            if message.get("type") == "http.response.start":
-                response_info.headers = Headers(raw=message.get("headers"))
-                response_info.status_code = message.get("status")
-            elif message.get("type") == "http.response.body":
-                if body := message.get("body"):
-                    response_info.body += body.decode("utf8")
+            #TODO: Hacer un procedimiento de log
+            # if message.get("type") == "http.response.start":
+            #     response_info.headers = Headers(raw=message.get("headers"))
+            #     response_info.status_code = message.get("status")
+            # elif message.get("type") == "http.response.body":
+            #     if body := message.get("body"):
+            #         response_info.body += body.decode("utf8")
 
             await send(message)
 
