@@ -1,4 +1,5 @@
 from datetime import datetime
+import uuid
 from sqlmodel import SQLModel, Relationship, Field
 
 class DraftPurchaseInvoice(SQLModel, table=True):
@@ -19,3 +20,6 @@ class DraftPurchaseInvoice(SQLModel, table=True):
 	fecha_recepcion : datetime | None = Field(default=None, description="Fecha de recepcion")
 
 	fk_invoice : int | None = Field(default=None)
+
+	id_archivo_comprobante : uuid.UUID | None = Field(default=None)
+	id_archivo_detalle : uuid.UUID | None = Field(default=None)

@@ -36,6 +36,22 @@ dev = [
     "ruff>=0.11.10",
 ]
 
+# Global options:
+
+# [tool.mypy]
+# warn_return_any = true
+# warn_unused_configs = true
+# ignore_missing_imports = true
+
+# Per-module/package settings
+# [[tool.mypy.overrides]]
+# module = "my_module.*"
+# ignore_errors = true
+
+# [[tool.mypy.overrides]]
+# module = "another_package.sub_module"
+# disallow_untyped_defs = true
+
 # [tool.setuptools]
 # packages = ["app", "core", "hexa"]
 [tool.setuptools.packages.find]
