@@ -1,10 +1,10 @@
-from typing import BinaryIO, Optional
+from typing import Any, BinaryIO, Optional
 import uuid
 from pydantic import BaseModel, field_validator
 
 class SaveFileCommand(BaseModel):
-	file: BinaryIO
-	path_target: Optional[str] = "/"
+	file: Any #BinaryIO
+	path_target: Optional[str] = None
 	filename: str
 	download_filename : Optional[str] = None
 	size:  Optional[int] = None
@@ -22,6 +22,10 @@ class SaveFileCommand(BaseModel):
 			raise ValueError("Last character must not be '/'")
 
 		return value
+
+	model_config = {
+        "arbitrary_types_allowed": True
+    }
 
 class CreateFileMetadataCommand(BaseModel):
 	id: uuid.UUID

@@ -11,7 +11,7 @@ class FileStorageAdapter(FileStorageRepository):
 	def __init__(self,file_storage_repository : FileStorageRepository):
 		self.file_storage_repository = file_storage_repository
 
-	async def upload_file(self, file: BinaryIO, filename: str, content_type: str) -> str:
+	async def upload_file(self, file: BinaryIO, filename: str) -> str:
 		return await self.file_storage_repository.upload_file(file,filename)
 
 	async def download_file(self, filename: str) -> bytes:

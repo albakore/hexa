@@ -12,7 +12,7 @@ from shared.file_storage.domain.repository.file_metadata import FileMetadataRepo
 class GetFileMetadataByUuidUseCase:
 	file_metadata_repository : FileMetadataRepository
 
-	async def __call__(self, uuid: uuid.UUID) -> FileMetadata | None:
+	async def __call__(self, uuid: uuid.UUID) -> FileMetadata:
 		file_metadata = await self.file_metadata_repository.get_by_uuid(uuid)
 		if not file_metadata:
 			raise FileMetadataNotFoundException
