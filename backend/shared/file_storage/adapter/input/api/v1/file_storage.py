@@ -26,7 +26,7 @@ async def upload_file(
 	print(file.filename)
 	command = SaveFileCommand(
 		file=file.file,
-		filename=file.filename,
+		filename=file.filename or "undefined_file",
 		size=file.size
 	)
 	return await service.save_file(command)
