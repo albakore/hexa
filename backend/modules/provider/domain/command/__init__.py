@@ -1,4 +1,5 @@
 from datetime import datetime
+import uuid
 from pydantic import BaseModel, Field
 
 class CreateProviderCommand(BaseModel):
@@ -22,3 +23,5 @@ class CreateDraftPurchaseInvoiceCommand(BaseModel):
 	items : int | None = None
 	fecha_emision : datetime | None = None
 	fecha_recepcion : datetime | None = None
+	id_archivo_comprobante : uuid.UUID | None = None
+	id_archivo_detalle : uuid.UUID | None = None

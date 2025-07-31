@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Sequence
 
+from core.db import Transactional
 from modules.provider.domain.command import CreateDraftPurchaseInvoiceCommand
 from modules.provider.domain.entity.draft_purchase_invoice import DraftPurchaseInvoice
 from modules.provider.domain.repository.draft_purchase_invoice import (
@@ -44,6 +45,7 @@ class CreateDraftPurchaseInvoiceUseCase:
 class SaveDraftPurchaseInvoicesUseCase:
 	draft_purchase_invoice_repository: DraftPurchaseInvoiceRepository
 
+	@Transactional()
 	async def __call__(
 		self, draft_purchase_invoice: DraftPurchaseInvoice
 	) -> DraftPurchaseInvoice | None:
@@ -56,6 +58,7 @@ class SaveDraftPurchaseInvoicesUseCase:
 class DeleteDraftPurchaseInvoicesUseCase:
 	draft_purchase_invoice_repository: DraftPurchaseInvoiceRepository
 
+	@Transactional()
 	async def __call__(self, draft_purchase_invoice: DraftPurchaseInvoice) -> None:
 		return await self.draft_purchase_invoice_repository.delete_draft_invoice(
 			draft_purchase_invoice
