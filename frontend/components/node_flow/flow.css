@@ -1,0 +1,18 @@
+.react-flow__node {
+	border-radius: 5px;
+	
+}
+
+.react-flow__handle{
+	/* background-color: red; */
+	background-color: transparent;
+	border-radius: 5px;
+	width: 10px;
+	border: 2px solid gray;
+}
+
+.react-flow__edge-path{
+
+	stroke-width: 5px;
+	stroke-linecap: round;
+}
