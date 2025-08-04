@@ -25,3 +25,6 @@ class CreateDraftPurchaseInvoiceCommand(BaseModel):
 	fecha_recepcion : datetime | None = None
 	id_archivo_comprobante : uuid.UUID | None = None
 	id_archivo_detalle : uuid.UUID | None = None
+
+class UpdateDraftPurchaseInvoiceCommand(CreateDraftPurchaseInvoiceCommand):
+	...

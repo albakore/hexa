@@ -36,7 +36,7 @@ class DraftPurchaseInvoiceService:
 
 	async def get_draft_purchase_invoice_by_id(
 		self, id_draft_purchase_invoice: int
-	) -> DraftPurchaseInvoiceDTO:
+	) -> DraftPurchaseInvoice:
 		draft_purchase_invoice = (
 			await self.draft_purchase_invoice_usecase.get_draft_purchase_invoice_by_id(
 				id_draft_purchase_invoice
@@ -44,6 +44,12 @@ class DraftPurchaseInvoiceService:
 		)
 		if not draft_purchase_invoice:
 			raise DraftPurchaseInvoiceNotFoundException
+
+		return draft_purchase_invoice
+
+	async def get_draft_purchase_invoice_with_filemetadata(
+		self, draft_purchase_invoice: DraftPurchaseInvoice
+	) -> DraftPurchaseInvoiceDTO:
 
 		archivo_comprobante = await self._get_metadata_or_none(draft_purchase_invoice.id_archivo_comprobante)
 		archivo_detalle = await self._get_metadata_or_none(draft_purchase_invoice.id_archivo_detalle)

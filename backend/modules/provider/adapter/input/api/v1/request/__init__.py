@@ -1,7 +1,19 @@
 from pydantic import BaseModel
-from modules.provider.domain.command import CreateProviderCommand, UpdateProviderCommand
-class ProviderCreateRequest(CreateProviderCommand):
-	...
+from modules.provider.domain.command import (
+	CreateDraftPurchaseInvoiceCommand,
+	CreateProviderCommand,
+	UpdateDraftPurchaseInvoiceCommand,
+	UpdateProviderCommand,
+)
 
-class ProviderUpdateRequest(UpdateProviderCommand):
-	...
+
+class ProviderCreateRequest(CreateProviderCommand): ...
+
+
+class ProviderUpdateRequest(UpdateProviderCommand): ...
+
+
+class DraftPurchaseInvoiceCreateRequest(CreateDraftPurchaseInvoiceCommand): ...
+
+
+class DraftPurchaseInvoiceUpdateRequest(UpdateDraftPurchaseInvoiceCommand): ...
