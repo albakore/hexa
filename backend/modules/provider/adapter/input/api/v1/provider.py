@@ -15,7 +15,7 @@ provider_router = APIRouter()
 async def get_all_providers(
 	limit: int = Query(default=10, ge=1, le=50),
 	page: int = Query(default=0),
-	service : ProviderService = Depends(Provide[ModuleContainer.provider.service])
+	service : ProviderService = Depends(Provide[ModuleContainer.provider.provider_service])
 ):
 	return await service.get_all_providers(limit,page)
 
@@ -23,7 +23,7 @@ async def get_all_providers(
 @inject
 async def get_provider_by_id(
 	id_provider : int,
-	service : ProviderService = Depends(Provide[ModuleContainer.provider.service])
+	service : ProviderService = Depends(Provide[ModuleContainer.provider.provider_service])
 ):
 	return await service.get_provider_by_id(id_provider)
 
@@ -31,7 +31,7 @@ async def get_provider_by_id(
 @inject
 async def create_provider(
 	command : ProviderCreateRequest,
-	service : ProviderService = Depends(Provide[ModuleContainer.provider.service])
+	service : ProviderService = Depends(Provide[ModuleContainer.provider.provider_service])
 ):
 	provider = await service.create_provider(command)
 	return await service.save_provider(provider)
@@ -40,7 +40,7 @@ async def create_provider(
 @inject
 async def update_provider(
 	command : ProviderUpdateRequest,
-	service : ProviderService = Depends(Provide[ModuleContainer.provider.service])
+	service : ProviderService = Depends(Provide[ModuleContainer.provider.provider_service])
 ):
 	return await service.update_provider(command)
 
@@ -48,6 +48,6 @@ async def update_provider(
 @inject
 async def delete_provider(
 	id_provider : int,
-	service : ProviderService = Depends(Provide[ModuleContainer.provider.service])
+	service : ProviderService = Depends(Provide[ModuleContainer.provider.provider_service])
 ):
 	return await service.delete_provider(id_provider)

@@ -11,7 +11,9 @@ const initialNodes : Node[] = [
 	{ id: 'n1', position: { x: 0, y: 0 }, data: { label: 'Node 1' } },
 	{ id: 'n2', position: { x: 0, y: 100 }, data: { label: 'Node 2' } },
 	{ id: 'l1', type:'chakra', position: { x: 100, y: 0 }, data: { label: 'Vector Map' } },
-	{ id: 'l2', type:'chakra', position: { x: 100, y: 100 }, data: { label: 'Node 2' } },
+	{ id: 'l2', type:'chakra', position: { x: 100, y: 100 }, data: { label: 'Node 3' } },
+	{ id: 'l3', type:'chakra', position: { x: 300, y: 100 }, data: { label: 'Node 4' } },
+	{ id: 'l4', type:'chakra', position: { x: 400, y: 100 }, data: { label: 'Node 5' } },
 ];
 const initialEdges = [
 	{ id: 'n1-n2', source: 'n1', target: 'n2' },
@@ -26,9 +28,9 @@ function MyHandler({ type, name, label }) {
 	const direction = type == 'source' ? 'row-reverse' : 'row'
 	const handler_direction = type == 'target' ? Position.Left : Position.Right
 	const css: CSSProperties = {
-		backgroundColor: 'yellow',
+		backgroundColor: 'darkkhaki',
 		outline: '1px solid',
-		outlineColor: 'yellow',
+		outlineColor: 'darkkhaki',
 		outlineOffset:'1px',
 		width:'2px',
 		height: '2px',
@@ -72,6 +74,7 @@ export function CustomNode(props: NodeProps) {
 
 				<MyHandler type={'source'} name={'salida'} label={'salida'}/>
 				<MyHandler type={'source'} name={'salida2'} label={'salida'}/>
+				<MyHandler type={'source'} name={'salida3'} label={'output'}/>
 				</VStack>
 			</HStack>
     </Box>

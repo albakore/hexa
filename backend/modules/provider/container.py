@@ -1,6 +1,7 @@
 from dependency_injector.providers import Factory, Singleton
 from dependency_injector.containers import DeclarativeContainer
 
+from modules.provider.adapter.output.persistence.draft_invoice_adapter import DraftPurchaseInvoiceAdapter
 from modules.provider.adapter.output.persistence.repository_adapter import ProviderRepositoryAdapter
 from modules.provider.adapter.output.persistence.sqlalchemy.draft_purchase_invoice import DraftPurchaseInvoiceSQLAlchemyRepository
 from modules.provider.adapter.output.persistence.sqlalchemy.provider import ProviderSQLAlchemyRepository
@@ -22,12 +23,10 @@ class ProviderContainer(DeclarativeContainer):
 		provider_repository=provider_repo
 	)
 
-	#TODO: Agregar el adaptador de draft invoice
-
-	# draft_invoice_repo_adapter = Factory(
-	# 	DraftPurchaseInvoiceSQLAlchemyRepository,
-	# 	provider_repository=provider_repo
-	# )
+	draft_invoice_repo_adapter = Factory(
+		DraftPurchaseInvoiceAdapter,
+		draft_purchase_invoice_repository=draft_invoice_repo
+	)
 
 	provider_service = Factory(
 		ProviderService,
@@ -35,10 +34,8 @@ class ProviderContainer(DeclarativeContainer):
 		file_storage_service=SharedContainer.file_storage.service
 	)
 
-	#TODO: Agregar el adaptador de draft invoice al servicio
-
-	# draft_invoice_service = Factory(
-	# 	DraftPurchaseInvoiceService,
-	# 	draft_purchase_invoice_repository=DraftPurchaseInvoiceRepository,
-	# 	file_storage_service=SharedContainer.file_storage.service
-	# )
+	draft_invoice_service = Factory(
+		DraftPurchaseInvoiceService,
+		draft_purchase_invoice_repository=draft_invoice_repo_adapter,
+		file_storage_service=SharedContainer.file_storage.service
+	)

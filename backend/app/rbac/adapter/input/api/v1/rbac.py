@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, List
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 
@@ -64,7 +64,7 @@ async def get_role(id_role: int, role_usecase: RoleUseCaseDependency):
 	)
 
 
-@rbac_router.get("/role/{id_role}/permission", response_model=PermissionListResponse)
+@rbac_router.get("/role/{id_role}/permission", response_model=List[str])
 @inject
 async def get_all_role_permissions(
 	id_role: int,
