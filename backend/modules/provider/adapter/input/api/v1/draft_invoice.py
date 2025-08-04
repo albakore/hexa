@@ -69,3 +69,13 @@ async def delete_draft_invoice(
 	)
 ):
 	return await service.delete_draft_purchase_invoice(id_draft_invoice)
+
+@draft_invoice_router.post("/{id_draft_invoice}/emit")
+@inject
+async def finalize_and_emit_invoice(
+	id_draft_invoice: int,
+	service: DraftPurchaseInvoiceService = Depends(
+		Provide[ModuleContainer.provider.draft_invoice_service]
+	)
+):
+	return await service.finalize_and_emit_invoice(id_draft_invoice)

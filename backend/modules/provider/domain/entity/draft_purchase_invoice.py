@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 import uuid
 from sqlmodel import SQLModel, Relationship, Field
 
@@ -16,8 +16,8 @@ class DraftPurchaseInvoice(SQLModel, table=True):
 	kg : float | None = Field(default=None)
 	items : int | None = Field(default=None)
 
-	fecha_emision : datetime | None = Field(default=None, description="Fecha de emision")
-	fecha_recepcion : datetime | None = Field(default=None, description="Fecha de recepcion")
+	fecha_emision : date | None = Field(default=None, description="Fecha de emision")
+	fecha_recepcion : date | None = Field(default=None, description="Fecha de recepcion")
 
 	fk_invoice : int | None = Field(default=None)
 

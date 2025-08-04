@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from io import BytesIO
 from typing import Sequence
 import uuid
 from modules.provider.application.dto import DraftPurchaseInvoiceDTO
@@ -11,7 +12,8 @@ from modules.provider.domain.repository.draft_purchase_invoice import (
 from modules.provider.domain.usecase.draft_purchase_invoice import (
 	DraftPurchaseInvoiceUseCaseFactory,
 )
-from shared import file_storage
+from modules.yiqi_erp.application.service.yiqi import YiqiService
+from modules.yiqi_erp.domain.command import CreateYiqiInvoiceCommand, UploadFileCommand
 from shared.file_storage.application.service.file_storage import FileStorageService
 
 
@@ -19,6 +21,7 @@ from shared.file_storage.application.service.file_storage import FileStorageServ
 class DraftPurchaseInvoiceService:
 	draft_purchase_invoice_repository: DraftPurchaseInvoiceRepository
 	file_storage_service: FileStorageService
+	yiqi_service: YiqiService
 
 	def __post_init__(self):
 		self.draft_purchase_invoice_usecase = DraftPurchaseInvoiceUseCaseFactory(
@@ -86,6 +89,62 @@ class DraftPurchaseInvoiceService:
 		return await self.draft_purchase_invoice_usecase.delete_draft_purchase_invoice(
 			draft_purchase_invoice
 		)
+	
+	#TODO: Emitir factura y enviarla a yiqi
+	async def finalize_and_emit_invoice(self, id_draft_purchase_invoice: int):
+		draft_invoice = await self.get_draft_purchase_invoice_by_id(id_draft_purchase_invoice)
+		invoice_with_metadata = await self.get_draft_purchase_invoice_with_filemetadata(draft_invoice)
+		
+		comprobante = invoice_with_metadata.archivo_comprobante
+		detalle = invoice_with_metadata.archivo_detalle
+
+		yiqi_comprobante = None
+		yiqi_detalle = None
+
+		if comprobante:
+			archivo_comprobante = await self.file_storage_service.download_file(
+				comprobante.id
+			)
+			yiqi_comprobante = UploadFileCommand(
+				BytesIO(archivo_comprobante.file),
+				size=comprobante.size,
+				filename=comprobante.download_filename
+				)
+			await self.yiqi_service.upload_file(yiqi_comprobante,316)
+
+		if detalle:
+			archivo_detalle = await self.file_storage_service.download_file(
+				detalle.id
+			)
+			yiqi_detalle = UploadFileCommand(
+				BytesIO(archivo_detalle.file),
+				size=detalle.size,
+				filename=detalle.download_filename
+				)
+			
+			await self.yiqi_service.upload_file(yiqi_detalle,316)
+		
+		yiqi_invoice_command = CreateYiqiInvoiceCommand(
+			Provider=draft_invoice.fk_proveedor or 4187,
+			Numero=draft_invoice.numero,
+			Concepto=draft_invoice.concepto or "Sin concepto agregado",
+			Servicio=draft_invoice.fk_servicio,
+			Moneda_original=draft_invoice.fk_moneda,
+			Precio_unitario=draft_invoice.precio_unitario or 0.0,
+			Mes_servicio=draft_invoice.fecha_emision,
+			Comprobante=yiqi_comprobante,
+			Detalle=yiqi_detalle,
+			Fecha_emision=draft_invoice.fecha_emision,
+			Fecha_recepcion=draft_invoice.fecha_recepcion,
+			AWB=draft_invoice.awb,
+			Items=draft_invoice.items,
+			Kg=draft_invoice.kg,
+			creado_en_portal=True,
+		)
+
+		yiqi_invoice = await self.yiqi_service.create_invoice(yiqi_invoice_command, 316)
+		return yiqi_invoice
+		
 
 	async def _get_metadata_or_none(self, file_id: uuid.UUID | None):
 		if not file_id:

@@ -182,8 +182,10 @@ class YiqiApiRepository(YiqiRepository):
 			"childId": id_child,
 			"entityId": str(id_entity),
 		}
-		response = await self.client.get(url,json)
-		return response
+		response = await self.client.post(url,json=json)
+		if response.is_success:
+			return response.json()
+		return response.text
 
 	async def upload_file(self, file: UploadFile, id_schema: int = 316):
 		url = "/api/InstancesAPI/SaveFile"
