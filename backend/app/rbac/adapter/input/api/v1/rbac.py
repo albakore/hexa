@@ -12,6 +12,8 @@ from app.rbac.adapter.input.api.v1.request import (
 	CreatePermissionRequest,
 	CreateRoleRequest,
 	DeleteGroupRequest,
+	RemoveGroupToRoleRequest,
+	RemovePermissionToRoleRequest,
 )
 from app.rbac.adapter.input.api.v1.response import (
 	GroupAddPermissionResponse,
@@ -109,6 +111,25 @@ async def add_groups_to_role(
 	role_usecase: RoleUseCaseDependency,
 ):
 	return await role_usecase.append_groups_to_role(groups, id_role)
+
+@rbac_router.put("/role/{id_role}/remove/permission")
+@inject
+async def remove_permissions_to_role(
+	id_role: int,
+	permissions: RemovePermissionToRoleRequest,
+	role_usecase: RoleUseCaseDependency,
+):
+	return await role_usecase.remove_permissions_to_role(permissions, id_role)
+
+
+@rbac_router.put("/role/{id_role}/remove/groups")
+@inject
+async def remove_groups_permissions_to_role(
+	id_role: int,
+	groups: RemoveGroupToRoleRequest,
+	role_usecase: RoleUseCaseDependency,
+):
+	return await role_usecase.remove_group_permissions_to_role(groups, id_role)
 
 @rbac_router.put("/role/{id_role}/add/modules", response_model=RoleAddModulesResponse)
 @inject

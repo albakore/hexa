@@ -1,5 +1,5 @@
 from sqlalchemy.orm import selectinload
-from sqlmodel import or_, select, col
+from sqlmodel import and_, or_, select, col, delete
 from typing import List, Sequence
 from app.module.domain.entity.module import Module, ModuleRoleLink
 from app.rbac.application.exception import RoleNotFoundException
@@ -43,7 +43,7 @@ class RBACSQLAlchemyRepository(RBACRepository):
 
 	async def get_all_permissions_from_role(
 		self, role: Role
-	) -> List[Permission] | Sequence[Permission] | None:
+	) -> List[Permission] | Sequence[Permission]:
 		if not role.id:
 			return []
 
@@ -121,6 +121,44 @@ class RBACSQLAlchemyRepository(RBACRepository):
 			role.permissions.append(permission)
 		return role
 
+	async def remove_permissions_to_role(
+		self, permissions: List[Permission], id_role: int
+	) -> int:
+		role = await global_session.get(Role, int(id_role))
+		if not role:
+			raise RoleNotFoundException
+
+		stmt = delete(RolePermissionLink).where(
+			and_(
+				col(RolePermissionLink.fk_permission).in_(
+					[permission.id for permission in permissions]
+				),
+				RolePermissionLink.fk_role == int(id_role),
+			)
+		)
+		result = await global_session.execute(stmt)
+
+		return result.rowcount
+	
+	async def remove_group_permissions_to_role(
+		self, groups: List[GroupPermission], id_role: int
+	) -> int:
+		role = await global_session.get(Role, int(id_role))
+		if not role:
+			raise RoleNotFoundException
+
+		stmt = delete(RoleGroupPermissionLink).where(
+			and_(
+				col(RoleGroupPermissionLink.fk_group).in_(
+					[group.id for group in groups]
+				),
+				RoleGroupPermissionLink.fk_role == int(id_role),
+			)
+		)
+		result = await global_session.execute(stmt)
+
+		return result.rowcount
+
 	async def find_permissions(
 		self, permissions: List[Permission]
 	) -> List[Permission] | Sequence[Permission]:
@@ -180,16 +218,16 @@ class RBACSQLAlchemyRepository(RBACRepository):
 			role.modules.append(module)
 		return role
 
-	async def get_all_modules_from_role(self, role: Role) -> List[Module] | Sequence[Module]:
+	async def get_all_modules_from_role(
+		self, role: Role
+	) -> List[Module] | Sequence[Module]:
 		if not role.id:
 			return []
 
 		subq1 = select(ModuleRoleLink.fk_module).where(
 			ModuleRoleLink.fk_role == role.id
 		)
-		subq2 = select(Module).where(
-			col(Module.id).in_(subq1)
-		)
+		subq2 = select(Module).where(col(Module.id).in_(subq1))
 
 		async with session_factory() as session:
 			result = await session.execute(subq2)

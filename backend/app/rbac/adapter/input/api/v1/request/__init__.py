@@ -30,3 +30,7 @@ AddPermissionToGroupRequest = List[Permission]
 AddGroupToRoleRequest = List[GroupPermission]
 
 AddModuleToRoleRequest = List[Module]
+
+RemovePermissionToRoleRequest = List[Permission]
+
+RemoveGroupToRoleRequest = List[GroupPermission]

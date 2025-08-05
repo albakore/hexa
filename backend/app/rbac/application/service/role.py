@@ -72,3 +72,10 @@ class RoleService:
 
 	async def get_modules_from_role(self, role: Role) -> List[Module]:
 		return await self.role_usecase.get_modules_from_role(role)
+	
+	async def remove_permissions_to_role(self, permissions: List[Permission], id_role: int) -> int:
+		return await self.role_usecase.remove_permissions_to_role(permissions,id_role)
+
+	async def remove_group_permissions_to_role(self, groups: List[GroupPermission], id_role: int) -> int:
+		return await self.role_usecase.remove_group_permissions_to_role(groups,id_role)
+
