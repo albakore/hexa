@@ -90,7 +90,6 @@ class DraftPurchaseInvoiceService:
 			draft_purchase_invoice
 		)
 	
-	#TODO: Emitir factura y enviarla a yiqi
 	async def finalize_and_emit_invoice(self, id_draft_purchase_invoice: int):
 		draft_invoice = await self.get_draft_purchase_invoice_by_id(id_draft_purchase_invoice)
 		invoice_with_metadata = await self.get_draft_purchase_invoice_with_filemetadata(draft_invoice)
@@ -125,8 +124,8 @@ class DraftPurchaseInvoiceService:
 			await self.yiqi_service.upload_file(yiqi_detalle,316)
 		
 		yiqi_invoice_command = CreateYiqiInvoiceCommand(
-			Provider=draft_invoice.fk_proveedor or 4187,
-			Numero=draft_invoice.numero,
+			Provider=draft_invoice.fk_proveedor,
+			Numero=draft_invoice.numero ,
 			Concepto=draft_invoice.concepto or "Sin concepto agregado",
 			Servicio=draft_invoice.fk_servicio,
 			Moneda_original=draft_invoice.fk_moneda,

@@ -7,7 +7,6 @@ from modules.yiqi_erp.adapter.output.api.http_client import YiqiHttpClient
 from modules.yiqi_erp.domain.command import CreateYiqiInvoiceCommand, YiqiInvoice, YiqiInvoiceAttach
 from modules.yiqi_erp.domain.repository.yiqi import YiqiRepository
 
-
 @dataclass
 class YiqiApiRepository(YiqiRepository):
 	client: YiqiHttpClient
@@ -163,17 +162,20 @@ class YiqiApiRepository(YiqiRepository):
 	):
 		url = "/api/InstancesAPI/Save"
 
-		form = YiqiInvoice.model_validate(command).model_dump(by_alias=True)
+		form = YiqiInvoice.model_validate(command).model_dump(
+			exclude={"Comprobante", "Detalle"},
+			by_alias=True
+		)
 		attachs = YiqiInvoiceAttach.model_validate(command).model_dump(
+			include={"Comprobante", "Detalle"},
 			by_alias=True,
-			exclude_unset=True,
 			exclude_none=True,
 		)
 
-		for key, value in attachs.copy().items():
-			if not value:
-				del attachs[key]
-
+		# for key, value in attachs.copy().items():
+		# 	if not value:
+		# 		del attachs[key]
+		# r.print(attachs)
 		json= {
 			"schemaId": id_schema,
 			"form": urllib.parse.urlencode(form),
@@ -182,6 +184,7 @@ class YiqiApiRepository(YiqiRepository):
 			"childId": id_child,
 			"entityId": str(id_entity),
 		}
+		
 		response = await self.client.post(url,json=json)
 		if response.is_success:
 			return response.json()

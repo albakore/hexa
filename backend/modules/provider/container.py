@@ -1,4 +1,4 @@
-from dependency_injector.providers import Container, Factory, Singleton
+from dependency_injector.providers import Container, Factory, Singleton, Provider
 from dependency_injector.containers import DeclarativeContainer
 
 from modules.provider.adapter.output.persistence.draft_invoice_adapter import DraftPurchaseInvoiceAdapter
@@ -10,6 +10,8 @@ from modules.provider.application.service.provider import ProviderService
 from modules.yiqi_erp.container import YiqiContainer
 from shared.container import SharedContainer
 class ProviderContainer(DeclarativeContainer):
+
+	yiqi_service = Provider()
 
 	provider_repo = Singleton(
 		ProviderSQLAlchemyRepository,
@@ -39,5 +41,5 @@ class ProviderContainer(DeclarativeContainer):
 		DraftPurchaseInvoiceService,
 		draft_purchase_invoice_repository=draft_invoice_repo_adapter,
 		file_storage_service=SharedContainer.file_storage.service,
-		yiqi_service=YiqiContainer.service
+		yiqi_service=yiqi_service
 	)
