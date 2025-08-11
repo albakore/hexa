@@ -19,7 +19,7 @@ async def get_all_providers(
 ):
 	return await service.get_all_providers(limit,page)
 
-@provider_router.get("{id_provider}")
+@provider_router.get("/{id_provider}")
 @inject
 async def get_provider_by_id(
 	id_provider : int,
@@ -44,7 +44,7 @@ async def update_provider(
 ):
 	return await service.update_provider(command)
 
-@provider_router.delete("{id_provider}")
+@provider_router.delete("/{id_provider}")
 @inject
 async def delete_provider(
 	id_provider : int,

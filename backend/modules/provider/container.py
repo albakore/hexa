@@ -7,7 +7,7 @@ from modules.provider.adapter.output.persistence.sqlalchemy.draft_purchase_invoi
 from modules.provider.adapter.output.persistence.sqlalchemy.provider import ProviderSQLAlchemyRepository
 from modules.provider.application.service.draft_purchase_invoice import DraftPurchaseInvoiceService
 from modules.provider.application.service.provider import ProviderService
-from modules.yiqi_erp.container import YiqiContainer
+from modules.yiqi_erp.container import YiqiContainer, YiqiService
 from shared.container import SharedContainer
 class ProviderContainer(DeclarativeContainer):
 
