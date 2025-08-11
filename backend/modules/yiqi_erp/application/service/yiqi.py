@@ -24,6 +24,9 @@ class YiqiService:
 	
 	async def get_currency_list(self, id_schema : int):
 		return await self.usecase.get_currency_list(id_schema)
+	
+	async def get_currency_by_code(self, code: str,  id_schema : int):
+		return await self.usecase.get_currency_by_code(code, id_schema)
 
 	async def upload_file(self, command : UploadFileCommand, id_schema : int):
 		return await self.usecase.upload_file(command,id_schema)

@@ -24,6 +24,9 @@ class YiqiRepository(ABC):
 	async def get_currency_list(self, id_schema : int) : ...
 
 	@abstractmethod
+	async def get_currency_by_code(self, code:str, id_schema: int) : ...
+
+	@abstractmethod
 	async def get_invoices_list_of_provider(self, id_provider: int, id_schema : int) : ...
 
 	@abstractmethod

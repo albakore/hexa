@@ -67,6 +67,35 @@ class YiqiApiRepository(YiqiRepository):
 		aditional_filters = []
 		attributes = [
 			"MONE_NOMBRE",
+			"PAIS_PAIS"
+		]
+		params = {
+			"schemaId": id_schema,
+			"entityName": entity_name,
+			"lastUpdate": last_update,
+			"additionalFilters": aditional_filters.__repr__(),
+			"attributes": ",".join(attributes),
+		}
+		response = await self.client.get(url,params)
+		return response
+	
+	async def get_currency_by_code(self, code:str, id_schema: int = 316):
+		url = "/api/InstancesAPI/GetEntityUpdates2"
+		entity_name = "MONEDA"
+		last_update = "01011900"
+
+		aditional_filters = [
+			{
+				"columnName": "MONE_NOMBRE",
+				"TipoDato": 2,
+				"operator": 1,
+				"operating": str(code),
+			}
+		]
+
+		attributes = [
+			"MONE_NOMBRE",
+			"PAIS_PAIS",
 		]
 		params = {
 			"schemaId": id_schema,
@@ -84,8 +113,8 @@ class YiqiApiRepository(YiqiRepository):
 		last_update = "01011900"
 
 		"""Tipos de datos
-		1: string
-		2: int
+		1: format string
+		2: string
 		3: datetime
 		4: boolean (1 = true, 0 = false)
 		"""
