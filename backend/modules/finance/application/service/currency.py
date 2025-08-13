@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from modules.finance.application.exception.currency import CurrencyNotFoundException
+from modules.finance.application.exception.currency import CurrencyDuplicationException, CurrencyNotFoundException
 from modules.finance.domain.command.currency import CreateCurrencyCommand, UpdateCurrencyCommand
 from modules.finance.domain.entity.currency import Currency
 from modules.finance.domain.repository.currency import CurrencyRepository
@@ -23,8 +23,11 @@ class CurrencyService:
 		return self.usecase.create_currency(command)
 
 	async def create_currency_and_save(self, command: CreateCurrencyCommand):
-		currency = self.usecase.create_currency(command)
-		return await self.usecase.save_currency(currency)
+		new_currency = self.usecase.create_currency(command)
+		currency_from_db = await self.usecase.get_currency_by_code(new_currency.code)
+		if currency_from_db:
+			raise CurrencyDuplicationException
+		return await self.usecase.save_currency(new_currency)
 
 	async def update_currency(self, command: UpdateCurrencyCommand):
 		currency = await self.usecase.get_currency_by_id(command.id)

@@ -9,3 +9,8 @@ class DraftPurchaseInvoiceNotFoundException(CustomException):
 	code = 404
 	error_code = "DRAFT_PURCHASE_INVOICE__NOT_FOUND_ERROR"
 	message = "Draft purchase invoice not found"
+	
+class DraftPurchaseInvoiceCurrencyNotFoundException(CustomException):
+	code = 404
+	error_code = "DRAFT_PURCHASE_INVOICE_CURRENCY__NOT_FOUND_ERROR"
+	message = "Currency not found in draft purchase invoice"

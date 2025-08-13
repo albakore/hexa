@@ -31,3 +31,12 @@ class CurrencySQLAlchemyRepository(CurrencyRepository):
 
 	async def delete(self, currency: Currency) -> None:
 		await global_session.delete(currency)
+
+	async def get_currency_by_code(self, currency_code: str) -> Currency | None:
+		stmt = select(Currency).where(Currency.code == str(currency_code))
+		async with session_factory() as session:
+			result = await session.execute(stmt)
+			currency = result.scalars().one_or_none()
+
+		return currency
+

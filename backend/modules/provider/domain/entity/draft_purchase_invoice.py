@@ -8,7 +8,7 @@ class DraftPurchaseInvoice(SQLModel, table=True):
 	concepto : str | None = Field(default=None, description="Concepto")
 	fk_proveedor : int | None = Field(default=None, )
 	fk_servicio : int | None = Field(default=None,)
-	fk_moneda : int | None = Field(default=None, description="EL tipo de moneda")
+	moneda : str | None = Field(default=None, description="EL tipo de moneda")
 
 	awb : str | None = Field(default=None)
 

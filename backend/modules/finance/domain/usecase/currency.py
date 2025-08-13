@@ -23,6 +23,13 @@ class GetCurrencyByIdUseCase:
 		return await self.currency_repository.get_currency_by_id(id_currency)
 
 @dataclass
+class GetCurrencyByCodeUseCase:
+	currency_repository : CurrencyRepository
+
+	async def __call__(self, currency_code: str):
+		return await self.currency_repository.get_currency_by_code(currency_code)
+
+@dataclass
 class CreateCurrencyUseCase:
 
 	def __call__(self, command: CreateCurrencyCommand):
@@ -52,6 +59,7 @@ class CurrencyUseCaseFactory:
 	def __post_init__(self):
 		self.get_currency_list = GetCurrencyListUseCase(self.currency_repository)
 		self.get_currency_by_id = GetCurrencyByIdUseCase(self.currency_repository)
+		self.get_currency_by_code = GetCurrencyByCodeUseCase(self.currency_repository)
 		self.create_currency = CreateCurrencyUseCase()
 		self.save_currency = SaveCurrencyUseCase(self.currency_repository)
 		self.delete_currency = DeleteCurrencyUseCase(self.currency_repository)

@@ -19,3 +19,7 @@ class CurrencyRepositoryAdapter(CurrencyRepository):
 
 	async def delete(self, currency: Currency) -> None:
 		return await self.currency_repository.delete(currency)
+
+	async def get_currency_by_code(self, currency_code: str) -> Currency | None:
+		return await self.currency_repository.get_currency_by_code(currency_code)
+
