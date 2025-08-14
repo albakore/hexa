@@ -5,11 +5,15 @@ import { Box, VStack } from "@chakra-ui/react";
 export default function Home() {
   return (
     <Box as={'main'}>
-      <NodeFlow/>
+      {/* <NodeFlow/>
       <ColorModeButton
         position={'fixed'}
         top={'10px'}
-        right={'10px'} />
+        right={'10px'} /> */}
+      <ColorModeButton
+        position={'fixed'}
+        top={'10px'}
+        right={'10px'} /> 
     
     </Box>
   );
