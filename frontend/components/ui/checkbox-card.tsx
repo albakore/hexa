@@ -30,12 +30,12 @@ export const CheckboxCard = React.forwardRef<
   const ContentWrapper = indicator ? ChakraCheckboxCard.Content : React.Fragment
 
   return (
-    <ChakraCheckboxCard.Root {...rest}>
+    <ChakraCheckboxCard.Root {...rest} p={0}>
       <ChakraCheckboxCard.HiddenInput ref={ref} {...inputProps} />
-      <ChakraCheckboxCard.Control>
+      <ChakraCheckboxCard.Control p={rest.p}>
         {indicatorPlacement === "start" && indicator}
         {hasContent && (
-          <ContentWrapper>
+          <ContentWrapper flexDirection={rest?.flexDirection} gap={rest?.gap} >
             {icon}
             {label && (
               <ChakraCheckboxCard.Label>{label}</ChakraCheckboxCard.Label>

@@ -30,12 +30,12 @@ export const RadioCardItem = React.forwardRef<
   const ContentWrapper = indicator ? RadioCard.ItemContent : React.Fragment
 
   return (
-    <RadioCard.Item {...rest}>
+    <RadioCard.Item {...rest} p={0}>
       <RadioCard.ItemHiddenInput ref={ref} {...inputProps} />
-      <RadioCard.ItemControl>
+      <RadioCard.ItemControl p={rest.p} >
         {indicatorPlacement === "start" && indicator}
         {hasContent && (
-          <ContentWrapper>
+          <ContentWrapper flexDirection={rest.flexDirection} gap={rest.gap} >
             {icon}
             {label && <RadioCard.ItemText>{label}</RadioCard.ItemText>}
             {description && (
