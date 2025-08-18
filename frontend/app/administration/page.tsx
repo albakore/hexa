@@ -1,9 +1,11 @@
 import ChakraDatatable from "@/components/datatable/ChakraDatatable";
 import { Header } from "@/components/header/Header";
+import HeroSection, { Hero } from "@/components/hero/Hero";
+import Sidebar from "@/components/sidebar/Sidebar";
 import { CheckboxCard } from "@/components/ui/checkbox-card";
 import { ColorModeButton } from "@/components/ui/color-mode";
 import { RadioCardItem, RadioCardItemIndicator, RadioCardLabel, RadioCardRoot } from "@/components/ui/radio-card";
-import { Badge, Box, Button, ButtonGroup, Container, HStack, IconButton, Input, InputGroup, Kbd, Link, Popover, Portal, Separator, Spacer, StackSeparator, Text, VStack } from "@chakra-ui/react";
+import { Badge, Box, Button, ButtonGroup, Container, GridItem, HStack, IconButton, Input, InputGroup, Kbd, Link, Popover, Portal, Separator, SimpleGrid, Spacer, StackSeparator, Text, VStack } from "@chakra-ui/react";
 import { ConfigColumns } from "datatables.net-dt";
 import { CgArrowsExchangeAltV, CgArrowsV } from "react-icons/cg";
 import { FaCheck, FaPlus } from "react-icons/fa6";
@@ -32,9 +34,32 @@ export default function page() {
 	return (
 		<Box w={'full'}>
 			<HeaderComponent />
-
+			<Hero.Root>
+				<Hero.Header description="Esta es una descripcion detallada de como se ve una descripcion en el hero">
+					Overview
+				</Hero.Header>
+				<Hero.Actions>
+					<ButtonGroup variant="outline">
+						<Button>Action</Button>
+						<Button>Action</Button>
+						<Button>Action</Button>
+					</ButtonGroup>
+				</Hero.Actions>
+			</Hero.Root>
 			<Container maxW="8xl">
 				{/* <ChakraDatatable data={data} columns={columns} className="stripe"/> */}
+				<SimpleGrid columns={{ base: 2, md: 5 }} gap={{ base: "24px", md: "40px" }}>
+					<GridItem>
+						<Sidebar />
+					</GridItem>
+					<GridItem colSpan={{ base: 1, md: 4 }}>
+						<Box>hola</Box>
+					</GridItem>
+				</SimpleGrid>
+				<HStack>
+
+
+				</HStack>
 			</Container>
 		</Box>
 	)
@@ -49,16 +74,16 @@ function HeaderComponent() {
 					<Text>Kevin Kener <Badge colorPalette={'green'} size={'sm'} rounded={'full'}>Administrator</Badge></Text>
 				</Button>
 				<RootModule>
-				<Text color={'gray.600'}>/</Text>
+					<Text color={'gray.600'}>/</Text>
 					<Button size={'sm'} rounded={'full'} variant={'ghost'}>
 						<Text>Providers</Text>
-						</Button>
+					</Button>
 				</RootModule>
 				<RootModule>
-				<Text color={'gray.600'}>/</Text>
+					<Text color={'gray.600'}>/</Text>
 					<Button size={'sm'} rounded={'full'} variant={'ghost'}>
 						<Text>Mailamericas</Text>
-						</Button>
+					</Button>
 				</RootModule>
 				{/* <HStack
 						as={'nav'}
