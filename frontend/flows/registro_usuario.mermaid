@@ -1,0 +1,44 @@
+
+flowchart LR
+	User(Usuario admin)
+	%% CreateUser(Crea un usuario)
+	ViewUser(Visualiza un usuario)
+	ViewUserDescription(
+	En este caso es donde el usuario visualiza los datos personales, informacion de contacto, foto de perfil, roles, permisos, modulos, etc.
+	)
+	SetRole(Asigna un rol)
+	SelectingRole(Selecciona un rol)
+
+	SetModules(Asigna los modulos)
+	SelectionModules(Selecciona modulos)
+
+	IfRole{Tiene rol asignado?}
+	IfPersonalData{Tiene datos personales?}
+	IfModule{Tiene modulos asignados?}
+
+	IfView(Quiere visualizarlo?)
+
+	ConfirmChanges(Confirma cambios)
+
+	User --> ViewUser
+	ViewUser --> ViewUserDescription
+	ViewUserDescription --> IfRole
+	ViewUserDescription --> IfPersonalData
+	ViewUserDescription --> IfModule
+
+	IfRole --Si--> IfView
+	IfRole --No--> SetRole
+
+	SetRole --> 
+	|Aca deberia verse un menu desplegable de roles disponibles donde tiene que seleccionar uno|SelectingRole 
+	SelectingRole --> ConfirmChanges
+
+
+	IfPersonalData --Si--> Null(Nada)
+	IfPersonalData --No--> Edit(Edita datos personales)
+	Edit --Aca deberia completarle algunos datos en el mismo formulario de los datos personales--> ConfirmChanges
+
+	IfModule --Si--> Null
+	IfModule --No--> SetModules
+	SetModules --Aca deberia tener una lista de modulos a los que se les puede asignar, ya sea clientes, proveedores, facturacion, contabilidad, rrhh, etc. De momento va a ser proveedores asi ve las funciones que le puede tocar--> SelectionModules
+	SelectionModules --> ConfirmChanges

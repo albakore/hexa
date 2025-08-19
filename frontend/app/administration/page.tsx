@@ -1,5 +1,7 @@
+import { ConfigCard } from "@/components/cards/ConfigCard";
 import ChakraDatatable from "@/components/datatable/ChakraDatatable";
 import { Header } from "@/components/header/Header";
+import UserLogged from "@/components/header/UserLogged";
 import HeroSection, { Hero } from "@/components/hero/Hero";
 import Sidebar from "@/components/sidebar/Sidebar";
 import { CheckboxCard } from "@/components/ui/checkbox-card";
@@ -53,7 +55,24 @@ export default function page() {
 						<Sidebar />
 					</GridItem>
 					<GridItem colSpan={{ base: 1, md: 4 }}>
-						<Box>hola</Box>
+						<Box>
+							<ConfigCard.Root>
+								<form action="">
+								<ConfigCard.Header>Header util</ConfigCard.Header>
+								<ConfigCard.Body>
+									<ConfigCard.Title>User</ConfigCard.Title>
+									<ConfigCard.Description>Configuracion de usuario</ConfigCard.Description>
+
+									<Input/>
+
+								</ConfigCard.Body>
+								<ConfigCard.Footer>
+										Esto es un footer
+										<Button size={'sm'} ml={'auto'} rounded={'md'}>Save</Button>
+									</ConfigCard.Footer>
+									</form>
+							</ConfigCard.Root>
+						</Box>
 					</GridItem>
 				</SimpleGrid>
 				<HStack>
@@ -110,6 +129,7 @@ function HeaderComponent() {
 							</Link>
 						</Button>
 					</ButtonGroup>
+					<UserLogged />
 				</HStack>
 			</Header.Actions>
 		</Header.Root>
