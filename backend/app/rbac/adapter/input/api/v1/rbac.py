@@ -14,6 +14,7 @@ from app.rbac.adapter.input.api.v1.request import (
 	DeleteGroupRequest,
 	RemoveGroupToRoleRequest,
 	RemovePermissionToRoleRequest,
+	UpdateRoleRequest,
 )
 from app.rbac.adapter.input.api.v1.response import (
 	GroupAddPermissionResponse,
@@ -33,6 +34,7 @@ from app.rbac.domain.command import (
 	CreateGroupCommand,
 	CreatePermissionCommand,
 	CreateRoleCommand,
+	UpdateRoleCommand,
 )
 from app.rbac.application.service.permission import PermissionService
 from app.rbac.domain.entity import GroupPermission
@@ -87,8 +89,15 @@ async def create_role(command: CreateRoleRequest, role_usecase: RoleUseCaseDepen
 	return await role_usecase.save(role)
 
 
-@rbac_router.put("/role")
-async def edit_role(): ...
+@rbac_router.put("/role/{id_role}")
+@inject
+async def edit_role(
+		id_role: int,
+		command: UpdateRoleRequest,
+		role_usecase: RoleUseCaseDependency
+):
+	role_command = UpdateRoleCommand.model_validate(command)
+	return await role_usecase.edit_role(id_role,role_command)
 
 
 @rbac_router.put(

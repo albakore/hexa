@@ -4,7 +4,7 @@ from typing import List
 from app.module.domain.entity.module import Module
 from app.module.domain.repository.module import AppModuleRepository
 from app.rbac.application.exception import RoleNotFoundException
-from app.rbac.domain.command import CreateRoleCommand
+from app.rbac.domain.command import CreateRoleCommand, UpdateRoleCommand
 from app.rbac.domain.entity import Permission
 from app.rbac.domain.entity import GroupPermission, Role
 from app.rbac.domain.repository import RoleRepository
@@ -47,6 +47,13 @@ class RoleService:
 			await self.role_usecase.delete_role(id)
 		except RoleNotFoundException:
 			raise
+
+	async def edit_role(self,id_role: int, command: UpdateRoleCommand) -> Role:
+		role = await self.role_usecase.get_role_by_id(id_role)
+		if not role:
+			raise RoleNotFoundException
+		role.sqlmodel_update(command)
+		return await self.role_usecase.save_role(role)
 
 	async def save(self, role: Role) -> Role | None:
 		return await self.role_usecase.save_role(role)

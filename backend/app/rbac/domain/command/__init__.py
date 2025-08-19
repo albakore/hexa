@@ -5,6 +5,9 @@ class CreateRoleCommand(BaseModel):
 	name: str
 	description: str | None = None
 
+class UpdateRoleCommand(CreateRoleCommand):
+	...
+
 class CreateGroupCommand(BaseModel):
 	name: str
 	description: str | None = None
