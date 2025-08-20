@@ -6,11 +6,14 @@ function Root(props) {
 	return (
 		<Box
 			as="header"
-			borderBottom={'1px solid'}
-			borderColor={'bg.emphasized'}
+			// borderBottom={'1px solid'}
+			// borderColor={'bg.emphasized'}
+			bg={'bg'}
+			zIndex={300}
+			
 		>
-			<Container maxW={'8xl'} paddingBlock={2}>
-				<HStack gap={8} fontSize={'sm'}>
+			<Container maxW={'8xl'} paddingBlock={3}>
+				<HStack gap={8} fontSize={'sm'} alignItems={'start'}>
 					{props.children}
 				</HStack>
 			</Container>

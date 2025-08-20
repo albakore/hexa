@@ -4,9 +4,11 @@ import React from 'react'
 function Root(props) {
 	return (
 		<Box
+			as={'section'}
 			border={'1px solid'}
 			borderColor={`bg.emphasized`}
 			rounded={'lg'}
+			mb={8}
 			{...props}
 		>
 			{props?.children}
@@ -16,7 +18,7 @@ function Root(props) {
 
 function Title(props) {
 	return (
-		<Heading fontSize={'2xl'}>
+		<Heading fontSize={'1xl'}>
 			{props?.children}
 		</Heading>
 	)
