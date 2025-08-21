@@ -42,8 +42,8 @@ function PopoverUserLogged() {
 								<Popover.Title color={'gray'}>kkener@mailamericas.com</Popover.Title>
 							</Box>
 
-							<LinkAsButton>Dashboard</LinkAsButton>
-							<LinkAsButton>Account Settings</LinkAsButton>
+							<LinkAsButton href="/portal">Dashboard</LinkAsButton>
+							<LinkAsButton href="/account/settings">Account Settings</LinkAsButton>
 						</Stack>
 						<Separator />
 						<Stack p={2} gap={1}>
@@ -52,8 +52,8 @@ function PopoverUserLogged() {
 						</Stack>
 						<Separator />
 						<Stack p={2} gap={1}>
-							<LinkAsButton>Home Page <Spacer /><MLALogo/> </LinkAsButton>
-							<LinkAsButton>Log Out <Spacer /><FiLogOut/> </LinkAsButton>
+							<LinkAsButton href="/">Home Page <Spacer /><MLALogo/> </LinkAsButton>
+							<LinkAsButton href="/login">Log Out <Spacer /><FiLogOut/> </LinkAsButton>
 						</Stack>
 					</Popover.Body>
 				</Popover.Content>

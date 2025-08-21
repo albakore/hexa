@@ -5,7 +5,7 @@ import { Header } from "@/components/header/Header";
 import SubHeader from "@/components/header/SubHeader";
 import UserLogged from "@/components/header/UserLogged";
 import { Hero } from "@/components/hero/Hero";
-import Sidebar from "@/components/sidebar/Sidebar";
+import Sidebar from "@/components/sidenav/SideNav";
 import { CheckboxCard } from "@/components/ui/checkbox-card";
 import { ColorModeButton } from "@/components/ui/color-mode";
 import { RadioCardItem, RadioCardItemIndicator, RadioCardLabel, RadioCardRoot } from "@/components/ui/radio-card";
@@ -16,6 +16,40 @@ import { FaCheck, FaPlus } from "react-icons/fa6";
 import { FiPackage } from "react-icons/fi";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { LuFolder, LuSearch, LuSquareCheck, LuUser } from "react-icons/lu";
+
+const subheader_mock = [
+	{
+		label: "Overview",
+		value: "overview",
+		route: "",
+		icon: <LuUser />
+	},
+	{
+		label: "Integrations",
+		value: "integrations",
+		route: "/integrations",
+		icon: <LuFolder />
+	},
+	{
+		label: "Deployments",
+		value: "deployments",
+		route: "/deployments",
+		icon: <LuSquareCheck />
+	},
+	{
+		label: "Activity",
+		value: "activity",
+		route: "/activity",
+		icon: null
+	},
+	{
+		label: "Settings",
+		value: "settings",
+		route: "/settings",
+		icon: null
+	}
+]
+
 
 const columns: ConfigColumns[] = [
 	{ name: "id", title: "Id" },
@@ -39,7 +73,7 @@ export default function page() {
 		<Box w={'full'} >
 			<HeaderComponent />
 
-			<SubHeader/>
+			<SubHeader tablist={subheader_mock} />
 
 
 			<Hero.Root>
@@ -135,22 +169,22 @@ function HeaderComponent() {
 			<Header.Logo />
 			<Header.Body>
 				<HStack>
+					<Button size={'sm'} rounded={'full'} variant={'ghost'}>
+						<Text>Kevin Kener <Badge colorPalette={'green'} size={'sm'} rounded={'full'}>Administrator</Badge></Text>
+					</Button>
+					<RootModule>
+						<Text color={'gray.600'}>/</Text>
 						<Button size={'sm'} rounded={'full'} variant={'ghost'}>
-							<Text>Kevin Kener <Badge colorPalette={'green'} size={'sm'} rounded={'full'}>Administrator</Badge></Text>
+							<Text>Providers</Text>
 						</Button>
-						<RootModule>
-							<Text color={'gray.600'}>/</Text>
-							<Button size={'sm'} rounded={'full'} variant={'ghost'}>
-								<Text>Providers</Text>
-							</Button>
-						</RootModule>
-						<RootModule>
-							<Text color={'gray.600'}>/</Text>
-							<Button size={'sm'} rounded={'full'} variant={'ghost'}>
-								<Text>Mailamericas</Text>
-							</Button>
-						</RootModule>
-					</HStack>
+					</RootModule>
+					<RootModule>
+						<Text color={'gray.600'}>/</Text>
+						<Button size={'sm'} rounded={'full'} variant={'ghost'}>
+							<Text>Mailamericas</Text>
+						</Button>
+					</RootModule>
+				</HStack>
 			</Header.Body>
 			<Spacer />
 			<Header.Actions>

@@ -1,8 +1,9 @@
 'use client'
-import { Box, Container, For, Link, Tabs } from '@chakra-ui/react'
-import { usePathname, useRouter } from 'next/navigation'
+import { Box, Container, For, Link as ChakraLink, Tabs } from '@chakra-ui/react'
+import { usePathname, useRouter, useSelectedLayoutSegment } from 'next/navigation'
 import React from 'react'
 import { LuFolder, LuSquareCheck, LuUser } from 'react-icons/lu'
+import Link from 'next/link'
 
 
 const subheader_mock = [
@@ -38,15 +39,16 @@ const subheader_mock = [
 	}
 ]
 
-export default function SubHeader() {
-	const pathname = usePathname()
+export default function SubHeader(props) {
+	const segment = useSelectedLayoutSegment()
+	console.log(segment)
 	return (
-		<Root>
-			<For each={subheader_mock}>
+		<Root active={segment ?? props?.tablist[0].value} >
+			<For each={props?.tablist}>
 				{(tab, index) => (
 					<NavTab
 						key={index}
-						route={`${pathname}${tab?.route}`}
+						route={`${props?.rootPath}${tab?.route}`}
 						value={tab?.value}
 					>
 						{tab?.icon}
@@ -72,7 +74,8 @@ function Root(props) {
 				paddingBlock={1}
 			>
 				<Tabs.Root
-					defaultValue="members"
+					activationMode={'automatic'}
+					defaultValue={props?.active}
 					variant="plain"
 					size={'xs'}
 					p={0}
@@ -97,12 +100,10 @@ function Root(props) {
 
 function NavTab(props) {
 	return (
-		<Tabs.Trigger  asChild {...props} >
-			<Link unstyled
-				href={props?.route ?? "#"}
-				>
+		<Link href={props?.route ?? "#"}>
+			<Tabs.Trigger  {...props}>
 				{props.children}
-			</Link>
-		</Tabs.Trigger>
+			</Tabs.Trigger>
+		</Link>
 	)
 }
