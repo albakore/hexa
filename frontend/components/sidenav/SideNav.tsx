@@ -4,6 +4,7 @@ import { GiMaterialsScience } from 'react-icons/gi'
 import { LuExternalLink } from 'react-icons/lu'
 import { sidebar_mock } from './sidebar-mock'
 import Link from 'next/link'
+import { usePathname, useSelectedLayoutSegment, useSelectedLayoutSegments } from 'next/navigation'
 
 export default function SideNav(props) {
 	const links = Object.groupBy(props?.navlist, ({ section }) => section)
@@ -16,9 +17,8 @@ export default function SideNav(props) {
 			)
 		}
 		links[key]?.forEach((navlink) => {
-			navlink['route'] = `${props?.rootPath}${navlink.route}`
 			items.push(
-				<SideNavLink {...navlink} key={items.length} />
+				<SideNavLink {...navlink} key={items.length} route={`${props?.rootPath}${navlink.route}`} />
 			)
 		})
 	})

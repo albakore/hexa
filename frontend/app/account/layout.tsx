@@ -54,15 +54,10 @@ function HeaderComponent() {
 					<RootModule>
 						<Text color={'gray.600'}>/</Text>
 						<Button size={'sm'} rounded={'full'} variant={'ghost'}>
-							<Text>Providers</Text>
+							<Text>My account</Text>
 						</Button>
 					</RootModule>
-					<RootModule>
-						<Text color={'gray.600'}>/</Text>
-						<Button size={'sm'} rounded={'full'} variant={'ghost'}>
-							<Text>Mailamericas</Text>
-						</Button>
-					</RootModule>
+
 				</HStack>
 			</Header.Body>
 			<Spacer />

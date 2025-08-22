@@ -24,8 +24,8 @@ const sidenav_links = [
 ]
 
 export default function layout(props) {
-  const pathname = useSelectedLayoutSegment()
-  const rootPath = pathname
+  
+  const rootPath = '/account/settings'
 
   return (
     <>
