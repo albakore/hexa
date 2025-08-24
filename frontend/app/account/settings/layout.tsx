@@ -2,7 +2,6 @@ import { ConfigCard } from '@/components/cards/ConfigCard'
 import { Hero } from '@/components/hero/Hero'
 import SideNav from '@/components/sidenav/SideNav'
 import { Box, Button, ButtonGroup, Container, GridItem, HStack, Image, Input, SimpleGrid } from '@chakra-ui/react'
-import { useSelectedLayoutSegment } from 'next/navigation'
 import React from 'react'
 
 const sidenav_links = [
