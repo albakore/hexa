@@ -76,9 +76,9 @@ function PageLayout() {
 						<ItemListRoot>
 							<Item>
 								<Stack direction={'row'} w={'full'} justifyContent={'space-between'} alignItems={'center'}>
-									<Stack direction={'row'} gap={3}>
+									<Stack direction={'row'} gap={3} width={"calc(25% + 60px)"}>
 										<Box>
-											<Avatar colorPalette={'green'}/>
+											<Avatar colorPalette={'green'} />
 										</Box>
 										<Box>
 											<Text>Mailamericas Global</Text>
@@ -98,9 +98,9 @@ function PageLayout() {
 							</Item>
 							<Item>
 								<Stack direction={'row'} w={'full'} justifyContent={'space-between'} alignItems={'center'}>
-									<Stack direction={'row'} gap={3}>
+									<Stack direction={'row'} gap={3} width={"calc(25% + 60px)"}>
 										<Box>
-											<Avatar colorPalette={'yellow'}/>
+											<Avatar colorPalette={'yellow'} />
 										</Box>
 										<Box>
 											<Text>Proships</Text>
@@ -120,9 +120,9 @@ function PageLayout() {
 							</Item>
 							<Item>
 								<Stack direction={'row'} w={'full'} justifyContent={'space-between'} alignItems={'center'}>
-									<Stack direction={'row'} gap={3}>
+									<Stack direction={'row'} gap={3} width={"calc(25% + 60px)"}>
 										<Box>
-											<Avatar colorPalette={'blue'}/>
+											<Avatar colorPalette={'blue'} />
 										</Box>
 										<Box>
 											<Text>Cheyenne</Text>
@@ -142,18 +142,44 @@ function PageLayout() {
 							</Item>
 							<Item>
 								<Stack direction={'row'} w={'full'} justifyContent={'space-between'} alignItems={'center'}>
-									<Stack direction={'row'} gap={3}>
+									<Stack
+										direction={'row'}
+										gap={3}
+										width={"calc(25% + 130px)"}
+
+
+									>
 										<Box>
-											<Avatar colorPalette={'green'}/>
+											<Avatar colorPalette={'green'} />
 										</Box>
-										<Box>
-											<Text>Mailamericas Global</Text>
-											<Text fontSize={'sm'} color={'gray'}>Argentina</Text>
+										<Box
+											width={'inherit'}
+											
+										>
+											<Text
+											textOverflow={'ellipsis'}
+												whiteSpace={'nowrap'}
+												overflow={'hidden'}
+											>Mailamericas Global</Text>
+											<Text
+												fontSize={'sm'}
+												color={'gray'}
+												textOverflow={'ellipsis'}
+												whiteSpace={'nowrap'}
+												overflow={'hidden'}
+											
+
+											>Argentina el mejor pais do mondo la concha de tu madre</Text>
 										</Box>
 									</Stack>
 									<Box>
 										<Text>Nueva factura</Text>
-										<Text fontSize={'sm'} color={'gray'}>por fulano@gmail.com</Text>
+										<Text
+											fontSize={'sm'}
+											color={'gray'}
+										>
+											por fulano@gmail.com
+										</Text>
 									</Box>
 									<Box>
 										<IconButton variant={'ghost'} size={'sm'}>
