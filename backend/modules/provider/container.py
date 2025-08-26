@@ -11,7 +11,7 @@ from modules.yiqi_erp.container import YiqiContainer, YiqiService
 from shared.container import SharedContainer
 class ProviderContainer(DeclarativeContainer):
 
-	yiqi_service = Provider()
+	yiqi_service : Provider[ProviderService] = Provider()
 
 	provider_repo = Singleton(
 		ProviderSQLAlchemyRepository,
@@ -34,7 +34,7 @@ class ProviderContainer(DeclarativeContainer):
 	provider_service = Factory(
 		ProviderService,
 		provider_repository=provider_repo_adapter,
-		file_storage_service=SharedContainer.file_storage.service
+		# file_storage_service=SharedContainer.file_storage.service
 	)
 
 	draft_invoice_service = Factory(
