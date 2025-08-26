@@ -7,13 +7,19 @@ import '@xyflow/react/dist/base.css';
 import { Box, HStack, Text, VStack } from "@chakra-ui/react";
 import { NodeProps } from '@xyflow/react';
 
+// const initialNodes : Node[] = [
+// 	{ id: 'n1', position: { x: 0, y: 0 }, data: { label: 'Node 1' } },
+// 	{ id: 'n2', position: { x: 0, y: 100 }, data: { label: 'Node 2' } },
+// 	{ id: 'l1', type:'chakra', position: { x: 100, y: 0 }, data: { label: 'Vector Map' } },
+// 	{ id: 'l2', type:'chakra', position: { x: 100, y: 100 }, data: { label: 'Node 3' } },
+// 	{ id: 'l3', type:'chakra', position: { x: 300, y: 100 }, data: { label: 'Node 4' } },
+// 	{ id: 'l4', type:'chakra', position: { x: 400, y: 100 }, data: { label: 'Node 5' } },
+// ];
 const initialNodes : Node[] = [
-	{ id: 'n1', position: { x: 0, y: 0 }, data: { label: 'Node 1' } },
-	{ id: 'n2', position: { x: 0, y: 100 }, data: { label: 'Node 2' } },
-	{ id: 'l1', type:'chakra', position: { x: 100, y: 0 }, data: { label: 'Vector Map' } },
-	{ id: 'l2', type:'chakra', position: { x: 100, y: 100 }, data: { label: 'Node 3' } },
-	{ id: 'l3', type:'chakra', position: { x: 300, y: 100 }, data: { label: 'Node 4' } },
-	{ id: 'l4', type:'chakra', position: { x: 400, y: 100 }, data: { label: 'Node 5' } },
+	{ id: 'l1', type:'chakra', position: { x: 0, y: 0 }, data: { label: 'Node 3' } },
+	{ id: 'l2', type:'chakra', position: { x: 0, y: 100 }, data: { label: 'Node 4' } },
+	{ id: 'l3', type:'chakra', position: { x: 0, y: 200 }, data: { label: 'Node 5' } },
+	{ id: 'l4', type:'chakra', position: { x: 0, y: 300 }, data: { label: 'Node 5' } },
 ];
 const initialEdges = [
 	{ id: 'n1-n2', source: 'n1', target: 'n2' },
@@ -37,7 +43,7 @@ function MyHandler({ type, name, label }) {
 		borderRadius: '1000px'
 	}
 	return (
-		<HStack  gap={2} w={'full'} flexDirection={direction} >
+		<HStack  gap={2} w={'full'} flexDirection={direction}  alignItems={'center'} >
 			<Box position={'relative'}>
 				<Handle
 					id={`${name}:${type_id}`}
@@ -45,7 +51,7 @@ function MyHandler({ type, name, label }) {
 					position={handler_direction}
 					style={css} />
 			</Box>
-			<Text fontSize="xs">{label}</Text>
+			<Text fontSize="0.6rem">{label}</Text>
 		</HStack>
 	)
 }
@@ -59,8 +65,8 @@ export function CustomNode(props: NodeProps) {
 
 	return (
 		<Box bg={'blackAlpha.500'} rounded={'md'} border={'xs'} borderColor={'gray.900'} overflow={'hidden'} w={'200px'}>
-			<Box bgGradient="to-r" gradientFrom="blue.600/60" gradientTo="blackAlpha.500" paddingInline={'5px'}>
-				<Text fontSize={'xs'}>{props.data.label}</Text>
+			<Box bgGradient="to-r" gradientFrom="yellow.300/60" gradientTo="blackAlpha.500" paddingInline={'10px'}>
+				<Text fontSize={'0.7rem'}>{props.data.label}</Text>
 			</Box>
 			<HStack paddingInline={'15px'} w={'full'} paddingBlock={'3px'} alignItems={'start'}>
 				<VStack w={'50%'}>
