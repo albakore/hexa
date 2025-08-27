@@ -150,6 +150,15 @@ async def add_modules_to_role(
 	return await role_usecase.append_modules_to_role(modules, id_role)
 
 
+@rbac_router.put("/role/{id_role}/remove/modules")
+@inject
+async def remove_modules_to_role(
+	id_role: int,
+	modules: RemoveGroupToRoleRequest,
+	role_usecase: RoleUseCaseDependency,
+):
+	return await role_usecase.remove_modules_to_role(modules, id_role)
+
 @rbac_router.delete("/role/{id_role}")
 @inject
 async def delete_role(

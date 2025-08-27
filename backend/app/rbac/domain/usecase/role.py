@@ -166,6 +166,14 @@ class RemoveGroupPermissionsToRoleUseCase:
 	async def __call__(self, groups: List[GroupPermission], id_role: int) -> int:
 		return await self.role_repository.remove_group_permissions_to_role(groups,id_role)
 
+@dataclass
+class RemoveModulesToRoleUseCase:
+	role_repository: RoleRepository
+
+	@Transactional()
+	async def __call__(self, modules: List[Module], id_role: int) -> int:
+		return await self.role_repository.remove_modules_to_role(modules,id_role)
+
 
 @dataclass
 class RoleUseCaseFactory:
@@ -192,3 +200,4 @@ class RoleUseCaseFactory:
 		self.get_modules_from_role = GetModulesFromRoleUseCase(self.role_repository)
 		self.remove_permissions_to_role = RemovePermissionsToRoleUseCase(self.role_repository)
 		self.remove_group_permissions_to_role = RemoveGroupPermissionsToRoleUseCase(self.role_repository)
+		self.remove_modules_to_role = RemoveModulesToRoleUseCase(self.role_repository)

@@ -73,7 +73,7 @@ class RBACSQLAlchemyRepository(RBACRepository):
 		await global_session.flush()
 		return permission
 
-	async def get_all_roles(self) -> List[Role] | Sequence[Role] | None:
+	async def get_all_roles(self) -> List[Role] | Sequence[Role]:
 		stmt = select(Role)
 		async with session_factory() as session:
 			result = await session.execute(stmt)
@@ -139,7 +139,7 @@ class RBACSQLAlchemyRepository(RBACRepository):
 		result = await global_session.execute(stmt)
 
 		return result.rowcount
-	
+
 	async def remove_group_permissions_to_role(
 		self, groups: List[GroupPermission], id_role: int
 	) -> int:
@@ -232,3 +232,18 @@ class RBACSQLAlchemyRepository(RBACRepository):
 		async with session_factory() as session:
 			result = await session.execute(subq2)
 		return result.scalars().all()
+
+	async def remove_modules_to_role(self, modules: List[Module], id_role: int) -> int:
+		role = await global_session.get(Role, int(id_role))
+		if not role:
+			raise RoleNotFoundException
+
+		stmt = delete(ModuleRoleLink).where(
+			and_(
+				col(ModuleRoleLink.fk_module).in_([module.id for module in modules]),
+				ModuleRoleLink.fk_role == int(id_role),
+			)
+		)
+		result = await global_session.execute(stmt)
+
+		return result.rowcount
