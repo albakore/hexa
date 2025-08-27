@@ -47,12 +47,13 @@ function PopoverUserLogged() {
 						</Stack>
 						<Separator />
 						<Stack p={2} gap={1}>
-							<LinkAsButton>Create Invoice</LinkAsButton>
+							<LinkAsButton href="/administration">Administration</LinkAsButton>
+							{/* <LinkAsButton>Create Invoice</LinkAsButton> */}
 							<LinkAsButton>Theme</LinkAsButton>
 						</Stack>
 						<Separator />
 						<Stack p={2} gap={1}>
-							<LinkAsButton href="/">Home Page <Spacer /><MLALogo/> </LinkAsButton>
+							<LinkAsButton href="/" colorPalette="red">Home Page <Spacer /><MLALogo/> </LinkAsButton>
 							<LinkAsButton href="/login">Log Out <Spacer /><FiLogOut/> </LinkAsButton>
 						</Stack>
 					</Popover.Body>
