@@ -41,7 +41,6 @@ const subheader_mock = [
 
 export default function SubHeader(props) {
 	const segment = useSelectedLayoutSegment()
-	console.log(segment)
 	return (
 		<Root active={segment ?? props?.tablist[0].value} >
 			<For each={props?.tablist}>

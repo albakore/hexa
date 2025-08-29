@@ -3,12 +3,13 @@ import { ConfigCard } from '@/components/cards/ConfigCard'
 import { Hero } from '@/components/hero/Hero'
 import SideNav from '@/components/sidenav/SideNav'
 import { Status } from '@/components/ui/status'
-import { Badge, Box, Button, ButtonGroup, ClientOnly, Container, Flex, For, GridItem, HStack, IconButton, Image, Input, InputGroup, Link, Pagination, Popover, Separator, SimpleGrid, Spacer, Stack, StackSeparator, Text } from '@chakra-ui/react'
+import { Badge, Box, Button, ButtonGroup, ClientOnly, Container, Flex, For, GridItem, HStack, IconButton, Image, Input, InputGroup, Link as ChakraLink, Pagination, Popover, Separator, SimpleGrid, Spacer, Stack, StackSeparator, Text } from '@chakra-ui/react'
 import React from 'react'
 import { FaTrash } from 'react-icons/fa6'
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
 import { LuSearch } from 'react-icons/lu'
 import { SlOptions } from 'react-icons/sl'
+import Link from 'next/link'
 
 export default function page() {
 
@@ -78,18 +79,18 @@ function UserList() {
 
   const render_items = visibleItems.map((item, index) => (
     <Stack direction='row' key={index} padding={4} justifyContent={'space-between'}>
-      <Box minW={'30px'}>
+      <Box>
         <Stack direction={'row'} whiteSpace={'nowrap'}>
           <Text lineHeight={'20px'} overflow={'hidden'} textOverflow={'ellipsis'}><b>Kevin Kener</b></Text>
           <Badge overflow={'hidden'} textOverflow={'ellipsis'}>Administrator</Badge>
         </Stack>
         <Text fontSize={'sm'} color={'gray'}>kkener</Text>
       </Box>
-      <Box minW={'30px'} whiteSpace={'nowrap'}>
+      <Box whiteSpace={'nowrap'}>
         <Text fontSize={'sm'} overflow={'hidden'} textOverflow={'ellipsis'} >Desarrollador de software</Text>
         <Text fontSize={'sm'} color={'gray'} overflow={'hidden'} textOverflow={'ellipsis'}>kkener@mailamericas.com</Text>
       </Box>
-      <Box minW={'30px'} whiteSpace={'nowrap'}>
+      <Box whiteSpace={'nowrap'}>
         <Stack direction={'row'}>
           <Status />
           <Text lineHeight={'20px'}> Activo</Text>
@@ -164,6 +165,7 @@ function ColumnDataName(props) {
 }
 
 function ColumnOptions(props) {
+  const id_mock = 10
   return (
     <Popover.Root positioning={{ placement: "bottom-end" }}>
       <Popover.Trigger asChild>
@@ -183,7 +185,7 @@ function ColumnOptions(props) {
 
           <Popover.Body p={0}>
             <Stack p={2} gap={1}>
-              <LinkAsButton href="#">Inspeccionar</LinkAsButton>
+              <LinkAsButton href={`/administration/users/${id_mock}`}>Inspeccionar</LinkAsButton>
               <LinkAsButton href="#">Asignar Rol</LinkAsButton>
               <LinkAsButton href="#">Inactivar</LinkAsButton>
             </Stack>
@@ -201,12 +203,13 @@ function ColumnOptions(props) {
 function LinkAsButton(props) {
   return (
     <Button asChild variant={'ghost'} justifyContent={'start'} size={'sm'} color={{ base: "bg.inverted/70", _hover: "bg.inverted" }} {...props}>
-      <Link href={props.href ?? "#"} justifyContent={'space-between'}>{props.children}</Link>
+      <Link href={props.href ?? "#"}>{props.children}</Link>
     </Button>
   )
 }
 
 import { Portal, Select, createListCollection } from "@chakra-ui/react"
+import { numberInputAnatomy } from '@chakra-ui/react/anatomy'
 
 function SelectStatus() {
   return (

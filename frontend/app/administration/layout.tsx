@@ -47,9 +47,11 @@ export default function layout(props) {
 	const base = '/administration'
 	return (
 		<>
+			
 			<HeaderComponent />
 			<SubHeader tablist={subheader_mock} rootPath={base} />
 			{props.children}
+			{props.modals}
 		</>
 	)
 }
