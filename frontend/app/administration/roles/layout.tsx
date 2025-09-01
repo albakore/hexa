@@ -22,66 +22,66 @@ const sidenav_links = [
     name: "Gerente Sistemas",
     description: "Administrador del portal"
   },
-  // {
-  //   id: 1,
-  //   name: "Admin",
-  //   description: "Es el admin"
-  // },
-  // {
-  //   id: 2,
-  //   name: "Provider Provider Provider Provider",
-  //   description: "Provedores de mailamericas, lorem ipsum"
-  // },
-  // {
-  //   id: 3,
-  //   name: "Gerente Sistemas",
-  //   description: "Administrador del portal"
-  // },
-  // {
-  //   id: 1,
-  //   name: "Admin",
-  //   description: "Es el admin"
-  // },
-  // {
-  //   id: 2,
-  //   name: "Provider Provider Provider Provider",
-  //   description: "Provedores de mailamericas, lorem ipsum"
-  // },
-  // {
-  //   id: 3,
-  //   name: "Gerente Sistemas",
-  //   description: "Administrador del portal"
-  // },
-  // {
-  //   id: 1,
-  //   name: "Admin",
-  //   description: "Es el admin"
-  // },
-  // {
-  //   id: 2,
-  //   name: "Provider Provider Provider Provider",
-  //   description: "Provedores de mailamericas, lorem ipsum"
-  // },
-  // {
-  //   id: 3,
-  //   name: "Gerente Sistemas",
-  //   description: "Administrador del portal"
-  // },
-  // {
-  //   id: 1,
-  //   name: "Admin",
-  //   description: "Es el admin"
-  // },
-  // {
-  //   id: 2,
-  //   name: "Provider Provider Provider Provider",
-  //   description: "Provedores de mailamericas, lorem ipsum"
-  // },
-  // {
-  //   id: 3,
-  //   name: "Gerente Sistemas",
-  //   description: "Administrador del portal"
-  // },
+//   {
+//     id: 1,
+//     name: "Admin",
+//     description: "Es el admin"
+//   },
+//   {
+//     id: 2,
+//     name: "Provider Provider Provider Provider",
+//     description: "Provedores de mailamericas, lorem ipsum"
+//   },
+//   {
+//     id: 3,
+//     name: "Gerente Sistemas",
+//     description: "Administrador del portal"
+//   },
+//   {
+//     id: 1,
+//     name: "Admin",
+//     description: "Es el admin"
+//   },
+//   {
+//     id: 2,
+//     name: "Provider Provider Provider Provider",
+//     description: "Provedores de mailamericas, lorem ipsum"
+//   },
+//   {
+//     id: 3,
+//     name: "Gerente Sistemas",
+//     description: "Administrador del portal"
+//   },
+//   {
+//     id: 1,
+//     name: "Admin",
+//     description: "Es el admin"
+//   },
+//   {
+//     id: 2,
+//     name: "Provider Provider Provider Provider",
+//     description: "Provedores de mailamericas, lorem ipsum"
+//   },
+//   {
+//     id: 3,
+//     name: "Gerente Sistemas",
+//     description: "Administrador del portal"
+//   },
+//   {
+//     id: 1,
+//     name: "Admin",
+//     description: "Es el admin"
+//   },
+//   {
+//     id: 2,
+//     name: "Provider Provider Provider Provider",
+//     description: "Provedores de mailamericas, lorem ipsum"
+//   },
+//   {
+//     id: 3,
+//     name: "Gerente Sistemas",
+//     description: "Administrador del portal"
+//   },
 ]
 
 export default function layout(props) {
