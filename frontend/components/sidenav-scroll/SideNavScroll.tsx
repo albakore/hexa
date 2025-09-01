@@ -10,7 +10,7 @@ import { useSelectedLayoutSegment } from 'next/navigation'
 export default function SideNavScroll(props) {
 	const segment = useSelectedLayoutSegment()
 	const ChildType = props?.childType ?? SideNavSection
-	const token = useToken('colors','bg.emphatized')
+	const token = useToken('colors', 'bg.emphatized')
 
 	const items = props.navlist.map((item, key) => {
 		return <ChildType {...item} key={key} />
@@ -20,9 +20,29 @@ export default function SideNavScroll(props) {
 			<InputGroup startElement={<LuSearch />} mb={2}>
 				<Input rounded={'lg'} placeholder="Busca cualquier rol..." />
 			</InputGroup>
-			 <VStack align={'stretch'} w={'auto'} h={'calc(100svh - 350px)'} overflowY={'auto'} scrollBehavior={'smooth'} scrollbarWidth={'thin'} scrollbarColor={`var(${token}) transparent`} >
-						{items}
-					</VStack>
+			<VStack
+				align={'stretch'}
+				w={'calc(100% + 18px)'}
+				h={'calc(100svh - 350px)'}
+				pr={2}
+				// overflow={'auto'}
+				overflowY={'hidden'}
+
+				scrollBehavior={'smooth'}
+				scrollbarWidth={'thin'}
+				scrollbarGutter={'stable'}
+
+				_hover={{
+					overflowY:'auto'
+				}}
+			scrollbarColor={`var(--chakra-colors-bg-emphasized) transparent`}
+			// scrollMarginBlockStart={'3s0px'}
+			>
+
+				{items}
+
+			</VStack>
+
 		</VStack>
 	)
 }
