@@ -1,11 +1,15 @@
-
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Sequence
 from app.module.domain.entity import Module
 
 
 class AppModuleRepository(ABC):
-
+	@abstractmethod
+	async def get_module_list(
+		self, limit: int, page: int
+	) -> List[Module] | Sequence[Module]: ...
 
 	@abstractmethod
-	async def get_modules_by_ids(self, ids: list[int]) -> List[Module]: ...
+	async def get_modules_by_ids(
+		self, ids: list[int]
+	) -> List[Module] | Sequence[Module]: ...
