@@ -27,3 +27,13 @@ class AppModuleSQLAlchemyRepository(AppModuleRepository):
 			result = await session.execute(query)
 
 		return result.scalars().all()
+
+	async def get_modules_by_token_name(
+		self, token_name_list: list[str]
+	) -> List[Module] | Sequence[Module]:
+		query = select(Module).where(col(Module.token).in_(token_name_list))
+
+		async with session_factory() as session:
+			result = await session.execute(query)
+
+		return result.scalars().all()

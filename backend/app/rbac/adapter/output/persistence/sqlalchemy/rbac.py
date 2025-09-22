@@ -247,3 +247,16 @@ class RBACSQLAlchemyRepository(RBACRepository):
 		result = await global_session.execute(stmt)
 
 		return result.rowcount
+
+	async def get_all_roles_from_modules(
+		self, modules: List[Module]
+	) -> List[Role] | Sequence[Role]:
+		query_link = select(ModuleRoleLink.fk_role).where(
+			col(ModuleRoleLink.fk_module).in_([module.id for module in modules])
+		)
+
+		query_role = select(Role).where(col(Role.id).in_(query_link))
+
+		async with session_factory() as session:
+			result = await session.execute(query_role)
+		return result.scalars().all()

@@ -1,3 +1,5 @@
+from typing import List, Sequence
+from app.rbac.domain.entity import Role
 from app.user.domain.command import CreateUserCommand
 from app.user.domain.entity.user import User
 from app.user.domain.repository.user import UserRepository
@@ -17,6 +19,11 @@ class UserService:
 
 	async def get_user_by_uuid(self, user_uuid: str) -> User | None:
 		return await self.usecase.get_user_by_uuid(user_uuid)
+
+	async def get_all_user_with_roles(
+		self, role_list: List[Role]
+	) -> List[User] | Sequence[User]:
+		return await self.usecase.get_all_user_with_roles(role_list)
 
 	async def create_user(self, *, command: CreateUserCommand) -> User | None:
 		return await self.usecase.create_user(command)

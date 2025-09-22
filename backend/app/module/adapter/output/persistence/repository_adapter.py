@@ -16,3 +16,8 @@ class AppModuleRepositoryAdapter(AppModuleRepository):
 		self, limit: int, page: int
 	) -> List[Module] | Sequence[Module]:
 		return await self.module_repository.get_module_list(limit, page)
+
+	async def get_modules_by_token_name(
+		self, token_name_list: list[str]
+	) -> List[Module] | Sequence[Module]:
+		return await self.module_repository.get_modules_by_token_name(token_name_list)

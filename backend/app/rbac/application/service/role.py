@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Sequence
 
 from app.module.domain.entity.module import Module
 from app.module.domain.repository.module import AppModuleRepository
@@ -20,9 +20,7 @@ class RoleService:
 
 	def __post_init__(self):
 		self.role_usecase = RoleUseCaseFactory(
-			self.role_repository, 
-			self.permission_repository, 
-			self.module_repository
+			self.role_repository, self.permission_repository, self.module_repository
 		)
 
 	async def get_all_roles(self) -> list[Role]:
@@ -48,7 +46,7 @@ class RoleService:
 		except RoleNotFoundException:
 			raise
 
-	async def edit_role(self,id_role: int, command: UpdateRoleCommand) -> Role:
+	async def edit_role(self, id_role: int, command: UpdateRoleCommand) -> Role:
 		role = await self.role_usecase.get_role_by_id(id_role)
 		if not role:
 			raise RoleNotFoundException
@@ -79,13 +77,21 @@ class RoleService:
 
 	async def get_modules_from_role(self, role: Role) -> List[Module]:
 		return await self.role_usecase.get_modules_from_role(role)
-	
-	async def remove_permissions_to_role(self, permissions: List[Permission], id_role: int) -> int:
-		return await self.role_usecase.remove_permissions_to_role(permissions,id_role)
 
-	async def remove_group_permissions_to_role(self, groups: List[GroupPermission], id_role: int) -> int:
-		return await self.role_usecase.remove_group_permissions_to_role(groups,id_role)
+	async def remove_permissions_to_role(
+		self, permissions: List[Permission], id_role: int
+	) -> int:
+		return await self.role_usecase.remove_permissions_to_role(permissions, id_role)
+
+	async def remove_group_permissions_to_role(
+		self, groups: List[GroupPermission], id_role: int
+	) -> int:
+		return await self.role_usecase.remove_group_permissions_to_role(groups, id_role)
 
 	async def remove_modules_to_role(self, modules: List[Module], id_role: int) -> Role:
 		return await self.role_usecase.remove_modules_to_role(modules, id_role)
 
+	async def get_all_roles_from_modules(
+		self, modules: List[Module]
+	) -> List[Module] | List[Sequence]:
+		return await self.role_usecase.get_all_roles_from_modules(modules)

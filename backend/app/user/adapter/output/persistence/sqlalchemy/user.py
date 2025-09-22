@@ -1,9 +1,10 @@
 from typing import List, Sequence
 from uuid import UUID
 import uuid
+from app.rbac.domain.entity import Role
 from app.user.domain.entity.user import User
 from app.user.domain.repository.user import UserRepository
-from sqlmodel import or_, select
+from sqlmodel import col, or_, select
 from sqlalchemy.orm import selectinload
 from core.db.session import session as global_session, session_factory
 
@@ -20,28 +21,29 @@ class UserSQLAlchemyRepository(UserRepository):
 
 		return result.scalars().all()
 
-	async def get_user_by_id(self, user_id: int, with_role: bool = False) -> User | None:
+	async def get_user_by_id(
+		self, user_id: int, with_role: bool = False
+	) -> User | None:
 		stmt = select(User).where(User.id == int(user_id))
 
 		if with_role:
 			stmt = stmt.options(selectinload(User.role))  # type: ignore
-		
+
 		async with session_factory() as session:
-			
 			instance = await session.execute(stmt)
 		return instance.scalars().one_or_none()
 
-	async def get_user_by_uuid(self, user_uuid: str, with_role: bool = False) -> User | None:
+	async def get_user_by_uuid(
+		self, user_uuid: str, with_role: bool = False
+	) -> User | None:
 		stmt = select(User).where(User.id == uuid.UUID(user_uuid))
 
 		if with_role:
 			stmt = stmt.options(selectinload(User.role))  # type: ignore
-		
+
 		async with session_factory() as session:
-			
 			instance = await session.execute(stmt)
 		return instance.scalars().one_or_none()
-
 
 	async def get_user_by_email(self, user_email: str) -> User | None:
 		async with session_factory() as session:
@@ -60,20 +62,28 @@ class UserSQLAlchemyRepository(UserRepository):
 		await global_session.flush()
 
 	async def get_user_by_email_or_nickname(
-		self,
-		email: str,
-		nickname: str,
-		with_role : bool = False
+		self, email: str, nickname: str, with_role: bool = False
 	) -> User | None:
 		stmt = select(User).where(or_(User.email == email, User.nickname == nickname))
 		if with_role:
 			stmt = stmt.options(selectinload(User.role))  # type: ignore
-		
+
 		async with session_factory() as session:
-			
 			instance = await session.execute(stmt)
 		return instance.scalars().first()
+
 	async def set_user_password(self, user: User, password: str) -> None:
 		user.password = password
 		user.requires_password_reset = False
 		global_session.add(user)
+
+	async def get_all_user_with_roles(
+		self, role_list: List[Role]
+	) -> List[User] | Sequence[User]:
+		query = select(User).where(
+			col(User.fk_role).in_([role.id for role in role_list])
+		)
+
+		async with session_factory() as session:
+			instance = await session.execute(query)
+		return instance.scalars().all()

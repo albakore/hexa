@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import List, Sequence
 
 from app.user.domain.command import CreateUserCommand
 from app.user.domain.entity.user import User
@@ -32,6 +33,14 @@ class GetUserByUuidUseCase:
 
 	async def __call__(self, user_uuid: str, with_role: bool = False) -> User | None:
 		return await self.user_repository.get_user_by_uuid(user_uuid, with_role)
+
+
+@dataclass
+class GetAllUserWithRoleUseCase:
+	user_repository: UserRepository
+
+	async def __call__(self, role_list: List[Role]) -> List[User] | Sequence[User]:
+		return await self.user_repository.get_all_user_with_roles(role_list)
 
 
 @dataclass
@@ -99,6 +108,7 @@ class UserUseCaseFactory:
 		self.get_user_list = GetUserListUseCase(self.user_repository)
 		self.get_user_by_id = GetUserByIdUseCase(self.user_repository)
 		self.get_user_by_uuid = GetUserByUuidUseCase(self.user_repository)
+		self.get_all_user_with_roles = GetAllUserWithRoleUseCase(self.user_repository)
 		self.get_user_by_email = GetUserByEmailUseCase(self.user_repository)
 		self.create_user = CreateUserUseCase(self.user_repository)
 		self.is_active = IsActiveUseCase(self.user_repository)

@@ -24,9 +24,24 @@ class GetModulesByIdsUseCase:
 
 
 @dataclass
+class GetModulesByTokenNameUseCase:
+	module_repository: AppModuleRepository
+
+	async def __call__(
+		self, token_name_list: list[str]
+	) -> List[Module] | Sequence[Module]:
+		return await self.module_repository.get_modules_by_token_name(
+			token_name_list=token_name_list
+		)
+
+
+@dataclass
 class ModuleUseCaseFactory:
 	module_repository: AppModuleRepository
 
 	def __post_init__(self):
 		self.get_module_list = GetModuleListUseCase(self.module_repository)
 		self.get_module_by_ids = GetModulesByIdsUseCase(self.module_repository)
+		self.get_modules_by_token_name = GetModulesByTokenNameUseCase(
+			self.module_repository
+		)

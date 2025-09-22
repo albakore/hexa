@@ -13,3 +13,8 @@ class AppModuleRepository(ABC):
 	async def get_modules_by_ids(
 		self, ids: list[int]
 	) -> List[Module] | Sequence[Module]: ...
+
+	@abstractmethod
+	async def get_modules_by_token_name(
+		self, token_name_list: list[str]
+	) -> List[Module] | Sequence[Module]: ...

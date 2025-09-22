@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import List
+from typing import List, Sequence
 from app.module.domain.entity.module import Module
 from app.module.domain.repository.module import AppModuleRepository
 from app.rbac.domain.command import CreateRoleCommand
@@ -147,8 +147,17 @@ class AppendModulesToRoleUseCase:
 class GetModulesFromRoleUseCase:
 	role_repository: RoleRepository
 
-	async def __call__(self, role: Role) -> List[Module]:
+	async def __call__(self, role: Role) -> List[Module] | Sequence[Module]:
 		return await self.role_repository.get_all_modules_from_role(role)
+
+
+@dataclass
+class GetAllRolesFromModulesUseCase:
+	role_repository: RoleRepository
+
+	async def __call__(self, modules: List[Module]) -> List[Role] | Sequence[Role]:
+		return await self.role_repository.get_all_roles_from_modules(modules)
+
 
 @dataclass
 class RemovePermissionsToRoleUseCase:
@@ -156,7 +165,10 @@ class RemovePermissionsToRoleUseCase:
 
 	@Transactional()
 	async def __call__(self, permissions: List[Permission], id_role: int) -> int:
-		return await self.role_repository.remove_permissions_to_role(permissions,id_role)
+		return await self.role_repository.remove_permissions_to_role(
+			permissions, id_role
+		)
+
 
 @dataclass
 class RemoveGroupPermissionsToRoleUseCase:
@@ -164,7 +176,10 @@ class RemoveGroupPermissionsToRoleUseCase:
 
 	@Transactional()
 	async def __call__(self, groups: List[GroupPermission], id_role: int) -> int:
-		return await self.role_repository.remove_group_permissions_to_role(groups,id_role)
+		return await self.role_repository.remove_group_permissions_to_role(
+			groups, id_role
+		)
+
 
 @dataclass
 class RemoveModulesToRoleUseCase:
@@ -172,7 +187,7 @@ class RemoveModulesToRoleUseCase:
 
 	@Transactional()
 	async def __call__(self, modules: List[Module], id_role: int) -> int:
-		return await self.role_repository.remove_modules_to_role(modules,id_role)
+		return await self.role_repository.remove_modules_to_role(modules, id_role)
 
 
 @dataclass
@@ -198,6 +213,13 @@ class RoleUseCaseFactory:
 			self.role_repository, self.module_repository
 		)
 		self.get_modules_from_role = GetModulesFromRoleUseCase(self.role_repository)
-		self.remove_permissions_to_role = RemovePermissionsToRoleUseCase(self.role_repository)
-		self.remove_group_permissions_to_role = RemoveGroupPermissionsToRoleUseCase(self.role_repository)
+		self.get_all_roles_from_modules = GetAllRolesFromModulesUseCase(
+			self.role_repository
+		)
+		self.remove_permissions_to_role = RemovePermissionsToRoleUseCase(
+			self.role_repository
+		)
+		self.remove_group_permissions_to_role = RemoveGroupPermissionsToRoleUseCase(
+			self.role_repository
+		)
 		self.remove_modules_to_role = RemoveModulesToRoleUseCase(self.role_repository)

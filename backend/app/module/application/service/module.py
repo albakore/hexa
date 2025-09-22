@@ -18,3 +18,8 @@ class AppModuleService:
 		self, module_ids: list[int]
 	) -> List[Module] | Sequence[Module]:
 		return await self.usecase.get_module_by_ids(module_ids)
+
+	async def get_modules_by_token_name(
+		self, token_name_list: list[str]
+	) -> List[Module] | Sequence[Module]:
+		return await self.usecase.get_modules_by_token_name(token_name_list)
