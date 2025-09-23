@@ -2,13 +2,14 @@ from abc import ABC, abstractmethod
 from typing import List, Sequence
 import uuid
 
-from app.rbac.domain.entity import Role
 from app.user.domain.entity.user import User
 
 
 class UserRepository(ABC):
 	@abstractmethod
-	async def get_user_list(self, limit: int, page: int) -> list[User]: ...
+	async def get_user_list(
+		self, limit: int, page: int
+	) -> List[User] | Sequence[User]: ...
 
 	@abstractmethod
 	async def get_user_by_id(
@@ -22,7 +23,7 @@ class UserRepository(ABC):
 
 	@abstractmethod
 	async def get_all_user_with_roles(
-		self, role_list: List[Role]
+		self, role_id_list: List[int]
 	) -> List[User] | Sequence[User]: ...
 
 	@abstractmethod

@@ -1,8 +1,7 @@
 from typing import List, Sequence
 from uuid import UUID
 import uuid
-from app.rbac.domain.entity import Role
-from app.user.domain.entity.user import User
+from app.user.domain.entity import User
 from app.user.domain.repository.user import UserRepository
 from sqlmodel import col, or_, select
 from sqlalchemy.orm import selectinload
@@ -52,7 +51,7 @@ class UserSQLAlchemyRepository(UserRepository):
 
 		return result.scalars().one_or_none()
 
-	async def save(self, user: User) -> User | None:
+	async def save(self, user: User) -> User:
 		global_session.add(user)
 		await global_session.flush()
 		return user
@@ -78,11 +77,9 @@ class UserSQLAlchemyRepository(UserRepository):
 		global_session.add(user)
 
 	async def get_all_user_with_roles(
-		self, role_list: List[Role]
+		self, role_id_list: List[int]
 	) -> List[User] | Sequence[User]:
-		query = select(User).where(
-			col(User.fk_role).in_([role.id for role in role_list])
-		)
+		query = select(User).where(col(User.fk_role).in_(role_id_list))
 
 		async with session_factory() as session:
 			instance = await session.execute(query)

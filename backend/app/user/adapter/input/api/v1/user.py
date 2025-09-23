@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, List
 import uuid
 from dependency_injector.wiring import Provide, inject
 from fastapi import (
@@ -57,7 +57,7 @@ async def search_users(
 	...
 	modules = await app_module_service.get_modules_by_token_name(token_modules)
 	roles = await role_service.get_all_roles_from_modules(modules)
-	users = await user_service.get_all_user_with_roles(roles)
+	users = await user_service.get_all_user_with_roles([role.id for role in roles])
 	return users
 	# return await user_service.get_user_list(int(limit), int(page))
 

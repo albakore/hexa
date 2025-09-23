@@ -3,7 +3,6 @@ from typing import List, Sequence
 
 from app.user.domain.command import CreateUserCommand
 from app.user.domain.entity.user import User
-from app.rbac.domain.entity.role import Role
 from dataclasses import dataclass
 from app.user.domain.repository.user import UserRepository
 from core.db import Transactional
@@ -39,8 +38,8 @@ class GetUserByUuidUseCase:
 class GetAllUserWithRoleUseCase:
 	user_repository: UserRepository
 
-	async def __call__(self, role_list: List[Role]) -> List[User] | Sequence[User]:
-		return await self.user_repository.get_all_user_with_roles(role_list)
+	async def __call__(self, role_id_list: List[int]) -> List[User] | Sequence[User]:
+		return await self.user_repository.get_all_user_with_roles(role_id_list)
 
 
 @dataclass

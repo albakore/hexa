@@ -16,7 +16,7 @@ from core.db import Transactional
 class GetAllRolesUseCase:
 	role_repository: RoleRepository
 
-	async def __call__(self) -> list[Role]:
+	async def __call__(self) -> List[Role] | Sequence[Role]:
 		return await self.role_repository.get_all_roles()
 
 
@@ -155,8 +155,8 @@ class GetModulesFromRoleUseCase:
 class GetAllRolesFromModulesUseCase:
 	role_repository: RoleRepository
 
-	async def __call__(self, modules: List[Module]) -> List[Role] | Sequence[Role]:
-		return await self.role_repository.get_all_roles_from_modules(modules)
+	async def __call__(self, modules_ids: List[int]) -> List[Role] | Sequence[Role]:
+		return await self.role_repository.get_all_roles_from_modules(modules_ids)
 
 
 @dataclass
@@ -186,8 +186,8 @@ class RemoveModulesToRoleUseCase:
 	role_repository: RoleRepository
 
 	@Transactional()
-	async def __call__(self, modules: List[Module], id_role: int) -> int:
-		return await self.role_repository.remove_modules_to_role(modules, id_role)
+	async def __call__(self, module_ids: List[int], id_role: int) -> int:
+		return await self.role_repository.remove_modules_to_role(module_ids, id_role)
 
 
 @dataclass

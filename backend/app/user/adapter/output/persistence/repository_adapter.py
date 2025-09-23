@@ -1,6 +1,5 @@
 from typing import List, Sequence
 from uuid import UUID
-from app.rbac.domain.entity import Role
 from app.user.domain.entity.user import User
 from app.user.domain.repository.user import UserRepository
 
@@ -9,7 +8,7 @@ class UserRepositoryAdapter(UserRepository):
 	def __init__(self, repository: UserRepository):
 		self.repository = repository
 
-	async def get_user_list(self, limit: int, page: int) -> list[User]:
+	async def get_user_list(self, limit: int, page: int) -> List[User] | Sequence[User]:
 		return await self.repository.get_user_list(limit, page)
 
 	async def get_user_by_id(
@@ -25,7 +24,7 @@ class UserRepositoryAdapter(UserRepository):
 	async def get_user_by_email(self, user_email: str) -> User | None:
 		return await self.repository.get_user_by_email(user_email)
 
-	async def save(self, user: User) -> User | None:
+	async def save(self, user: User) -> User:
 		return await self.repository.save(user)
 
 	async def delete(self, user: User) -> None:
@@ -42,6 +41,6 @@ class UserRepositoryAdapter(UserRepository):
 		return await self.repository.set_user_password(user, password)
 
 	async def get_all_user_with_roles(
-		self, role_list: List[Role]
+		self, role_id_list: List[int]
 	) -> List[User] | Sequence[User]:
-		return await self.repository.get_all_user_with_roles(role_list)
+		return await self.repository.get_all_user_with_roles(role_id_list)

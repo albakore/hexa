@@ -95,8 +95,10 @@ class RBACRepositoryAdapter(RBACRepository):
 	async def delete_group(self, group: GroupPermission) -> None:
 		return await self.permission_repository.delete_group(group)
 
-	async def append_modules_to_role(self, modules: List[Module], id_role: int) -> Role:
-		return await self.role_repository.append_modules_to_role(modules, id_role)
+	async def append_modules_to_role(
+		self, modules_ids: List[int], id_role: int
+	) -> Role:
+		return await self.role_repository.append_modules_to_role(modules_ids, id_role)
 
 	async def get_all_modules_from_role(
 		self, role: Role
@@ -117,10 +119,10 @@ class RBACRepositoryAdapter(RBACRepository):
 			groups, id_role
 		)
 
-	async def remove_modules_to_role(self, modules: List[Module], id_role: int) -> int:
-		return await self.role_repository.remove_modules_to_role(modules, id_role)
+	async def remove_modules_to_role(self, modules_ids: List[int], id_role: int) -> int:
+		return await self.role_repository.remove_modules_to_role(modules_ids, id_role)
 
 	async def get_all_roles_from_modules(
-		self, modules: List[Module]
+		self, modules_ids: List[int]
 	) -> List[Role] | Sequence[Role]:
-		return await self.role_repository.get_all_roles_from_modules(modules)
+		return await self.role_repository.get_all_roles_from_modules(modules_ids)

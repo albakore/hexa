@@ -41,15 +41,13 @@ class RoleRepository(ABC):
 	) -> Role: ...
 
 	@abstractmethod
-	async def remove_modules_to_role(
-		self, modules: List[Module], id_role: int
-	) -> int: ...
+	async def remove_modules_to_role(self, modules: List[int], id_role: int) -> int: ...
 
 	@abstractmethod
 	async def delete_role(self, role: Role) -> Role | None: ...
 
 	@abstractmethod
-	async def save_role(self, role: Role) -> Role | None: ...
+	async def save_role(self, role: Role) -> Role: ...
 
 	@abstractmethod
 	async def get_all_modules_from_role(
@@ -58,5 +56,5 @@ class RoleRepository(ABC):
 
 	@abstractmethod
 	async def get_all_roles_from_modules(
-		self, modules: List[Module]
+		self, modules_ids: List[int]
 	) -> List[Role] | Sequence[Role]: ...
