@@ -233,17 +233,30 @@ class RBACSQLAlchemyRepository(RBACRepository):
 			result = await session.execute(subq2)
 		return result.scalars().all()
 
-	async def remove_modules_to_role(self, modules: List[Module], id_role: int) -> int:
+	async def remove_modules_to_role(self, modules_ids: List[int], id_role: int) -> int:
 		role = await global_session.get(Role, int(id_role))
 		if not role:
 			raise RoleNotFoundException
 
 		stmt = delete(ModuleRoleLink).where(
 			and_(
-				col(ModuleRoleLink.fk_module).in_([module.id for module in modules]),
+				col(ModuleRoleLink.fk_module).in_(modules_ids),
 				ModuleRoleLink.fk_role == int(id_role),
 			)
 		)
 		result = await global_session.execute(stmt)
 
 		return result.rowcount
+
+	async def get_all_roles_from_modules(
+		self, modules_ids: List[int]
+	) -> List[Role] | Sequence[Role]:
+		query_link = select(ModuleRoleLink.fk_role).where(
+			col(ModuleRoleLink.fk_module).in_(modules_ids)
+		)
+
+		query_role = select(Role).where(col(Role.id).in_(query_link))
+
+		async with session_factory() as session:
+			result = await session.execute(query_role)
+		return result.scalars().all()
