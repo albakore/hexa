@@ -1,13 +1,42 @@
-from dependency_injector.providers import Container, Factory
-from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
+"""
+Container dinámico que auto-registra módulos
+"""
 
-from app.container import SystemContainer
-from modules.container import ModuleContainer
-from shared.container import SharedContainer
+from dependency_injector import containers
+import importlib
+from pathlib import Path
 
-class CoreContainer(DeclarativeContainer):
-	wiring_config = WiringConfiguration(packages=["app","modules","shared"], auto_wire=True)
 
-	system = Container(SystemContainer)
-	module = Container(ModuleContainer)
-	shared = Container(SharedContainer)
+class CoreContainer(containers.DynamicContainer):
+	"""Container dinámico que auto-registra módulos"""
+
+	def __init__(self):
+		super().__init__()
+		self._auto_register_modules()
+
+	def _auto_register_modules(self):
+		"""Auto-registra todos los containers de módulos"""
+		modules_path = Path("app")
+
+		for module_dir in modules_path.iterdir():
+			if module_dir.is_dir() and not module_dir.name.startswith("_"):
+				try:
+					container_module = importlib.import_module(
+						f"app.{module_dir.name}.container"
+					)
+
+					# Buscar la clase Container en el módulo
+					for attr_name in dir(container_module):
+						attr = getattr(container_module, attr_name)
+
+						if (
+							isinstance(attr, type)
+							and issubclass(attr, containers.DeclarativeContainer)
+							and attr != containers.DeclarativeContainer
+						):
+							container_name = f"{module_dir.name}_container"
+							self.set_provider(container_name, attr())
+							break
+
+				except ImportError:
+					continue
