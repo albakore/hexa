@@ -73,5 +73,9 @@ pythonpath = [
   "."
 ]
 
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+
 [project.scripts]
 hexa = "hexa.__main__:cmd"

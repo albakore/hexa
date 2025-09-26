@@ -19,22 +19,17 @@ class ExpiredTokenException(CustomException):
 
 
 class TokenHelper:
-
 	@staticmethod
 	def get_expiration_days(days: int = env.JWT_REFRESH_TOKEN_EXPIRATION_DAYS):
 		datetime_now = datetime.now().astimezone()
-		expiration_time = datetime_now + timedelta(
-			days=days
-		)
+		expiration_time = datetime_now + timedelta(days=days)
 		ttl_seconds = int((expiration_time - datetime_now).total_seconds())
 		return ttl_seconds
 
 	@staticmethod
-	def get_expiration_minutes(minutes:int = env.JWT_ACCESS_TOKEN_EXPIRATION_MINUTES):
+	def get_expiration_minutes(minutes: int = env.JWT_ACCESS_TOKEN_EXPIRATION_MINUTES):
 		datetime_now = datetime.now().astimezone()
-		expiration_time = datetime_now + timedelta(
-			minutes=minutes
-		)
+		expiration_time = datetime_now + timedelta(minutes=minutes)
 		ttl_seconds = int((expiration_time - datetime_now).total_seconds())
 		return ttl_seconds
 

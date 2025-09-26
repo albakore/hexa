@@ -8,12 +8,12 @@ from modules.yiqi_erp.domain.entity.moneda import Moneda
 from modules.yiqi_erp.domain.entity.orden_pago import OrdenDePago
 
 __all__ = [
-	'CancelacionDeCompras',
-	'Empresa',
-	'Factura',
-	'FacturaDeCompra',
-	'NotaCreditoCompra',
-	'NotaCreditoVenta',
-	'Moneda',
-	'OrdenDePago',
+	"CancelacionDeCompras",
+	"Empresa",
+	"Factura",
+	"FacturaDeCompra",
+	"NotaCreditoCompra",
+	"NotaCreditoVenta",
+	"Moneda",
+	"OrdenDePago",
 ]

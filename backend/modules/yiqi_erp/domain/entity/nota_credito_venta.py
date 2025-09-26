@@ -3,6 +3,7 @@ from datetime import date
 
 from modules.yiqi_erp.domain.entity.entity_base import YiqiEntity
 
+
 class NotaCreditoVenta(YiqiEntity):
 	__internal_name__ = "NOTA_CREDITO"
 	__prefix__ = "NOCR"

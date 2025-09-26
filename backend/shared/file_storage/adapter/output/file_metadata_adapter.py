@@ -1,4 +1,3 @@
-
 from dataclasses import dataclass
 from typing import BinaryIO
 from uuid import UUID
@@ -7,9 +6,9 @@ from shared.file_storage.domain.command import CreateFileMetadataCommand
 from shared.file_storage.domain.entity.file_metadata import FileMetadata
 from shared.file_storage.domain.repository.file_metadata import FileMetadataRepository
 
+
 class FileMetadataAdapter(FileMetadataRepository):
-	
-	def __init__(self,file_metadata_repository : FileMetadataRepository):
+	def __init__(self, file_metadata_repository: FileMetadataRepository):
 		self.file_metadata_repository = file_metadata_repository
 
 	async def get_by_uuid(self, uuid: UUID) -> FileMetadata | None:
@@ -23,6 +22,3 @@ class FileMetadataAdapter(FileMetadataRepository):
 
 	async def delete(self, file_metadata: FileMetadata) -> None:
 		return await self.file_metadata_repository.delete(file_metadata)
-
-
-			

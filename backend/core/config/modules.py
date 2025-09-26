@@ -1,4 +1,3 @@
-
 import importlib
 import importlib.util
 import os
@@ -8,81 +7,78 @@ from pathlib import Path
 
 from sqlmodel import select
 
-from app.module.domain.entity.module import Module
-from core.db.session import session_factory
+# Temporalmente comentado - será reemplazado por el nuevo sistema de módulos
+# from modules.app_module.domain.entity.module import Module
+# from core.db.session import session_factory
 
-MODULE_REGISTRY : dict[str, dict] = {}
+MODULE_REGISTRY: dict[str, dict] = {}
+
 
 class ModuleSetup:
-	name: str | None = None  # puede sobrescribirse
-	token: str
-	description: str| None = None
-
-	@classmethod
-	def __init_subclass__(cls):
-		cls._name = cls.name or cls.__name__.lower()
-
-		MODULE_REGISTRY[cls._name] = {
-			"name": cls.name,
-			"token": cls.token,
-			"description" : cls.description
-		}
-
-	@classmethod
-	def list_permissions(cls):
-		return [item for attr, item in MODULE_REGISTRY.items()]
+	"""Base class for module setup configuration"""
+	name: str = ""
+	token: str = ""
+	description: str = ""
 
 
-def get_modules_setup(folder_root_name : str = "modules") :
-	configs = []
-	for subdir in Path(folder_root_name).iterdir():
-		# print(Path(subdir).name)
-		if subdir.is_dir() and not subdir.name.startswith("_"):
-			setup_route = subdir / "setup.py"
-
-			if setup_route.is_file():
-				module_name = "setup"
-				module_route = ".".join([folder_root_name,subdir.name,module_name])
-				importlib.import_module(module_route)
-
-			print(f"❌ Modulo [{subdir.name}] no existe 'setup.py'")
-	return configs
+def get_modules_setup(folder_root_name: str = "modules"):
+	"""Discover and load module setup configurations"""
+	modules = []
+	modules_path = Path(folder_root_name)
+	
+	if not modules_path.exists():
+		return modules
+	
+	for module_dir in modules_path.iterdir():
+		if module_dir.is_dir() and not module_dir.name.startswith('_'):
+			setup_file = module_dir / "setup.py"
+			if setup_file.exists():
+				try:
+					spec = importlib.util.spec_from_file_location(
+						f"{module_dir.name}_setup", setup_file
+					)
+					module = importlib.util.module_from_spec(spec)
+					spec.loader.exec_module(module)
+					
+					# Find ModuleSetup subclasses
+					for attr_name in dir(module):
+						attr = getattr(module, attr_name)
+						if (isinstance(attr, type) and 
+							issubclass(attr, ModuleSetup) and 
+							attr != ModuleSetup):
+							module_instance = attr()
+							modules.append({
+								'name': module_instance.name,
+								'token': module_instance.token,
+								'description': module_instance.description,
+								'path': str(module_dir)
+							})
+							MODULE_REGISTRY[module_instance.token] = {
+								'name': module_instance.name,
+								'description': module_instance.description,
+								'path': str(module_dir)
+							}
+				except Exception as e:
+					print(f"Error loading module {module_dir.name}: {e}")
+	
+	return modules
 
 
 async def sync_modules_to_db():
-	"""
-	Sincroniza los modulos definidos en código con la base de datos.
-	"""
-	async with session_factory() as session:
-		try:
-			for name, item in MODULE_REGISTRY.items():
-				result = await session.execute(select(Module).where(Module.token == item['token']))
-				db_module = result.scalars().first()
-
-				if db_module:
-					if db_module.description != item['description'] or db_module.name != item['name']:
-						if db_module.description != item['description']:
-							db_module.description = item['description']
-						if db_module.name != item['name']:
-							db_module.name = item['name']
-						session.add(db_module)
-						print(f"📝 Actualizado modulo: {item['name']}",flush=True)
-				else:
-					session.add(Module(name=item['name'], token=item['token'], description=item.get('description',None)))
-					print(f"🆕 Insertado modulo: {item['name']}",flush=True)
-
-			await session.commit()
-			print("✅ Modulos sincronizados en base de datos",flush=True)
-		except Exception as e:
-			print("❌ Hubo un error al sincronizar los modulos:", e,flush=True)
+	"""Función temporal - no hace nada por ahora"""
+	print("⚠️ Module sync temporalmente deshabilitado")
+	pass
 
 
 def get_all_system_modules():
-	values = MODULE_REGISTRY.values()
-	return list(values)
+	"""Get all registered system modules"""
+	if not MODULE_REGISTRY:
+		get_modules_setup()  # Auto-discover if not loaded
+	return list(MODULE_REGISTRY.values())
 
 
 system_modules = APIRouter(tags=["System"])
+
 
 @system_modules.get("/modules")
 def get_system_modules():

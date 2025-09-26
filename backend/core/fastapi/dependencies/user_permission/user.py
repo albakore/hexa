@@ -1,32 +1,33 @@
-from core.fastapi.dependencies.permission import (
-	PermissionGroup
-)
+from core.fastapi.dependencies.permission import PermissionGroup
 
 
 class UserTokenPermission(PermissionGroup):
-    group = "user"
+	group = "user"
 
-    read = "Lee usuarios"
-    write = "Crea usuarios"
-    delete = "Elimina usuarios"
+	read = "Lee usuarios"
+	write = "Crea usuarios"
+	delete = "Elimina usuarios"
+
 
 class RoleTokenPermission(PermissionGroup):
-    group = "role"
+	group = "role"
 
-    read = "Lee roles"
-    write = "Crea roles"
-    delete = "Elimina roles"
+	read = "Lee roles"
+	write = "Crea roles"
+	delete = "Elimina roles"
+
 
 class GroupTokenPermission(PermissionGroup):
-    group = "group"
+	group = "group"
 
-    read = "Lee grupos de permisos"
-    write = "Crea grupos de permisos"
-    delete = "Elimina grupos de permisos"
+	read = "Lee grupos de permisos"
+	write = "Crea grupos de permisos"
+	delete = "Elimina grupos de permisos"
+
 
 class PermissionTokenPermission(PermissionGroup):
-    group = "permission"
+	group = "permission"
 
-    read = "Lee permisos"
-    write = "Crea permisos"
-    delete = "Elimina permisos"
+	read = "Lee permisos"
+	write = "Crea permisos"
+	delete = "Elimina permisos"

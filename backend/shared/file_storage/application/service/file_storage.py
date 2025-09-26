@@ -46,7 +46,7 @@ class FileStorageService:
 			path_target=file_path,
 			filename=filename,
 			download_filename=command.filename,
-			size=command.size
+			size=command.size,
 		)
 
 		file_metadata = self.metadata_usecase.create_file_metadata(
@@ -54,12 +54,15 @@ class FileStorageService:
 		)
 
 		return await self.metadata_usecase.save_file_metadata(file_metadata)
-	
+
 	async def download_file(self, file_metadata_uuid: uuid.UUID):
-		metadata = await self.metadata_usecase.get_file_metadata_by_uuid(file_metadata_uuid)
-		file = await self.storage_usecase.download_file_from_storage(metadata.path_target or metadata.filename)
-		return FileStorageDTO(file,metadata)
+		metadata = await self.metadata_usecase.get_file_metadata_by_uuid(
+			file_metadata_uuid
+		)
+		file = await self.storage_usecase.download_file_from_storage(
+			metadata.path_target or metadata.filename
+		)
+		return FileStorageDTO(file, metadata)
 
 	async def get_metadata(self, file_metadata_uuid: uuid.UUID) -> FileMetadata:
 		return await self.metadata_usecase.get_file_metadata_by_uuid(file_metadata_uuid)
-		

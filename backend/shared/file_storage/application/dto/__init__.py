@@ -1,4 +1,3 @@
-
 from dataclasses import dataclass
 
 from shared.file_storage.domain.entity import FileMetadata

@@ -3,6 +3,7 @@ from datetime import date, datetime
 
 from modules.yiqi_erp.domain.entity.entity_base import YiqiEntity
 
+
 class OrdenDePago(YiqiEntity):
 	__internal_name__ = "ORDEN_PAGO"
 	__prefix__ = "OBLI"

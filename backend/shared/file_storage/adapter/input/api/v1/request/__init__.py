@@ -1,7 +1,12 @@
 from pydantic import BaseModel
-from modules.provider.domain.command import CreateProviderCommand, UpdateProviderCommand
-class ProviderCreateRequest(CreateProviderCommand):
-	...
 
-class ProviderUpdateRequest(UpdateProviderCommand):
-	...
+
+# Temporalmente simplificado - las clases de comando serán redefinidas
+class ProviderCreateRequest(BaseModel):
+	name: str
+	description: str = ""
+
+
+class ProviderUpdateRequest(BaseModel):
+	name: str = None
+	description: str = None

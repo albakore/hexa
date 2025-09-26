@@ -12,7 +12,9 @@ class DraftPurchaseInvoiceSQLAlchemyRepository(DraftPurchaseInvoiceRepository):
 	async def get_provider_draft_invoices_list(
 		self, id_provider: int, limit: int = 12, page: int = 0
 	) -> list[DraftPurchaseInvoice] | Sequence[DraftPurchaseInvoice]:
-		query = select(DraftPurchaseInvoice).where(DraftPurchaseInvoice.fk_proveedor == int(id_provider))
+		query = select(DraftPurchaseInvoice).where(
+			DraftPurchaseInvoice.fk_proveedor == int(id_provider)
+		)
 		query = query.slice(page, limit)
 
 		async with session_factory() as session:

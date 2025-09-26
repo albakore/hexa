@@ -6,12 +6,11 @@ from shared.file_storage.domain.repository.file_metadata import FileMetadataRepo
 
 
 class FileMetadataSQLAlchemyRepository(FileMetadataRepository):
-
 	async def get_by_uuid(self, uuid: UUID) -> FileMetadata | None:
 		async with session_factory() as session:
 			file_metadata = await session.get(FileMetadata, uuid)
 		return file_metadata
-	
+
 	def create(self, command: CreateFileMetadataCommand) -> FileMetadata:
 		return FileMetadata.model_validate(command)
 
@@ -21,6 +20,3 @@ class FileMetadataSQLAlchemyRepository(FileMetadataRepository):
 
 	async def delete(self, file_metadata: FileMetadata) -> None:
 		await session.delete(file_metadata)
-
-
-			

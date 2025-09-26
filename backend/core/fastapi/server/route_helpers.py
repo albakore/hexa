@@ -1,4 +1,3 @@
-
 import importlib
 import os
 from typing import List
@@ -6,7 +5,7 @@ from typing import List
 from fastapi import APIRouter
 
 
-def get_routes(folder_root_name : str = "app"):
+def get_routes(folder_root_name: str = "app"):
 	routes = []
 	for root, dirs, files in os.walk(folder_root_name):
 		if "adapter/input/api" in root:
@@ -20,6 +19,7 @@ def get_routes(folder_root_name : str = "app"):
 
 	return routes
 
-def set_routes_to_app(app_or_route : APIRouter, routes : List[APIRouter]):
+
+def set_routes_to_app(app_or_route: APIRouter, routes: List[APIRouter]):
 	for route in routes:
 		app_or_route.include_router(route)

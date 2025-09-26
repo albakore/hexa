@@ -10,8 +10,8 @@ from starlette.middleware.authentication import (
 )
 from starlette.requests import HTTPConnection
 from starlette.authentication import BaseUser, AuthCredentials
-from app.auth.domain.repository.auth import AuthRepository
 from core.config.settings import env
+from shared.interfaces.service_locator import service_locator
 
 
 class CurrentUser(BaseModel):
@@ -33,17 +33,22 @@ class User(BaseUser):
 	def __getattr__(self, item):
 		return getattr(self._user, item)
 
-@inject
+
 class AuthBackend(AuthenticationBackend):
-	
-	def __init__(self, auth_repository : AuthRepository):
-		self.auth_repository = auth_repository
+	def __init__(self):
+		self._auth_repository = None
+
+	@property
+	def auth_repository(self):
+		if self._auth_repository is None:
+			self._auth_repository = service_locator.get_service("auth_repository")
+		return self._auth_repository
 
 	async def authenticate(
 		self, conn: HTTPConnection
 	) -> tuple[AuthCredentials, User] | None:
 		authorization: str | None = conn.headers.get("Authorization")
-		
+
 		if not authorization:
 			print("❌ Sin Authorization")
 			return None
@@ -55,7 +60,7 @@ class AuthBackend(AuthenticationBackend):
 		except ValueError:
 			print("Error: no tiene bearer")
 			return None
-		
+
 		if not credentials:
 			return None
 		try:
@@ -65,15 +70,22 @@ class AuthBackend(AuthenticationBackend):
 				algorithms=[env.JWT_ALGORITHM],
 			)
 			user_uuid = payload["id"]
-			session = await self.auth_repository.get_user_session(user_uuid)
 			user = CurrentUser(**payload)
-			if session:
-				user.permissions = session.permissions
-			scopes = user.permissions
+
+			# Intentar obtener sesión si el repositorio está disponible
+			if self.auth_repository:
+				try:
+					session = await self.auth_repository.get_user_session(user_uuid)
+					if session:
+						user.permissions = session.permissions
+				except Exception:
+					pass  # Continuar sin permisos si falla
+
+			scopes = user.permissions or []
 
 		except jwt.exceptions.PyJWTError:
 			print("❌ Token inválido")
-			
+
 			return None
 
 		authenticated_user = User(user)

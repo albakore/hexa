@@ -3,7 +3,10 @@ from io import BytesIO
 from typing import Sequence
 import uuid
 from modules.provider.application.dto import DraftPurchaseInvoiceDTO
-from modules.provider.application.exception import DraftPurchaseInvoiceCurrencyNotFoundException, DraftPurchaseInvoiceNotFoundException
+from modules.provider.application.exception import (
+	DraftPurchaseInvoiceCurrencyNotFoundException,
+	DraftPurchaseInvoiceNotFoundException,
+)
 from modules.provider.domain.command import CreateDraftPurchaseInvoiceCommand
 from modules.provider.domain.entity.draft_purchase_invoice import DraftPurchaseInvoice
 from modules.provider.domain.repository.draft_purchase_invoice import (
@@ -53,9 +56,12 @@ class DraftPurchaseInvoiceService:
 	async def get_draft_purchase_invoice_with_filemetadata(
 		self, draft_purchase_invoice: DraftPurchaseInvoice
 	) -> DraftPurchaseInvoiceDTO:
-
-		archivo_comprobante = await self._get_metadata_or_none(draft_purchase_invoice.id_archivo_comprobante)
-		archivo_detalle = await self._get_metadata_or_none(draft_purchase_invoice.id_archivo_detalle)
+		archivo_comprobante = await self._get_metadata_or_none(
+			draft_purchase_invoice.id_archivo_comprobante
+		)
+		archivo_detalle = await self._get_metadata_or_none(
+			draft_purchase_invoice.id_archivo_detalle
+		)
 
 		draft_invoice_dto = DraftPurchaseInvoiceDTO(
 			**draft_purchase_invoice.model_dump(),
@@ -89,14 +95,20 @@ class DraftPurchaseInvoiceService:
 		return await self.draft_purchase_invoice_usecase.delete_draft_purchase_invoice(
 			draft_purchase_invoice
 		)
-	
+
 	async def finalize_and_emit_invoice(self, id_draft_purchase_invoice: int):
-		draft_invoice = await self.get_draft_purchase_invoice_by_id(id_draft_purchase_invoice)
-		invoice_with_metadata = await self.get_draft_purchase_invoice_with_filemetadata(draft_invoice)
+		draft_invoice = await self.get_draft_purchase_invoice_by_id(
+			id_draft_purchase_invoice
+		)
+		invoice_with_metadata = await self.get_draft_purchase_invoice_with_filemetadata(
+			draft_invoice
+		)
 		if not draft_invoice.moneda:
 			raise DraftPurchaseInvoiceCurrencyNotFoundException
-		yiqi_moneda = await self.yiqi_service.get_currency_by_code(draft_invoice.moneda,316)
-		
+		yiqi_moneda = await self.yiqi_service.get_currency_by_code(
+			draft_invoice.moneda, 316
+		)
+
 		comprobante = invoice_with_metadata.archivo_comprobante
 		detalle = invoice_with_metadata.archivo_detalle
 
@@ -110,28 +122,26 @@ class DraftPurchaseInvoiceService:
 			yiqi_comprobante = UploadFileCommand(
 				BytesIO(archivo_comprobante.file),
 				size=comprobante.size,
-				filename=comprobante.download_filename
-				)
-			await self.yiqi_service.upload_file(yiqi_comprobante,316)
+				filename=comprobante.download_filename,
+			)
+			await self.yiqi_service.upload_file(yiqi_comprobante, 316)
 
 		if detalle:
-			archivo_detalle = await self.file_storage_service.download_file(
-				detalle.id
-			)
+			archivo_detalle = await self.file_storage_service.download_file(detalle.id)
 			yiqi_detalle = UploadFileCommand(
 				BytesIO(archivo_detalle.file),
 				size=detalle.size,
-				filename=detalle.download_filename
-				)
-			
-			await self.yiqi_service.upload_file(yiqi_detalle,316)
-		
+				filename=detalle.download_filename,
+			)
+
+			await self.yiqi_service.upload_file(yiqi_detalle, 316)
+
 		yiqi_invoice_command = CreateYiqiInvoiceCommand(
 			Provider=draft_invoice.fk_proveedor,
-			Numero=draft_invoice.numero ,
+			Numero=draft_invoice.numero,
 			Concepto=draft_invoice.concepto or "Sin concepto agregado",
 			Servicio=draft_invoice.fk_servicio,
-			Moneda_original=yiqi_moneda['id'],
+			Moneda_original=yiqi_moneda["id"],
 			Precio_unitario=draft_invoice.precio_unitario or 0.0,
 			Mes_servicio=draft_invoice.fecha_emision,
 			Comprobante=yiqi_comprobante,
@@ -146,7 +156,6 @@ class DraftPurchaseInvoiceService:
 
 		yiqi_invoice = await self.yiqi_service.create_invoice(yiqi_invoice_command, 316)
 		return yiqi_invoice
-		
 
 	async def _get_metadata_or_none(self, file_id: uuid.UUID | None):
 		if not file_id:

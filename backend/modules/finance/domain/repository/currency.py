@@ -5,7 +5,6 @@ from modules.finance.domain.entity.currency import Currency
 
 
 class CurrencyRepository(ABC):
-
 	@abstractmethod
 	async def get_currency_list(self) -> List[Currency] | Sequence[Currency]: ...
 
@@ -16,8 +15,7 @@ class CurrencyRepository(ABC):
 	async def get_currency_by_code(self, currency_code: str) -> Currency | None: ...
 
 	@abstractmethod
-	async def save(self, currency : Currency ) -> Currency | None: ...
-	
+	async def save(self, currency: Currency) -> Currency | None: ...
+
 	@abstractmethod
-	async def delete(self, currency : Currency) -> None: ...
-	
+	async def delete(self, currency: Currency) -> None: ...

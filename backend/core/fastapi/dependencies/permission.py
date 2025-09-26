@@ -10,8 +10,7 @@ from fastapi.security.base import SecurityBase
 from starlette import status
 from starlette.authentication import UnauthenticatedUser
 
-from app.container import SystemContainer
-from app.models import Permission
+from shared.interfaces.service_locator import service_locator
 from core.db import session_factory
 from core.exceptions.base import CustomException
 from rich import print
@@ -92,36 +91,38 @@ def get_all_grouped_permissions() -> dict[str, list[dict[str, str]]]:
 
 async def sync_permissions_to_db():
 	"""
-	Sincroniza los permisos definidos en código con la base de datos.
+	Discover and register permissions from all modules
 	"""
-	async with session_factory() as session:
-		try:
-			for token, description in PERMISSIONS_REGISTRY.items():
-				result = await session.execute(
-					select(Permission).where(Permission.token == token)
-				)
-				db_perm = result.scalars().first()
-
-				if db_perm:
-					if db_perm.description != description:
-						db_perm.description = description
-						session.add(db_perm)
-						print(f"📝 Actualizado: {token}")
-				else:
-					session.add(
-						Permission(
-							group_name=token.split(":")[0],
-							name=token.split(":")[1],
-							token=token,
-							description=description,
-						)
+	from pathlib import Path
+	import importlib.util
+	
+	modules_path = Path("modules")
+	if not modules_path.exists():
+		return
+	
+	for module_dir in modules_path.iterdir():
+		if module_dir.is_dir() and not module_dir.name.startswith('_'):
+			permissions_file = module_dir / "permissions.py"
+			if permissions_file.exists():
+				try:
+					spec = importlib.util.spec_from_file_location(
+						f"{module_dir.name}_permissions", permissions_file
 					)
-					print(f"🆕 Insertado: {token}")
-
-			await session.commit()
-			print("✅ Permisos sincronizados en base de datos")
-		except Exception as e:
-			print("❌ Hubo un error al sincronizar los permisos:", e)
+					module = importlib.util.module_from_spec(spec)
+					spec.loader.exec_module(module)
+					
+					# Find PermissionGroup subclasses
+					for attr_name in dir(module):
+						attr = getattr(module, attr_name)
+						if (isinstance(attr, type) and 
+							issubclass(attr, PermissionGroup) and 
+							attr != PermissionGroup):
+							# Permission class is auto-registered via __init_subclass__
+							pass
+				except Exception as e:
+					print(f"Error loading permissions from {module_dir.name}: {e}")
+	
+	print(f"✅ Registered {len(PERMISSIONS_REGISTRY)} permissions from modules")
 
 
 class PermissionDependency(SecurityBase):
