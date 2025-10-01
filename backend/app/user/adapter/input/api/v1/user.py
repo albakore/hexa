@@ -56,7 +56,9 @@ async def search_users(
 ):
 	...
 	modules = await app_module_service.get_modules_by_token_name(token_modules)
-	roles = await role_service.get_all_roles_from_modules(modules)
+	roles = await role_service.get_all_roles_from_modules(
+		[module.id for module in modules]
+	)
 	users = await user_service.get_all_user_with_roles([role.id for role in roles])
 	return users
 	# return await user_service.get_user_list(int(limit), int(page))
