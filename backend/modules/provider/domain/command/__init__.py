@@ -34,4 +34,21 @@ class CreateDraftPurchaseInvoiceCommand(BaseModel):
 	id_archivo_detalle: uuid.UUID | None = None
 
 
+class CreatePurchaseInvoiceServiceCommand(BaseModel):
+	name: str
+	description: str | None = None
+	group: str | None = None
+	require_awb: bool | None = None
+	require_unit_price: bool | None = None
+	require_kg: bool | None = None
+	require_items: bool | None = None
+	require_detail_file: bool | None = None
+	id_yiqi_service: int | None = None
+
+
 class UpdateDraftPurchaseInvoiceCommand(CreateDraftPurchaseInvoiceCommand): ...
+
+
+class UpdatePurchaseInvoiceServiceCommand(CreatePurchaseInvoiceServiceCommand):
+	id: int
+	id_yiqi_service: int | None = Field(default=None, description="Id of yiqi provider")

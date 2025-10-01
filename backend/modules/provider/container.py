@@ -1,34 +1,58 @@
 from dependency_injector.providers import Container, Factory, Singleton, Provider
 from dependency_injector.containers import DeclarativeContainer
 
-from modules.provider.adapter.output.persistence.draft_invoice_adapter import DraftPurchaseInvoiceAdapter
-from modules.provider.adapter.output.persistence.repository_adapter import ProviderRepositoryAdapter
-from modules.provider.adapter.output.persistence.sqlalchemy.draft_purchase_invoice import DraftPurchaseInvoiceSQLAlchemyRepository
-from modules.provider.adapter.output.persistence.sqlalchemy.provider import ProviderSQLAlchemyRepository
-from modules.provider.application.service.draft_purchase_invoice import DraftPurchaseInvoiceService
+from modules.provider.adapter.output.persistence.draft_invoice_adapter import (
+	DraftPurchaseInvoiceAdapter,
+)
+from modules.provider.adapter.output.persistence.invoice_service_adapter import (
+	PurchaseInvoiceServiceRepositoryAdapter,
+)
+from modules.provider.adapter.output.persistence.repository_adapter import (
+	ProviderRepositoryAdapter,
+)
+from modules.provider.adapter.output.persistence.sqlalchemy.draft_purchase_invoice import (
+	DraftPurchaseInvoiceSQLAlchemyRepository,
+)
+from modules.provider.adapter.output.persistence.sqlalchemy.provider import (
+	ProviderSQLAlchemyRepository,
+)
+from modules.provider.adapter.output.persistence.sqlalchemy.purchase_invoice_servicetype import (
+	PurchaseInvoiceServiceSQLAlchemyRepository,
+)
+from modules.provider.application.service.draft_purchase_invoice import (
+	DraftPurchaseInvoiceService,
+)
 from modules.provider.application.service.provider import ProviderService
+from modules.provider.application.service.purchase_invoice_service import (
+	PurchaseInvoiceServiceTypeService,
+)
 from modules.yiqi_erp.container import YiqiContainer, YiqiService
 from shared.container import SharedContainer
-class ProviderContainer(DeclarativeContainer):
 
-	yiqi_service : Provider[ProviderService] = Provider()
+
+class ProviderContainer(DeclarativeContainer):
+	yiqi_service: Provider[ProviderService] = Provider()
 
 	provider_repo = Singleton(
 		ProviderSQLAlchemyRepository,
 	)
 
-	draft_invoice_repo = Singleton(
-		DraftPurchaseInvoiceSQLAlchemyRepository
-	)
+	draft_invoice_repo = Singleton(DraftPurchaseInvoiceSQLAlchemyRepository)
+
+	invoice_service_repo = Singleton(PurchaseInvoiceServiceSQLAlchemyRepository)
 
 	provider_repo_adapter = Factory(
-		ProviderRepositoryAdapter,
-		provider_repository=provider_repo
+		ProviderRepositoryAdapter, provider_repository=provider_repo
 	)
 
 	draft_invoice_repo_adapter = Factory(
 		DraftPurchaseInvoiceAdapter,
-		draft_purchase_invoice_repository=draft_invoice_repo
+		draft_purchase_invoice_repository=draft_invoice_repo,
+	)
+
+	invoice_service_repo_adapter = Factory(
+		PurchaseInvoiceServiceRepositoryAdapter,
+		purchase_invoice_service_repository=invoice_service_repo,
 	)
 
 	provider_service = Factory(
@@ -41,5 +65,10 @@ class ProviderContainer(DeclarativeContainer):
 		DraftPurchaseInvoiceService,
 		draft_purchase_invoice_repository=draft_invoice_repo_adapter,
 		file_storage_service=SharedContainer.file_storage.service,
-		yiqi_service=yiqi_service
+		yiqi_service=yiqi_service,
+	)
+
+	invoice_servicetype_service = Factory(
+		PurchaseInvoiceServiceTypeService,
+		purchase_invoice_service_repository=invoice_service_repo_adapter,
 	)
