@@ -1,7 +1,10 @@
 from abc import ABC, abstractmethod
 import threading
-from typing import Dict, Any, Optional, TypedDict
+from typing import Dict, Any, Optional, TypeVar, TypedDict
 from dependency_injector.containers import DeclarativeContainer
+from dependency_injector.providers import Object
+
+T = TypeVar("T")
 
 
 class ModuleInterface(ABC):
@@ -21,7 +24,7 @@ class ModuleInterface(ABC):
 
 	@property
 	@abstractmethod
-	def service(self) -> Dict[str, Any]:
+	def service(self) -> Dict[str, object]:
 		pass
 
 	@property

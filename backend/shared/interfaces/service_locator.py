@@ -1,5 +1,6 @@
 from typing import Dict, Any, Optional, TypeVar, Type, Callable
 from abc import ABC, abstractmethod
+from shared.interfaces.module_registry import ModuleRegistry
 
 T = TypeVar("T")
 

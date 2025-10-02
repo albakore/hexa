@@ -29,9 +29,6 @@ from core.fastapi.dependencies.permission import (
 	system_permission,
 	sync_permissions_to_db,
 )
-# from core.config.modules import get_modules_setup, sync_modules_to_db, system_modules
-
-# get_modules_setup()
 
 
 def custom_generate_unique_id(route: APIRoute):
@@ -53,6 +50,7 @@ def generate_openapi_for_frontend(app_: FastAPI):
 
 
 def init_routes_pack(app_: FastAPI):
+	print(ModuleRegistry().get_routes())
 	for route in ModuleRegistry().get_routes():
 		app_.include_router(route)
 
