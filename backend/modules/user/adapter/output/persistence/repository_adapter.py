@@ -1,7 +1,7 @@
 from typing import List, Sequence
 from uuid import UUID
-from app.user.domain.entity.user import User
-from app.user.domain.repository.user import UserRepository
+from modules.user.domain.entity.user import User
+from modules.user.domain.repository.user import UserRepository
 
 
 class UserRepositoryAdapter(UserRepository):

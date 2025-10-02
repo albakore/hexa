@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from app.user.domain.entity import User
+from modules.user.domain.entity import User
 
 
 class AuthUseCase(ABC):

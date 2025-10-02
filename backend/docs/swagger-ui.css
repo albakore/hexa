@@ -1,0 +1,734 @@
+/*
+ * Mintlify-Style Theme for Swagger UI
+ * Exact replica of Mintlify's API documentation design
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* Mintlify exact colors */
+  --bg-primary: #0d1117;
+  --bg-secondary: #161b22;
+  --bg-tertiary: #21262d;
+  --bg-card: #161b22;
+  --bg-hover: #1c2128;
+  --text-primary: #f0f6fc;
+  --text-secondary: #8b949e;
+  --text-muted: #656d76;
+  
+  /* Mintlify brand colors */
+  --primary: #E4080A;
+  --primary-hover: #c5070a;
+  --success: #238636;
+  --warning: #d29922;
+  --error: #da3633;
+  --info: #1f6feb;
+  
+  /* Borders and effects */
+  --border: #30363d;
+  --border-muted: #21262d;
+  --shadow: rgba(0, 0, 0, 0.3);
+  --focus: #1f6feb;
+  
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+}
+
+/* Base styles - Mintlify layout */
+.swagger-ui {
+  font-family: var(--font-sans);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  font-size: 14px;
+}
+
+.swagger-ui * {
+  box-sizing: border-box;
+}
+
+/* Hide default topbar - Mintlify style */
+.swagger-ui .topbar {
+  display: none;
+}
+
+/* Info section - Mintlify header style */
+.swagger-ui .information-container {
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border);
+  padding: 2rem 0;
+}
+
+.swagger-ui .info {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+.swagger-ui .info .title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.025em;
+}
+
+.swagger-ui .info .title small {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 400;
+  margin-left: 0.5rem;
+}
+
+.swagger-ui .info .link {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  text-decoration: none;
+  font-family: var(--font-mono);
+}
+
+/* Servers section - Mintlify style */
+.swagger-ui .scheme-container {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 0;
+}
+
+.swagger-ui .schemes {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.swagger-ui .servers-title {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-right: 1rem;
+}
+
+.swagger-ui select {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 0.5rem;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+}
+
+/* Main content wrapper */
+.swagger-ui .wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Tag sections - Mintlify style */
+.swagger-ui .opblock-tag-section {
+  margin-bottom: 2rem;
+}
+
+.swagger-ui .opblock-tag {
+  background: transparent;
+  border: none;
+  padding: 1rem 0;
+  margin: 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.swagger-ui .opblock-tag span {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.swagger-ui .opblock-tag .expand-operation {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+}
+
+.swagger-ui .opblock-tag .expand-operation:hover {
+  background: var(--bg-hover);
+}
+
+/* Operations - Mintlify card style */
+.swagger-ui .opblock {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  transition: all 0.15s ease;
+}
+
+.swagger-ui .opblock:hover {
+  border-color: var(--text-muted);
+}
+
+.swagger-ui .opblock .opblock-summary {
+  background: transparent;
+  border: none;
+  padding: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: background-color 0.15s ease;
+  width: 100%;
+  text-align: left;
+}
+
+.swagger-ui .opblock .opblock-summary:hover {
+  background: var(--bg-hover);
+}
+
+/* HTTP Methods - Mintlify badges */
+.swagger-ui .opblock .opblock-summary-method {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  color: white;
+  min-width: 60px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.swagger-ui .opblock.opblock-get .opblock-summary-method {
+  background: #238636;
+}
+
+.swagger-ui .opblock.opblock-post .opblock-summary-method {
+  background: #1f6feb;
+}
+
+.swagger-ui .opblock.opblock-put .opblock-summary-method {
+  background: #d29922;
+}
+
+.swagger-ui .opblock.opblock-delete .opblock-summary-method {
+  background: #da3633;
+}
+
+.swagger-ui .opblock.opblock-patch .opblock-summary-method {
+  background: var(--primary);
+}
+
+/* Path and description - Mintlify layout */
+.swagger-ui .opblock .opblock-summary-path-description-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.swagger-ui .opblock .opblock-summary-path {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.swagger-ui .opblock .opblock-summary-description {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+/* Copy button - Mintlify style */
+.swagger-ui .view-line-link {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  padding: 0.25rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.swagger-ui .opblock:hover .view-line-link {
+  opacity: 1;
+}
+
+.swagger-ui .view-line-link:hover {
+  background: var(--bg-hover);
+}
+
+/* Arrow button */
+.swagger-ui .opblock-control-arrow {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.swagger-ui .opblock-control-arrow:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* Operation body - hidden by default in Mintlify style */
+.swagger-ui .opblock .opblock-body {
+  border-top: 1px solid var(--border);
+  padding: 1.5rem;
+  background: var(--bg-secondary);
+  display: none;
+}
+
+.swagger-ui .opblock.is-open .opblock-body {
+  display: block;
+}
+
+/* Parameters - Mintlify table style */
+.swagger-ui .parameters-container {
+  margin-bottom: 1.5rem;
+}
+
+.swagger-ui .table-container {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+}
+
+.swagger-ui table {
+  width: 100%;
+  border-collapse: collapse;
+  background: transparent;
+}
+
+.swagger-ui table th {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+
+.swagger-ui table th:last-child {
+  border-right: none;
+}
+
+.swagger-ui table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  color: var(--text-secondary);
+  vertical-align: top;
+  font-size: 0.875rem;
+}
+
+.swagger-ui table td:last-child {
+  border-right: none;
+}
+
+.swagger-ui table tr:last-child td {
+  border-bottom: none;
+}
+
+.swagger-ui .parameter__name {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+}
+
+.swagger-ui .parameter__type {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  background: var(--bg-tertiary);
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
+/* Code blocks - Mintlify style */
+.swagger-ui pre {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-radius: 8px;
+  padding: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  line-height: 1.4;
+  margin: 1rem 0;
+}
+
+.swagger-ui .highlight-code {
+  background: var(--bg-tertiary);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.swagger-ui code {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  background: var(--bg-tertiary);
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  color: var(--text-primary);
+}
+
+/* Buttons - Mintlify style */
+.swagger-ui .btn {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 0.875rem;
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.swagger-ui .btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--text-muted);
+}
+
+.swagger-ui .btn.execute {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.swagger-ui .btn.execute:hover {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+.swagger-ui .btn.cancel {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+.swagger-ui .btn.cancel:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.swagger-ui .btn.try-out__btn {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.swagger-ui .btn.try-out__btn:hover {
+  background: var(--bg-hover);
+}
+
+/* Authorization - Mintlify style */
+.swagger-ui .authorize {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+  font-size: 0.875rem;
+}
+
+.swagger-ui .authorize:hover {
+  background: var(--bg-hover);
+  border-color: var(--text-muted);
+}
+
+/* Models - Mintlify style */
+.swagger-ui .models {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.swagger-ui .model-box {
+  background: var(--bg-tertiary);
+  border-radius: 8px;
+  padding: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  border: 1px solid var(--border);
+  line-height: 1.4;
+}
+
+.swagger-ui .prop-name {
+  color: #79c0ff;
+  font-weight: 600;
+}
+
+.swagger-ui .prop-type {
+  color: var(--text-muted);
+}
+
+.swagger-ui .model-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+/* Forms - Mintlify style */
+.swagger-ui input[type="text"],
+.swagger-ui textarea,
+.swagger-ui select {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-family: var(--font-sans);
+  transition: all 0.15s ease;
+  width: 100%;
+  font-size: 0.875rem;
+}
+
+.swagger-ui input[type="text"]:focus,
+.swagger-ui textarea:focus,
+.swagger-ui select:focus {
+  outline: none;
+  border-color: var(--focus);
+  box-shadow: 0 0 0 2px rgba(31, 111, 235, 0.2);
+}
+
+/* Responses - Mintlify style */
+.swagger-ui .responses-wrapper {
+  margin-top: 1.5rem;
+}
+
+.swagger-ui .response {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  background: var(--bg-card);
+}
+
+.swagger-ui .response .response-col_status {
+  background: var(--bg-tertiary);
+  padding: 0.75rem 1rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.swagger-ui .response .response-col_description {
+  padding: 1rem;
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+/* Scrollbars - Mintlify style */
+.swagger-ui ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.swagger-ui ::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+.swagger-ui ::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+.swagger-ui ::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Links - Mintlify style */
+.swagger-ui a {
+  color: var(--focus);
+  text-decoration: none;
+}
+
+.swagger-ui a:hover {
+  text-decoration: underline;
+}
+
+/* Section headers */
+.swagger-ui h4.opblock-title {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 1rem;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Loading states */
+.swagger-ui .loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+}
+
+/* Error states */
+.swagger-ui .errors-wrapper {
+  background: rgba(218, 54, 51, 0.1);
+  border: 1px solid rgba(218, 54, 51, 0.3);
+  border-radius: 6px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.swagger-ui .errors-wrapper .error-wrapper {
+  color: #ff7b72;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .swagger-ui .wrapper,
+  .swagger-ui .info {
+    padding: 0 1rem;
+  }
+  
+  .swagger-ui .info .title {
+    font-size: 1.5rem;
+  }
+  
+  .swagger-ui .opblock .opblock-summary {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .swagger-ui .opblock .opblock-summary-method {
+    min-width: 50px;
+    font-size: 0.75rem;
+  }
+  
+  .swagger-ui table {
+    font-size: 0.75rem;
+  }
+  
+  .swagger-ui table th,
+  .swagger-ui table td {
+    padding: 0.5rem;
+  }
+});
+agger-ui ::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+.swagger-ui ::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: var(--radius-sm);
+}
+
+.swagger-ui ::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Section headers */
+.swagger-ui h4.opblock-title {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 1.125rem;
+  margin: 0 0 var(--space-md) 0;
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Links */
+.swagger-ui a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.swagger-ui a:hover {
+  color: var(--primary-hover);
+}
+
+/* Loading states */
+.swagger-ui .loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl);
+  color: var(--text-secondary);
+}
+
+/* Error states */
+.swagger-ui .errors-wrapper {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid var(--error);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin: var(--space-md) 0;
+}
+
+.swagger-ui .errors-wrapper .error-wrapper {
+  color: var(--error);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+}
+
+/* Success states */
+.swagger-ui .success {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid var(--success);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  color: var(--success);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .swagger-ui .wrapper,
+  .swagger-ui .info {
+    padding: 0 var(--space-md);
+  }
+  
+  .swagger-ui .topbar {
+    padding: var(--space-md);
+  }
+  
+  .swagger-ui .info .title {
+    font-size: 2rem;
+  }
+  
+  .swagger-ui .opblock .opblock-summary {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+  
+  .swagger-ui .opblock .opblock-summary-description {
+    margin-left: 0;
+  }
+}

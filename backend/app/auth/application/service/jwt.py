@@ -12,8 +12,8 @@ from app.auth.domain.usecase.jwt import JwtUseCase
 from app.module.application.dto import ModuleViewDTO
 from app.rbac.domain.entity import permission
 from app.rbac.domain.repository import RBACRepository
-from app.user.application.dto import LoginResponseDTO
-from app.user.application.dto.user import UserLoginResponseDTO
+from modules.user.application.dto import LoginResponseDTO
+from modules.user.application.dto.user import UserLoginResponseDTO
 from core.helpers.token import (
 	TokenHelper,
 	DecodeTokenException as JwtDecodeTokenException,

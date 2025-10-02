@@ -1,5 +1,5 @@
 from app.auth.domain.repository.auth import AuthRepository
-from app.user.application.dto import LoginResponseDTO
+from modules.user.application.dto import LoginResponseDTO
 
 
 class AuthRepositoryAdapter(AuthRepository):
@@ -20,4 +20,3 @@ class AuthRepositoryAdapter(AuthRepository):
 
 	async def delete_user_session(self, user_uuid: str):
 		return await self.repository.delete_user_session(user_uuid)
-

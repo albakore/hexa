@@ -1,8 +1,8 @@
 from typing import List, Sequence
 from uuid import UUID
 import uuid
-from app.user.domain.entity import User
-from app.user.domain.repository.user import UserRepository
+from modules.user.domain.entity import User
+from modules.user.domain.repository.user import UserRepository
 from sqlmodel import col, or_, select
 from sqlalchemy.orm import selectinload
 from core.db.session import session as global_session, session_factory

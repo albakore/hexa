@@ -50,6 +50,3 @@ class ServiceLocator:
 
 # Instancia global del localizador de servicios
 service_locator = ServiceLocator()
-
-
-# ServiceProvider removido - los módulos registran servicios directamente

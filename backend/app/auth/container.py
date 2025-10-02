@@ -6,24 +6,21 @@ from app.auth.adapter.output.persistence.repository_adapter import AuthRepositor
 from app.auth.application.service.auth import AuthService
 from app.auth.application.service.jwt import JwtService
 from app.rbac.container import RBACContainer
-from app.user.container import UserContainer
+from modules.user.container import UserContainer
 from core.db.redis_db import RedisClient
 
-class AuthContainer(DeclarativeContainer):
 
+class AuthContainer(DeclarativeContainer):
 	redis_session_repository = Object(RedisClient.session)
 	redis_permission_repository = Object(RedisClient.permission)
 
 	redis_repository = Singleton(
 		RedisAuthRepository,
-		session_repository = redis_session_repository,
-		permission_repository = redis_permission_repository
+		session_repository=redis_session_repository,
+		permission_repository=redis_permission_repository,
 	)
 
-	repository_adapter = Factory(
-		AuthRepositoryAdapter,
-		repository=redis_repository
-	)
+	repository_adapter = Factory(AuthRepositoryAdapter, repository=redis_repository)
 
 	service = Factory(
 		AuthService,
@@ -35,5 +32,5 @@ class AuthContainer(DeclarativeContainer):
 	jwt_service = Factory(
 		JwtService,
 		auth_repository=repository_adapter,
-		rbac_repository=RBACContainer.repository_adapter
+		rbac_repository=RBACContainer.repository_adapter,
 	)

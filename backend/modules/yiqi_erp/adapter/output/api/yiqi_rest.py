@@ -2,10 +2,14 @@ from dataclasses import dataclass
 import urllib.parse
 
 from fastapi import UploadFile
-# from backend.modules.yiqi_erp.domain.entity import FacturaDeCompra
 from modules.yiqi_erp.adapter.output.api.http_client import YiqiHttpClient
-from modules.yiqi_erp.domain.command import CreateYiqiInvoiceCommand, YiqiInvoice, YiqiInvoiceAttach
+from modules.yiqi_erp.domain.command import (
+	CreateYiqiInvoiceCommand,
+	YiqiInvoice,
+	YiqiInvoiceAttach,
+)
 from modules.yiqi_erp.domain.repository.yiqi import YiqiRepository
+
 
 @dataclass
 class YiqiApiRepository(YiqiRepository):
@@ -14,14 +18,13 @@ class YiqiApiRepository(YiqiRepository):
 	async def get_provider_by_id(self, id_provider: int, id_schema: int = 316):
 		url = "/api/public/CLIENTE"
 		params = {"id": id_provider, "schemaId": id_schema}
-		response = await self.client.get(url,params)
+		response = await self.client.get(url, params)
 		return response
-
 
 	async def get_contact_by_id(self, id_contact: int, id_schema: int = 316):
 		url = "/api/public/CONTACTO"
 		params = {"id": id_contact, "schemaId": id_schema}
-		response = await self.client.get(url,params)
+		response = await self.client.get(url, params)
 		return response
 
 	async def get_services_list(self, id_schema: int = 316):
@@ -54,7 +57,7 @@ class YiqiApiRepository(YiqiRepository):
 			"additionalFilters": aditional_filters.__repr__(),
 			"attributes": ",".join(attributes),
 		}
-		response = await self.client.get(url,params)
+		response = await self.client.get(url, params)
 		return response
 
 	async def get_services_list_by_provider_id(self, id_provider: int):
@@ -65,10 +68,7 @@ class YiqiApiRepository(YiqiRepository):
 		entity_name = "MONEDA"
 		last_update = "01011900"
 		aditional_filters = []
-		attributes = [
-			"MONE_NOMBRE",
-			"PAIS_PAIS"
-		]
+		attributes = ["MONE_NOMBRE", "PAIS_PAIS"]
 		params = {
 			"schemaId": id_schema,
 			"entityName": entity_name,
@@ -76,10 +76,10 @@ class YiqiApiRepository(YiqiRepository):
 			"additionalFilters": aditional_filters.__repr__(),
 			"attributes": ",".join(attributes),
 		}
-		response = await self.client.get(url,params)
+		response = await self.client.get(url, params)
 		return response
-	
-	async def get_currency_by_code(self, code:str, id_schema: int = 316):
+
+	async def get_currency_by_code(self, code: str, id_schema: int = 316):
 		url = "/api/InstancesAPI/GetEntityUpdates2"
 		entity_name = "MONEDA"
 		last_update = "01011900"
@@ -104,10 +104,12 @@ class YiqiApiRepository(YiqiRepository):
 			"additionalFilters": aditional_filters.__repr__(),
 			"attributes": ",".join(attributes),
 		}
-		response = await self.client.get(url,params)
+		response = await self.client.get(url, params)
 		return response
 
-	async def get_invoices_list_of_provider(self, id_provider: int, id_schema: int = 316):
+	async def get_invoices_list_of_provider(
+		self, id_provider: int, id_schema: int = 316
+	):
 		url = "/api/InstancesAPI/GetEntityUpdates2"
 		entity_name = "FACTURA_COMPRA"
 		last_update = "01011900"
@@ -177,9 +179,8 @@ class YiqiApiRepository(YiqiRepository):
 			"attributes": ",".join(attributes),
 		}
 
-		response = await self.client.get(url,params)
+		response = await self.client.get(url, params)
 		return response
-
 
 	async def create_invoice(
 		self,
@@ -192,8 +193,7 @@ class YiqiApiRepository(YiqiRepository):
 		url = "/api/InstancesAPI/Save"
 
 		form = YiqiInvoice.model_validate(command).model_dump(
-			exclude={"Comprobante", "Detalle"},
-			by_alias=True
+			exclude={"Comprobante", "Detalle"}, by_alias=True
 		)
 		attachs = YiqiInvoiceAttach.model_validate(command).model_dump(
 			include={"Comprobante", "Detalle"},
@@ -205,7 +205,7 @@ class YiqiApiRepository(YiqiRepository):
 		# 	if not value:
 		# 		del attachs[key]
 		# r.print(attachs)
-		json= {
+		json = {
 			"schemaId": id_schema,
 			"form": urllib.parse.urlencode(form),
 			"uploads": urllib.parse.urlencode(attachs),
@@ -213,17 +213,17 @@ class YiqiApiRepository(YiqiRepository):
 			"childId": id_child,
 			"entityId": str(id_entity),
 		}
-		
-		response = await self.client.post(url,json=json)
+
+		response = await self.client.post(url, json=json)
 		if response.is_success:
 			return response.json()
 		return response.text
 
 	async def upload_file(self, file: UploadFile, id_schema: int = 316):
 		url = "/api/InstancesAPI/SaveFile"
-		data={
+		data = {
 			"SchemaId": id_schema,
 		}
-		files={"FileName": (file.filename, file.file, file.content_type)}
-		response = await self.client.post(url,data=data,files=files)
+		files = {"FileName": (file.filename, file.file, file.content_type)}
+		response = await self.client.post(url, data=data, files=files)
 		return response

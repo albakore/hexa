@@ -14,7 +14,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 from fastapi.responses import JSONResponse
 from rich import print
-from shared.server import module_registry
+from shared.container import ModuleRegistry
+import shared.interfaces.module_discovery
 from core.exceptions.base import CustomException
 from core.fastapi.dependencies.logging import Logging
 from core.fastapi.middlewares import (
@@ -28,8 +29,6 @@ from core.fastapi.dependencies.permission import (
 	system_permission,
 	sync_permissions_to_db,
 )
-from .route_config import routes_pack
-from .container_config import CoreContainer
 # from core.config.modules import get_modules_setup, sync_modules_to_db, system_modules
 
 # get_modules_setup()
@@ -54,7 +53,7 @@ def generate_openapi_for_frontend(app_: FastAPI):
 
 
 def init_routes_pack(app_: FastAPI):
-	for route in module_registry.get_routes():
+	for route in ModuleRegistry().get_routes():
 		app_.include_router(route)
 
 
@@ -102,8 +101,9 @@ def init_listeners(app_: FastAPI) -> None:
 
 
 def init_containers(app_: FastAPI) -> None:
-	container = CoreContainer()
-	app_.container = container  # type: ignore
+	...
+	# container = CoreContainer()
+	# app_.container = container  # type: ignore
 
 
 def export_openapi(app_: FastAPI):
@@ -119,7 +119,6 @@ async def lifespan(app_: FastAPI):
 	# 🚀 Startup
 	# await sync_permissions_to_db()
 	# await sync_modules_to_db()
-
 	yield  # 👉 La app corre a partir de aquí
 
 	# 🔚 Shutdown (opcional)

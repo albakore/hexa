@@ -1,8 +1,8 @@
 from typing import List, Sequence
-from app.user.domain.command import CreateUserCommand
-from app.user.domain.entity.user import User
-from app.user.domain.repository.user import UserRepository
-from app.user.domain.usecase.user import UserUseCaseFactory
+from modules.user.domain.command import CreateUserCommand
+from modules.user.domain.entity.user import User
+from modules.user.domain.repository.user import UserRepository
+from modules.user.domain.usecase.user import UserUseCaseFactory
 
 
 class UserService:

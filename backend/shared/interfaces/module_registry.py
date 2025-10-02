@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import Dict, Any, Optional
+import threading
+from typing import Dict, Any, Optional, TypedDict
 from dependency_injector.containers import DeclarativeContainer
 
 
@@ -20,6 +21,11 @@ class ModuleInterface(ABC):
 
 	@property
 	@abstractmethod
+	def service(self) -> Dict[str, Any]:
+		pass
+
+	@property
+	@abstractmethod
 	def routes(self) -> Optional[Any]:
 		"""Rutas del módulo (APIRouter)"""
 		pass
@@ -28,8 +34,19 @@ class ModuleInterface(ABC):
 class ModuleRegistry:
 	"""Registro centralizado de módulos desacoplados"""
 
+	_instance = None
+	_lock = threading.Lock()
+
+	def __new__(cls):
+		if not cls._instance:  # This is the only difference
+			with cls._lock:
+				if not cls._instance:
+					cls._instance = super().__new__(cls)
+		return cls._instance
+
 	def __init__(self):
-		self._modules: Dict[str, ModuleInterface] = {}
+		if not hasattr(self, "_modules"):
+			self._modules: Dict[str, ModuleInterface] = {}
 
 	def register(self, module: ModuleInterface) -> None:
 		"""Registra un módulo en el sistema"""
@@ -53,10 +70,7 @@ class ModuleRegistry:
 		"""Obtiene todas las rutas de los módulos"""
 		routes = []
 		for module in self._modules.values():
+			print(module.routes)
 			if module.routes:
 				routes.append(module.routes)
 		return routes
-
-
-# Instancia global del registro
-module_registry = ModuleRegistry()

@@ -4,7 +4,7 @@ from dependency_injector.containers import DeclarativeContainer, WiringConfigura
 from app.auth.container import AuthContainer
 from app.module.container import AppModuleContainer
 from app.rbac.container import RBACContainer
-from app.user.container import UserContainer
+from modules.user.container import UserContainer
 from app.user_relationships.container import UserRelationshipContainer
 
 

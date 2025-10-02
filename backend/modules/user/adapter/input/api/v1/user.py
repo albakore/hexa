@@ -15,10 +15,10 @@ from pydantic import Field
 
 from app.module.application.service.module import AppModuleService
 from app.rbac.application.service.role import RoleService
-from app.user.adapter.input.api.v1.request import CreateUserRequest, RoleRequest
-from app.user.application.service.user import UserService
+from modules.user.adapter.input.api.v1.request import CreateUserRequest, RoleRequest
+from modules.user.application.service.user import UserService
 from app.container import SystemContainer
-from app.user.domain.command import CreateUserCommand
+from modules.user.domain.command import CreateUserCommand
 
 from core.fastapi.dependencies import PermissionDependency
 from core.fastapi.dependencies.user_permission.user import UserTokenPermission

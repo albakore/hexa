@@ -1,10 +1,12 @@
 from fastapi import APIRouter
 from dependency_injector.containers import DeclarativeContainer
 
-from shared.server import module_registry
-from shared.interfaces.module_registry import ModuleInterface, ModuleRegistry
-from app.user.container import UserContainer
+from modules.user.service import UserServiceCollection
+from shared.interfaces.module_registry import ModuleInterface
+from modules.user.container import UserContainer
 from core.fastapi.server.route_helpers import get_routes, set_routes_to_app
+from typing import Dict, TypedDict
+from modules.user.application.service.user import UserService
 
 
 class UserModule(ModuleInterface):
@@ -23,15 +25,18 @@ class UserModule(ModuleInterface):
 		return self._container
 
 	@property
+	def service(self) -> UserServiceCollection:
+		return {"user_service": self._container.service()}
+
+	@property
 	def routes(self) -> APIRouter:
 		return self._routes
 
 	def _setup_routes(self) -> APIRouter:
 		"""Configura las rutas del módulo"""
-		routes = get_routes("app.user")
+		from .adapter.input.api.v1.user import user_router as user_v1_router
+
 		router = APIRouter(prefix="/users", tags=["Users"])
-		set_routes_to_app(router, routes)
+		router.include_router(user_v1_router, prefix="/users/v1/users", tags=["Users"])
+
 		return router
-
-
-module_registry.register(UserModule())

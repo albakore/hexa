@@ -50,16 +50,20 @@ services:
     #   - .env:/app/.env
     develop:
       watch:
-        # Sync the working directory with the `/app` directory in the container
         - action: sync
           path: .
           target: /app
-          # Exclude the project virtual environment — it could be for a
-          # different platform in the container
           ignore:
             - .venv/
-
-        # Rebuild the image if dependencies change by checking uv.lock
+            - __pycache__/
+            - "*.pyc"
+            - .pytest_cache/
+            - .ruff_cache/
+            - "*.log"
+            - .git/
+            - docker/
+            - docs/
+            - migrations/versions/
         - action: rebuild
           path: ./uv.lock
     ports:

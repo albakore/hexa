@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
 from typing import List, Sequence
 
-from app.user.domain.command import CreateUserCommand
-from app.user.domain.entity.user import User
+from modules.user.domain.command import CreateUserCommand
+from modules.user.domain.entity.user import User
 from dataclasses import dataclass
-from app.user.domain.repository.user import UserRepository
+from modules.user.domain.repository.user import UserRepository
 from core.db import Transactional
 
-from app.user.domain.exception import UserNotFoundException
+from modules.user.domain.exception import UserNotFoundException
 
 
 @dataclass
