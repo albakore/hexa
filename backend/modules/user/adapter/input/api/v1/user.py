@@ -17,7 +17,7 @@ from core.fastapi.dependencies import PermissionDependency
 from core.fastapi.dependencies.user_permission.user import UserTokenPermission
 
 DepUserService = Annotated[UserService, Depends(Provide[UserContainer.service])]
-DepRBACService = Depends(lambda: service_locator.get_service("rbac_service"))
+DepRBACService = Depends(lambda: service_locator.get_service("rbac.role_service"))
 DepAppModuleService = Depends(lambda: service_locator.get_service("app_module_service"))
 
 
@@ -50,7 +50,7 @@ async def search_users(
 	role_service=DepRBACService,
 	app_module_service=DepAppModuleService,
 ):
-	...
+	print(role_service)
 	modules = await app_module_service.get_modules_by_token_name(token_modules)
 	roles = await role_service.get_all_roles_from_modules(modules)
 	users = await user_service.get_all_user_with_roles([role.id for role in roles])

@@ -50,7 +50,7 @@ def registre_module(subclass_attribute: type[ModuleInterface]):
 	print(f"✅ Found {subclass_module.name} module")
 	for name, service in subclass_module.service.items():
 		service_locator.register_service(name, service)
-		print(f" ˪💼 '{subclass_module.name}' service installed.")
+		print(f" ˪💼 '{name}' service installed.")
 
 
 def discover_modules(root_dir: str, module_filename: str):
