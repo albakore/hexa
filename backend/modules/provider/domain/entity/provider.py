@@ -2,11 +2,16 @@ from typing import TYPE_CHECKING, List
 import uuid
 from sqlmodel import SQLModel, Relationship, Field
 
-from modules.user_relationships.shared.decorators import user_relationship
-
+from app.user_relationships.shared.decorators import user_relationship
+from modules.provider.domain.entity.purchase_invoice_service import (
+	ProviderInvoiceServiceLink,
+)
 
 if TYPE_CHECKING:
-	from modules.user.domain.entity.user import User
+	from app.user.domain.entity.user import User
+	from modules.provider.domain.entity.purchase_invoice_service import (
+		PurchaseInvoiceService,
+	)
 
 
 class UserProviderLink(SQLModel, table=True):
@@ -27,4 +32,7 @@ class Provider(SQLModel, table=True):
 
 	users: List["User"] = Relationship(
 		back_populates="providers", link_model=UserProviderLink
+	)
+	services: List["PurchaseInvoiceService"] = Relationship(
+		back_populates="providers", link_model=ProviderInvoiceServiceLink
 	)

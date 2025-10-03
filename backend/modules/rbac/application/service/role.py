@@ -92,6 +92,6 @@ class RoleService:
 		return await self.role_usecase.remove_modules_to_role(modules, id_role)
 
 	async def get_all_roles_from_modules(
-		self, modules: List[Module]
-	) -> List[Module] | List[Sequence]:
-		return await self.role_usecase.get_all_roles_from_modules(modules)
+		self, id_modules: List[int]
+	) -> List[Role] | List[Role]:
+		return await self.role_usecase.get_all_roles_from_modules(id_modules)
