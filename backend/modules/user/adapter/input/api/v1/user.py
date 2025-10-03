@@ -3,25 +3,23 @@ import uuid
 from dependency_injector.wiring import Provide, inject
 from fastapi import (
 	APIRouter,
-	Cookie,
 	Depends,
 	Query,
-	WebSocket,
-	WebSocketException,
-	status,
 )
 
-from pydantic import Field
-
-from app.module.application.service.module import AppModuleService
-from app.rbac.application.service.role import RoleService
+from modules.user.container import UserContainer
+from shared.interfaces.service_locator import service_locator
 from modules.user.adapter.input.api.v1.request import CreateUserRequest, RoleRequest
 from modules.user.application.service.user import UserService
-from app.container import SystemContainer
 from modules.user.domain.command import CreateUserCommand
 
 from core.fastapi.dependencies import PermissionDependency
 from core.fastapi.dependencies.user_permission.user import UserTokenPermission
+
+DepUserService = Annotated[UserService, Depends(Provide[UserContainer.service])]
+DepRBACService = Depends(lambda: service_locator.get_service("rbac_service"))
+DepAppModuleService = Depends(lambda: service_locator.get_service("app_module_service"))
+
 
 user_router = APIRouter()
 
@@ -33,9 +31,9 @@ user_router = APIRouter()
 @inject
 # @TokenRegistry.register("user:read")
 async def get_user_list(
+	user_service: DepUserService,
 	limit: int = Query(default=10, ge=1, le=50),
 	page: int = Query(default=0),
-	user_service: UserService = Depends(Provide[SystemContainer.user.service]),
 ):
 	return await user_service.get_user_list(int(limit), int(page))
 
@@ -47,12 +45,10 @@ async def get_user_list(
 @inject
 # @TokenRegistry.register("user:read")
 async def search_users(
+	user_service: DepUserService,
 	token_modules: list[str] = Query(),
-	user_service: UserService = Depends(Provide[SystemContainer.user.service]),
-	role_service: RoleService = Depends(Provide[SystemContainer.rbac.role_service]),
-	app_module_service: AppModuleService = Depends(
-		Provide[SystemContainer.app_module.service]
-	),
+	role_service=DepRBACService,
+	app_module_service=DepAppModuleService,
 ):
 	...
 	modules = await app_module_service.get_modules_by_token_name(token_modules)
@@ -65,17 +61,16 @@ async def search_users(
 @user_router.get("/{user_id}")
 @inject
 async def get_user(
+	user_service: DepUserService,
 	user_uuid: uuid.UUID,
-	user_service: UserService = Depends(Provide[SystemContainer.user.service]),
 ):
 	return await user_service.get_user_by_uuid(str(user_uuid))
 
 
 @user_router.post("")
-@inject
 async def create_user(
+	user_service: DepUserService,
 	request: CreateUserRequest,
-	user_service: UserService = Depends(Provide[SystemContainer.user.service]),
 ):
 	command = CreateUserCommand.model_validate(request.model_dump())
 	return await user_service.create_user(command=command)
@@ -84,8 +79,8 @@ async def create_user(
 @user_router.put("/{user_uuid}/role")
 @inject
 async def asign_role(
+	user_service: DepUserService,
 	user_uuid: uuid.UUID,
 	role: RoleRequest,
-	user_service: UserService = Depends(Provide[SystemContainer.user.service]),
 ):
 	return await user_service.asign_role_to_user(str(user_uuid), role.id)

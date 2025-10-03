@@ -2,11 +2,9 @@ from re import T
 from fastapi import APIRouter
 from dependency_injector.containers import DeclarativeContainer
 
-from modules.user.service import UserServiceCollection
 from shared.interfaces.module_registry import ModuleInterface
 from modules.user.container import UserContainer
-from typing import Dict, TypedDict
-from modules.user.application.service.user import UserService
+from typing import Dict
 
 
 class UserModule(ModuleInterface):

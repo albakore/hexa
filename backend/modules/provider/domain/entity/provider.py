@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, List
 import uuid
 from sqlmodel import SQLModel, Relationship, Field
 
-from app.user_relationships.shared.decorators import user_relationship
+from modules.user_relationships.shared.decorators import user_relationship
 
 
 if TYPE_CHECKING:

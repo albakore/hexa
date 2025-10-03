@@ -8,7 +8,7 @@ from pathlib import Path
 
 from sqlmodel import select
 
-from app.module.domain.entity.module import Module
+from modules.module.domain.entity.module import Module
 from core.db.session import session_factory
 
 MODULE_REGISTRY : dict[str, dict] = {}

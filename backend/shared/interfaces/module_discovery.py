@@ -28,7 +28,7 @@ def import_python_module(python_path: str) -> ModuleType | None:
 	try:
 		return importlib.import_module(python_path)
 	except ImportError as e:
-		print("Error import:", e, "path:", e.path)
+		print("❌ Error import:", e, "path:", e.path)
 		return None
 
 
@@ -47,8 +47,10 @@ def is_subclass_of(subclass_attribute: Any, parent_class: type) -> bool:
 def registre_module(subclass_attribute: type[ModuleInterface]):
 	subclass_module = subclass_attribute()
 	ModuleRegistry().register(subclass_module)
+	print(f"✅ Found {subclass_module.name} module")
 	for name, service in subclass_module.service.items():
 		service_locator.register_service(name, service)
+		print(f" ˪💼 '{subclass_module.name}' service installed.")
 
 
 def discover_modules(root_dir: str, module_filename: str):
@@ -71,13 +73,12 @@ def discover_modules(root_dir: str, module_filename: str):
 			continue
 		module_attributes = extract_attributes_from_module(module)
 		for attribute in module_attributes:
-			module_subclass = getattr(module, attribute)
-			print("LLego aca", attribute)
-			if is_subclass_of(attribute, ModuleInterface):
+			module_subclass: type[ModuleInterface] = getattr(module, attribute)
+			if is_subclass_of(module_subclass, ModuleInterface):
 				registre_module(module_subclass)
 				module_count += 1
 
-	print(f"📦 Found {module_count} modules")
+	print(f"📦 Total {module_count} modules installed")
 
 
 discover_modules("modules", "module.py")

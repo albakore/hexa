@@ -20,7 +20,7 @@ class ServiceLocator:
 		"""Registra una factory para crear servicios bajo demanda"""
 		self._factories[name] = factory
 
-	def get_service(self, name: str) -> Optional[Any]:
+	def get_service(self, name: str) -> Any:
 		"""Obtiene un servicio por nombre"""
 		if name in self._services:
 			return self._services[name]

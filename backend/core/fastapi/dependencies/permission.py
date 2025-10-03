@@ -10,8 +10,8 @@ from fastapi.security.base import SecurityBase
 from starlette import status
 from starlette.authentication import UnauthenticatedUser
 
-from app.container import SystemContainer
-from app.models import Permission
+
+from shared.models import Permission
 from core.db import session_factory
 from core.exceptions.base import CustomException
 from rich import print

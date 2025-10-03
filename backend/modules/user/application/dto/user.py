@@ -2,8 +2,8 @@ from typing import List
 import uuid
 from pydantic import BaseModel, Field
 
-from app.module.application.dto import ModuleViewDTO
-from app.rbac.domain.entity import Role
+from modules.module.application.dto import ModuleViewDTO
+from modules.rbac.domain.entity import Role
 
 
 class GetUserListResponseDTO(BaseModel):

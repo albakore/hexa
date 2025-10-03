@@ -73,7 +73,6 @@ class ModuleRegistry:
 		"""Obtiene todas las rutas de los módulos"""
 		routes = []
 		for module in self._modules.values():
-			print(module.routes)
 			if module.routes:
 				routes.append(module.routes)
 		return routes

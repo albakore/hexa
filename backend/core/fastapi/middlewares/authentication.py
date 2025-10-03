@@ -10,7 +10,7 @@ from starlette.middleware.authentication import (
 )
 from starlette.requests import HTTPConnection
 from starlette.authentication import BaseUser, AuthCredentials
-from app.auth.domain.repository.auth import AuthRepository
+from modules.auth.domain.repository.auth import AuthRepository
 from core.config.settings import env
 
 

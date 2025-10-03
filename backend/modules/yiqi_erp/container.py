@@ -6,6 +6,7 @@ from modules.yiqi_erp.adapter.output.api.http_client import YiqiHttpClient
 from core.config.settings import env
 from modules.yiqi_erp.adapter.output.api.yiqi_rest import YiqiApiRepository
 class YiqiContainer(DeclarativeContainer):
+	wiring_config = WiringConfiguration(packages=["."], auto_wire=True)
 	
 	config = Configuration(pydantic_settings=[env])
 

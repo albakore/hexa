@@ -1,7 +1,7 @@
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, Form, Query, Response
 
-from modules.container import ModuleContainer
+from modules.finance.container import FinanceContainer
 from modules.finance.adapter.input.api.v1.request import (
 	CurrencyCreateRequest,
 	CurrencyUpdateRequest,
@@ -15,9 +15,7 @@ currency_router = APIRouter()
 @currency_router.get("")
 @inject
 async def get_all_currencies(
-	service: CurrencyService = Depends(
-		Provide[ModuleContainer.finance.currency_service]
-	),
+	service: CurrencyService = Depends(Provide[FinanceContainer.currency_service]),
 ):
 	return await service.get_currency_list()
 
@@ -26,9 +24,7 @@ async def get_all_currencies(
 @inject
 async def get_currency_by_id(
 	id_currency: int,
-	service: CurrencyService = Depends(
-		Provide[ModuleContainer.finance.currency_service]
-	),
+	service: CurrencyService = Depends(Provide[FinanceContainer.currency_service]),
 ):
 	return await service.get_currency_by_id(id_currency)
 
@@ -37,9 +33,7 @@ async def get_currency_by_id(
 @inject
 async def create_currency(
 	command: CurrencyCreateRequest,
-	service: CurrencyService = Depends(
-		Provide[ModuleContainer.finance.currency_service]
-	),
+	service: CurrencyService = Depends(Provide[FinanceContainer.currency_service]),
 ):
 	return await service.create_currency_and_save(command)
 
@@ -48,9 +42,7 @@ async def create_currency(
 @inject
 async def update_currency(
 	command: CurrencyUpdateRequest,
-	service: CurrencyService = Depends(
-		Provide[ModuleContainer.finance.currency_service]
-	),
+	service: CurrencyService = Depends(Provide[FinanceContainer.currency_service]),
 ):
 	return await service.update_currency(command)
 
@@ -59,8 +51,6 @@ async def update_currency(
 @inject
 async def delete_currency(
 	id_currency: int,
-	service: CurrencyService = Depends(
-		Provide[ModuleContainer.finance.currency_service]
-	),
+	service: CurrencyService = Depends(Provide[FinanceContainer.currency_service]),
 ):
 	return await service.delete_currency(id_currency)
