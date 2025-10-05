@@ -16,11 +16,6 @@ from modules.user.domain.command import CreateUserCommand
 from core.fastapi.dependencies import PermissionDependency
 from core.fastapi.dependencies.user_permission.user import UserTokenPermission
 
-DepUserService = Annotated[UserService, Depends(Provide[UserContainer.service])]
-DepRBACService = Depends(lambda: service_locator.get_service("rbac.role_service"))
-DepAppModuleService = Depends(lambda: service_locator.get_service("app_module_service"))
-
-
 user_router = APIRouter()
 
 
@@ -31,9 +26,9 @@ user_router = APIRouter()
 @inject
 # @TokenRegistry.register("user:read")
 async def get_user_list(
-	user_service: DepUserService,
 	limit: int = Query(default=10, ge=1, le=50),
 	page: int = Query(default=0),
+	user_service: UserService = Depends(Provide[UserContainer.service]),
 ):
 	return await user_service.get_user_list(int(limit), int(page))
 
@@ -45,12 +40,11 @@ async def get_user_list(
 @inject
 # @TokenRegistry.register("user:read")
 async def search_users(
-	user_service: DepUserService,
 	token_modules: list[str] = Query(),
-	role_service=DepRBACService,
-	app_module_service=DepAppModuleService,
+	role_service=Depends(service_locator.get_dependency("rbac.role_service")),
+	app_module_service=Depends(service_locator.get_dependency("app_module_service")),
+	user_service: UserService = Depends(Provide[UserContainer.service]),
 ):
-	print(role_service)
 	modules = await app_module_service.get_modules_by_token_name(token_modules)
 	roles = await role_service.get_all_roles_from_modules(
 		[module.id for module in modules]
@@ -63,16 +57,17 @@ async def search_users(
 @user_router.get("/{user_id}")
 @inject
 async def get_user(
-	user_service: DepUserService,
 	user_uuid: uuid.UUID,
+	user_service: UserService = Depends(Provide[UserContainer.service]),
 ):
 	return await user_service.get_user_by_uuid(str(user_uuid))
 
 
 @user_router.post("")
+@inject
 async def create_user(
-	user_service: DepUserService,
 	request: CreateUserRequest,
+	user_service: UserService = Depends(Provide[UserContainer.service]),
 ):
 	command = CreateUserCommand.model_validate(request.model_dump())
 	return await user_service.create_user(command=command)
@@ -81,8 +76,8 @@ async def create_user(
 @user_router.put("/{user_uuid}/role")
 @inject
 async def asign_role(
-	user_service: DepUserService,
 	user_uuid: uuid.UUID,
 	role: RoleRequest,
+	user_service: UserService = Depends(Provide[UserContainer.service]),
 ):
 	return await user_service.asign_role_to_user(str(user_uuid), role.id)
