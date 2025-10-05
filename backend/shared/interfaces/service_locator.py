@@ -1,6 +1,6 @@
 from typing import Dict, Any, Optional, TypeVar, Type, Callable
 from abc import ABC, abstractmethod
-from shared.interfaces.module_registry import ModuleRegistry
+from dependency_injector.providers import Factory
 
 T = TypeVar("T")
 
@@ -13,24 +13,42 @@ class ServiceLocator:
 		self._factories: Dict[str, Callable[[], Any]] = {}
 
 	def register_service(self, name: str, service: Any) -> None:
-		"""Registra un servicio por nombre"""
 		self._services[name] = service
 
 	def register_factory(self, name: str, factory: Callable[[], Any]) -> None:
-		"""Registra una factory para crear servicios bajo demanda"""
 		self._factories[name] = factory
 
 	def get_service(self, name: str) -> Any:
-		"""Obtiene un servicio por nombre"""
+		"""Obtiene un servicio resuelto para uso normal"""
 		if name in self._services:
-			return self._services[name]
+			service = self._services[name]
+			if isinstance(service, Factory):
+				return service()
+			return service
 
 		if name in self._factories:
 			service = self._factories[name]()
-			self._services[name] = service  # Cache del servicio
+			self._services[name] = service
 			return service
 
 		return None
+
+	def get_dependency(self, name: str) -> Callable:
+		"""Obtiene una función para usar con FastAPI Depends"""
+
+		def wrapper():
+			if name in self._services:
+				service = self._services[name]
+				if isinstance(service, Factory):
+					return service()
+				return service
+
+			if name in self._factories:
+				return self._factories[name]
+
+			return None
+
+		return wrapper
 
 	def get_typed_service(self, name: str, service_type: Type[T]) -> Optional[T]:
 		"""Obtiene un servicio tipado"""
