@@ -1,6 +1,7 @@
 from dependency_injector.providers import Container, Factory, Singleton, Provider
-from dependency_injector.containers import DeclarativeContainer
+from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
 
+from shared.interfaces.service_locator import service_locator
 from modules.provider.adapter.output.persistence.draft_invoice_adapter import (
 	DraftPurchaseInvoiceAdapter,
 )
@@ -27,11 +28,12 @@ from modules.provider.application.service.purchase_invoice_service import (
 	PurchaseInvoiceServiceTypeService,
 )
 from modules.yiqi_erp.container import YiqiContainer, YiqiService
-from shared.container import SharedContainer
 
 
 class ProviderContainer(DeclarativeContainer):
-	yiqi_service: Provider[ProviderService] = Provider()
+	wiring_config = WiringConfiguration(packages=["."], auto_wire=True)
+
+	yiqi_service: Provider = service_locator.get_service("yiqi_service")
 
 	provider_repo = Singleton(
 		ProviderSQLAlchemyRepository,
@@ -64,7 +66,7 @@ class ProviderContainer(DeclarativeContainer):
 	draft_invoice_service = Factory(
 		DraftPurchaseInvoiceService,
 		draft_purchase_invoice_repository=draft_invoice_repo_adapter,
-		file_storage_service=SharedContainer.file_storage.service,
+		file_storage_service=service_locator.get_dependency("file_storage_service"),
 		yiqi_service=yiqi_service,
 	)
 

@@ -2,7 +2,9 @@ from dependency_injector.providers import Factory, Object, Singleton
 from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
 
 from modules.auth.adapter.output.persistence.redis import RedisAuthRepository
-from modules.auth.adapter.output.persistence.repository_adapter import AuthRepositoryAdapter
+from modules.auth.adapter.output.persistence.repository_adapter import (
+	AuthRepositoryAdapter,
+)
 from modules.auth.application.service.auth import AuthService
 from modules.auth.application.service.jwt import JwtService
 from modules.rbac.container import RBACContainer

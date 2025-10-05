@@ -6,7 +6,7 @@ from .adapter.output.file_metadata_adapter import FileMetadataAdapter
 from .adapter.output.file_storage_adapter import FileStorageAdapter
 from .adapter.output.s3_file_storage import S3FileStorage
 
-from core.config.settings import env, Settings
+from core.config.settings import env
 from .adapter.output.sqlalchemy_file_metadata_storage import (
 	FileMetadataSQLAlchemyRepository,
 )
