@@ -2,7 +2,8 @@ from typing import List
 import uuid
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, Query
-from modules.container import ModuleContainer
+
+from modules.provider.container import ProviderContainer
 from modules.provider.adapter.input.api.v1.request import (
 	PurchaseInvoiceServiceCreateRequest,
 	PurchaseInvoiceServiceUpdateRequest,
@@ -21,7 +22,7 @@ async def get_all_services(
 	limit: int = Query(default=10, ge=1, le=50),
 	page: int = Query(default=0),
 	service: PurchaseInvoiceServiceTypeService = Depends(
-		Provide[ModuleContainer.provider.invoice_servicetype_service]
+		Provide[ProviderContainer.invoice_servicetype_service]
 	),
 ):
 	return await service.get_all_services(limit, page)
@@ -32,7 +33,7 @@ async def get_all_services(
 async def get_service_by_id(
 	id_purchase_invoice_service: int,
 	service: PurchaseInvoiceServiceTypeService = Depends(
-		Provide[ModuleContainer.provider.invoice_servicetype_service]
+		Provide[ProviderContainer.invoice_servicetype_service]
 	),
 ):
 	return await service.get_services_by_id(id_purchase_invoice_service)
@@ -43,7 +44,7 @@ async def get_service_by_id(
 async def create_service(
 	command: PurchaseInvoiceServiceCreateRequest,
 	service: PurchaseInvoiceServiceTypeService = Depends(
-		Provide[ModuleContainer.provider.invoice_servicetype_service]
+		Provide[ProviderContainer.invoice_servicetype_service]
 	),
 ):
 	new_command = await service.create_purchase_invoice_service(command)
@@ -56,7 +57,7 @@ async def create_service(
 async def get_services_of_provider(
 	id_provider: int,
 	service: PurchaseInvoiceServiceTypeService = Depends(
-		Provide[ModuleContainer.provider.invoice_servicetype_service]
+		Provide[ProviderContainer.invoice_servicetype_service]
 	),
 ):
 	return await service.get_services_of_provider(id_provider)
@@ -68,7 +69,7 @@ async def add_services_to_provider(
 	id_provider: int,
 	id_services_list: List[int],
 	service: PurchaseInvoiceServiceTypeService = Depends(
-		Provide[ModuleContainer.provider.invoice_servicetype_service]
+		Provide[ProviderContainer.invoice_servicetype_service]
 	),
 ):
 	return await service.add_services_to_provider(id_provider, id_services_list)
@@ -80,7 +81,7 @@ async def remove_services_from_provider(
 	id_provider: int,
 	id_services_list: List[int],
 	service: PurchaseInvoiceServiceTypeService = Depends(
-		Provide[ModuleContainer.provider.invoice_servicetype_service]
+		Provide[ProviderContainer.invoice_servicetype_service]
 	),
 ):
 	return await service.remove_services_from_provider(id_provider, id_services_list)
@@ -91,7 +92,7 @@ async def remove_services_from_provider(
 async def update_service(
 	command: PurchaseInvoiceServiceUpdateRequest,
 	service: PurchaseInvoiceServiceTypeService = Depends(
-		Provide[ModuleContainer.provider.invoice_servicetype_service]
+		Provide[ProviderContainer.invoice_servicetype_service]
 	),
 ):
 	service_updated = await service.update_purchase_invoice_service(command)
@@ -103,7 +104,7 @@ async def update_service(
 async def delete_service(
 	id_purchase_invoice_service: int,
 	service: PurchaseInvoiceServiceTypeService = Depends(
-		Provide[ModuleContainer.provider.invoice_servicetype_service]
+		Provide[ProviderContainer.invoice_servicetype_service]
 	),
 ):
 	service_updated = await service.delete_purchase_invoice_service(

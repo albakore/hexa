@@ -7,8 +7,6 @@ from fastapi import APIRouter, Depends, Form, Query, Response, UploadFile
 from fastapi.params import File
 from fastapi.responses import FileResponse, StreamingResponse
 
-
-from shared.interfaces.module_discovery import service_locator
 from modules.file_storage.application.dto import FileStorageDTO
 from modules.file_storage.container import FileStorageContainer
 

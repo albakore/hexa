@@ -15,7 +15,7 @@ from fastapi.openapi.utils import get_openapi
 from fastapi.responses import JSONResponse
 from rich import print
 import shared.interfaces.module_discovery
-from shared.interfaces.module_discovery import ModuleRegistry
+from shared.interfaces.module_registry import ModuleRegistry
 from core.exceptions.base import CustomException
 from core.fastapi.dependencies.logging import Logging
 from core.fastapi.middlewares import (

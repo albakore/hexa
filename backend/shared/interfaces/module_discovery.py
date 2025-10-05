@@ -2,7 +2,6 @@
 Sistema simplificado de auto-registro
 """
 
-from importlib import import_module
 from pathlib import Path
 import importlib.util
 from types import ModuleType
@@ -26,6 +25,7 @@ def convert_path_to_pythonpath(path: Path) -> str:
 
 def import_python_module(python_path: str) -> ModuleType | None:
 	try:
+		print(python_path)
 		return importlib.import_module(python_path)
 	except ImportError as e:
 		print("❌ Error import:", e, "path:", e.path)

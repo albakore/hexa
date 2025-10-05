@@ -1,12 +1,14 @@
 import uuid
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, Query
-from modules.container import ModuleContainer
 from modules.provider.adapter.input.api.v1.request import (
 	DraftPurchaseInvoiceCreateRequest,
 	DraftPurchaseInvoiceUpdateRequest,
 )
-from modules.provider.container import DraftPurchaseInvoiceService
+from modules.provider.application.service.draft_purchase_invoice import (
+	DraftPurchaseInvoiceService,
+)
+from modules.provider.container import ProviderContainer
 from modules.provider.domain.command import (
 	CreateDraftPurchaseInvoiceCommand,
 	UpdateDraftPurchaseInvoiceCommand,
@@ -23,7 +25,7 @@ async def get_all_draft_invoices(
 	limit: int = Query(default=10, ge=1, le=50),
 	page: int = Query(default=0),
 	service: DraftPurchaseInvoiceService = Depends(
-		Provide[ModuleContainer.provider.draft_invoice_service]
+		Provide[ProviderContainer.draft_invoice_service]
 	),
 ):
 	return await service.get_all_draft_purchase_invoices(id_provider, limit, page)
@@ -34,7 +36,7 @@ async def get_all_draft_invoices(
 async def get_draft_invoice_by_id(
 	id_draft_invoice: int,
 	service: DraftPurchaseInvoiceService = Depends(
-		Provide[ModuleContainer.provider.draft_invoice_service]
+		Provide[ProviderContainer.draft_invoice_service]
 	),
 ):
 	invoice = await service.get_draft_purchase_invoice_by_id(id_draft_invoice)
@@ -49,7 +51,7 @@ async def get_draft_invoice_by_id(
 async def create_draft_invoice(
 	command: DraftPurchaseInvoiceCreateRequest,
 	service: DraftPurchaseInvoiceService = Depends(
-		Provide[ModuleContainer.provider.draft_invoice_service]
+		Provide[ProviderContainer.draft_invoice_service]
 	),
 ):
 	draft_invoice = await service.create_draft_purchase_invoice(command)
@@ -62,7 +64,7 @@ async def update_draft_invoice(
 	id_draft_invoice: int,
 	command: DraftPurchaseInvoiceUpdateRequest,
 	service: DraftPurchaseInvoiceService = Depends(
-		Provide[ModuleContainer.provider.draft_invoice_service]
+		Provide[ProviderContainer.draft_invoice_service]
 	),
 ):
 	draft_invoice = UpdateDraftPurchaseInvoiceCommand.model_validate(command)
@@ -76,7 +78,7 @@ async def update_draft_invoice(
 async def delete_draft_invoice(
 	id_draft_invoice: int,
 	service: DraftPurchaseInvoiceService = Depends(
-		Provide[ModuleContainer.provider.draft_invoice_service]
+		Provide[ProviderContainer.draft_invoice_service]
 	),
 ):
 	return await service.delete_draft_purchase_invoice(id_draft_invoice)
@@ -87,7 +89,7 @@ async def delete_draft_invoice(
 async def finalize_and_emit_invoice(
 	id_draft_invoice: int,
 	service: DraftPurchaseInvoiceService = Depends(
-		Provide[ModuleContainer.provider.draft_invoice_service]
+		Provide[ProviderContainer.draft_invoice_service]
 	),
 ):
 	return await service.finalize_and_emit_invoice(id_draft_invoice)

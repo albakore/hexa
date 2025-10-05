@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from io import BytesIO
 from typing import Sequence
 import uuid
+
+from dependency_injector.providers import Factory
 from modules.provider.application.dto import DraftPurchaseInvoiceDTO
 from modules.provider.application.exception import (
 	DraftPurchaseInvoiceCurrencyNotFoundException,
