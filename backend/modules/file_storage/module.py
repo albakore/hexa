@@ -24,7 +24,7 @@ class FileStorageModule(ModuleInterface):
 
 	@property
 	def service(self) -> Dict[str, object]:
-		return {"file_storage_service": self._container.service()}
+		return {"file_storage_service": self._container.service}
 
 	@property
 	def routes(self) -> APIRouter:

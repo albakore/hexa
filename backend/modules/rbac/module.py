@@ -25,8 +25,8 @@ class RBACModule(ModuleInterface):
 	@property
 	def service(self) -> Dict[str, object]:
 		return {
-			"rbac.role_service": self._container.role_service(),
-			"rbac.permission_service": self._container.permission_service(),
+			"rbac.role_service": self._container.role_service,
+			"rbac.permission_service": self._container.permission_service,
 		}
 
 	@property

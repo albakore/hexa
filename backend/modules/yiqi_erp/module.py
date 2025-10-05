@@ -24,7 +24,7 @@ class YiqiERPModule(ModuleInterface):
 
 	@property
 	def service(self) -> Dict[str, object]:
-		return {"yiqi_erp_service": self._container.service()}
+		return {"yiqi_erp_service": self._container.service}
 
 	@property
 	def routes(self) -> APIRouter:

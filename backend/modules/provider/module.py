@@ -1,12 +1,10 @@
 from re import T
+from typing import Dict
 from fastapi import APIRouter
 from dependency_injector.containers import DeclarativeContainer
 
 from shared.interfaces.module_registry import ModuleInterface
 from modules.provider.container import ProviderContainer
-from typing import Dict, TypedDict
-from modules.user.application.service.user import UserService
-from dependency_injector.wiring import Provide
 
 
 class ProviderModule(ModuleInterface):
@@ -27,8 +25,8 @@ class ProviderModule(ModuleInterface):
 	@property
 	def service(self) -> Dict[str, object]:
 		return {
-			"provider_service": self._container.provider_service(),
-			"draft_invoice_service": self._container.draft_invoice_service(),
+			"provider_service": self._container.provider_service,
+			"draft_invoice_service": self._container.draft_invoice_service,
 		}
 
 	@property

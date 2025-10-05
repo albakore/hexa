@@ -4,9 +4,7 @@ from dependency_injector.containers import DeclarativeContainer
 
 from shared.interfaces.module_registry import ModuleInterface
 from modules.auth.container import AuthContainer
-from typing import Dict, TypedDict
-from modules.user.application.service.user import UserService
-from dependency_injector.wiring import Provide
+from typing import Dict
 
 
 class AuthModule(ModuleInterface):
@@ -27,8 +25,8 @@ class AuthModule(ModuleInterface):
 	@property
 	def service(self) -> Dict[str, object]:
 		return {
-			"auth_service": self._container.service(),
-			"auth.jwt_service": self._container.jwt_service(),
+			"auth_service": self._container.service,
+			"auth.jwt_service": self._container.jwt_service,
 		}
 
 	@property

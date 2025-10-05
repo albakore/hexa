@@ -24,7 +24,7 @@ class FinanceModule(ModuleInterface):
 
 	@property
 	def service(self) -> Dict[str, object]:
-		return {"currency_service": self._container.currency_service()}
+		return {"currency_service": self._container.currency_service}
 
 	@property
 	def routes(self) -> APIRouter:

@@ -24,7 +24,7 @@ class AppModuleModule(ModuleInterface):
 
 	@property
 	def service(self) -> Dict[str, object]:
-		return {"app_module_service": self._container.service()}
+		return {"app_module_service": self._container.service}
 
 	@property
 	def routes(self) -> APIRouter:

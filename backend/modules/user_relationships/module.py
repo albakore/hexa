@@ -24,7 +24,7 @@ class UserRelationshipsModule(ModuleInterface):
 
 	@property
 	def service(self) -> Dict[str, object]:
-		return {"user_relationship_service": self._container.service()}
+		return {"user_relationship_service": self._container.service}
 
 	@property
 	def routes(self) -> APIRouter:
