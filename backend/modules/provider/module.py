@@ -39,6 +39,9 @@ class ProviderModule(ModuleInterface):
 		from .adapter.input.api.v1.draft_invoice import (
 			draft_invoice_router as draft_invoice_v1_router,
 		)
+		from .adapter.input.api.v1.purchase_invoice_service import (
+			purchase_invoice_service_router as purchase_invoice_service_v1_router,
+		)
 
 		router = APIRouter(prefix="/providers", tags=["Providers"])
 		router.include_router(
@@ -48,6 +51,11 @@ class ProviderModule(ModuleInterface):
 			draft_invoice_v1_router,
 			prefix="/v1/draft_invoice",
 			tags=["Providers Draft Invoice"],
+		)
+		router.include_router(
+			purchase_invoice_service_v1_router,
+			prefix="/v1/purchase_invoice_service",
+			tags=["Providers Draft Invoice[Service]"],
 		)
 
 		return router
