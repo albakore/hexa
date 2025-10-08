@@ -36,10 +36,10 @@ class UserRelationshipsModule(ModuleInterface):
 			user_relationship_router as user_relationship_v1_router,
 		)
 
-		router = APIRouter(prefix="/user_relationships", tags=["User Relationships"])
+		router = APIRouter(prefix="/user_relationship", tags=["User Relationships"])
 		router.include_router(
 			user_relationship_v1_router,
-			prefix="/v1/user_relationships",
+			prefix="/v1/user_relationship",
 			tags=["User Relationships"],
 		)
 

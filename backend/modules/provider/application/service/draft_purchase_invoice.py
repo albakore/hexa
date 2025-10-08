@@ -26,6 +26,7 @@ class DraftPurchaseInvoiceService:
 	draft_purchase_invoice_repository: DraftPurchaseInvoiceRepository
 	file_storage_service: type
 	yiqi_service: YiqiService
+	currency_service: type | None
 
 	def __post_init__(self):
 		self.draft_purchase_invoice_usecase = DraftPurchaseInvoiceUseCaseFactory(
