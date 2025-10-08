@@ -58,10 +58,10 @@ class DraftPurchaseInvoiceService:
 		self, draft_purchase_invoice: DraftPurchaseInvoice
 	) -> DraftPurchaseInvoiceDTO:
 		archivo_comprobante = await self._get_metadata_or_none(
-			draft_purchase_invoice.id_archivo_comprobante
+			draft_purchase_invoice.id_receipt_file
 		)
 		archivo_detalle = await self._get_metadata_or_none(
-			draft_purchase_invoice.id_archivo_detalle
+			draft_purchase_invoice.id_details_file
 		)
 
 		draft_invoice_dto = DraftPurchaseInvoiceDTO(
@@ -104,10 +104,10 @@ class DraftPurchaseInvoiceService:
 		invoice_with_metadata = await self.get_draft_purchase_invoice_with_filemetadata(
 			draft_invoice
 		)
-		if not draft_invoice.moneda:
+		if not draft_invoice.currency:
 			raise DraftPurchaseInvoiceCurrencyNotFoundException
-		yiqi_moneda = await self.yiqi_service.get_currency_by_code(
-			draft_invoice.moneda, 316
+		yiqi_currency = await self.yiqi_service.get_currency_by_code(
+			draft_invoice.currency, 316
 		)
 
 		comprobante = invoice_with_metadata.archivo_comprobante
@@ -138,17 +138,17 @@ class DraftPurchaseInvoiceService:
 			await self.yiqi_service.upload_file(yiqi_detalle, 316)
 
 		yiqi_invoice_command = CreateYiqiInvoiceCommand(
-			Provider=draft_invoice.fk_proveedor,
-			Numero=draft_invoice.numero,
-			Concepto=draft_invoice.concepto or "Sin concepto agregado",
-			Servicio=draft_invoice.fk_servicio,
-			Moneda_original=yiqi_moneda["id"],
-			Precio_unitario=draft_invoice.precio_unitario or 0.0,
-			Mes_servicio=draft_invoice.fecha_emision,
+			Provider=draft_invoice.fk_provider,
+			Numero=draft_invoice.number,
+			Concepto=draft_invoice.concept or "Sin concepto agregado",
+			Servicio=draft_invoice.fk_invoice_service,
+			Moneda_original=yiqi_currency["id"],
+			Precio_unitario=draft_invoice.unit_price or 0.0,
+			Mes_servicio=draft_invoice.service_month,
 			Comprobante=yiqi_comprobante,
 			Detalle=yiqi_detalle,
-			Fecha_emision=draft_invoice.fecha_emision,
-			Fecha_recepcion=draft_invoice.fecha_recepcion,
+			Fecha_emision=draft_invoice.issue_date,
+			Fecha_recepcion=draft_invoice.receipt_date,
 			AWB=draft_invoice.awb,
 			Items=draft_invoice.items,
 			Kg=draft_invoice.kg,

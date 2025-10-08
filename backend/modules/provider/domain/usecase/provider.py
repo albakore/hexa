@@ -55,7 +55,7 @@ class UpdateProviderUseCase:
 		provider = await self.provider_repository.get_provider_by_id(command.id)
 		if not provider:
 			raise ProviderNotFoundException
-		provider.sqlmodel_update(command)
+		provider.sqlmodel_update(command.model_dump(exclude_unset=True))
 		return await self.provider_repository.save(provider)
 
 

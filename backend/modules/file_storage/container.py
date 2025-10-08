@@ -1,4 +1,4 @@
-from dependency_injector.containers import DeclarativeContainer
+from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
 
 from dependency_injector.providers import Singleton, Factory, Configuration
 
@@ -14,6 +14,7 @@ from modules.file_storage.application.service.file_storage import FileStorageSer
 
 
 class FileStorageContainer(DeclarativeContainer):
+	wiring_config = WiringConfiguration(packages=["."], auto_wire=True)
 	config = Configuration(pydantic_settings=[env])
 
 	s3_storage_repo = Singleton(

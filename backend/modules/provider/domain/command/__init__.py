@@ -19,21 +19,36 @@ class UpdateProviderCommand(BaseModel):
 
 
 class CreateDraftPurchaseInvoiceCommand(BaseModel):
-	numero: str
-	concepto: str | None = None
-	fk_proveedor: int | None = None
-	fk_servicio: int | None = None
-	moneda: str | None = None
-	awb: str | None = None
-	precio_unitario: float | None = None
-	kg: float | None = None
-	items: int | None = None
-	fecha_emision: date | None = None
-	fecha_recepcion: date | None = None
-	id_archivo_comprobante: uuid.UUID | None = None
-	id_archivo_detalle: uuid.UUID | None = None
+	number: str | None = Field(default=None, description="Numero de la factura")
+	concept: str | None = Field(default=None, description="Concepto")
+	fk_provider: int | None = Field(default=None, description="ID de proveedor")
+	fk_invoice_service: int | None = Field(
+		default=None, description="ID servicio de factura"
+	)
+
+	service_month: date | None = Field(default=None, description="Mes del servicio")
+	awb: str | None = Field(default=None, description="Air Waybill (Guia aerea)")
+	kg: float | None = Field(default=None, description="Peso del paquete")
+	items: int | None = Field(default=None, description="Cantidad de items")
+	unit_price: float | None = Field(default=None, description="Precio unitario")
+	currency: str | None = Field(default=None, description="EL tipo de moneda")
+
+	issue_date: date | None = Field(default=None, description="Fecha de emision")
+	receipt_date: date | None = Field(default=None, description="Fecha de recepcion")
+
+	fk_invoice: int | None = Field(default=None, description="ID de factura creada")
+
+	id_receipt_file: uuid.UUID | None = Field(
+		default=None, description="Archivo de comprobante"
+	)
+	id_details_file: uuid.UUID | None = Field(
+		default=None, description="Archivo de detalle"
+	)
 
 
+###
+### INVOICE SERVICE
+###
 class CreatePurchaseInvoiceServiceCommand(BaseModel):
 	name: str
 	description: str | None = None

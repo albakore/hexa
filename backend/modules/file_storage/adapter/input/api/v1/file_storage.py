@@ -14,9 +14,6 @@ from modules.file_storage.container import FileStorageContainer
 from modules.file_storage.application.service.file_storage import FileStorageService
 from modules.file_storage.domain.command import SaveFileCommand
 
-DepsFileStorageService = Annotated[
-	FileStorageService, Depends(Provide[FileStorageContainer.service])
-]
 
 file_storage_router = APIRouter()
 
@@ -25,7 +22,7 @@ file_storage_router = APIRouter()
 @inject
 async def upload_file(
 	file: UploadFile,
-	service: DepsFileStorageService,
+	service: FileStorageService = Depends(Provide[FileStorageContainer.service]),
 ):
 	print(file.filename)
 	command = SaveFileCommand(
@@ -38,7 +35,7 @@ async def upload_file(
 @inject
 async def download_file(
 	uuid_file: uuid.UUID,
-	service: DepsFileStorageService,
+	service: FileStorageService = Depends(Provide[FileStorageContainer.service]),
 ):
 	file_dto = await service.download_file(uuid_file)
 	headers = {
@@ -55,6 +52,6 @@ async def download_file(
 @inject
 async def get_file_metadata(
 	uuid_file: uuid.UUID,
-	service: DepsFileStorageService,
+	service: FileStorageService = Depends(Provide[FileStorageContainer.service]),
 ):
 	return await service.get_metadata(uuid_file)

@@ -67,7 +67,9 @@ async def update_draft_invoice(
 		Provide[ProviderContainer.draft_invoice_service]
 	),
 ):
-	draft_invoice = UpdateDraftPurchaseInvoiceCommand.model_validate(command)
+	draft_invoice = UpdateDraftPurchaseInvoiceCommand.model_validate(
+		command.model_dump(exclude_unset=True)
+	)
 	draft_invoice_db = await service.get_draft_purchase_invoice_by_id(id_draft_invoice)
 	draft_invoice_db.sqlmodel_update(draft_invoice)
 	return await service.save_draft_purchase_invoice(draft_invoice_db)
