@@ -66,8 +66,8 @@ class DraftPurchaseInvoiceService:
 
 		draft_invoice_dto = DraftPurchaseInvoiceDTO(
 			**draft_purchase_invoice.model_dump(),
-			archivo_comprobante=archivo_comprobante,
-			archivo_detalle=archivo_detalle,
+			receipt_file=archivo_comprobante,
+			details_file=archivo_detalle,
 		)
 		return draft_invoice_dto
 
@@ -110,8 +110,8 @@ class DraftPurchaseInvoiceService:
 			draft_invoice.currency, 316
 		)
 
-		comprobante = invoice_with_metadata.archivo_comprobante
-		detalle = invoice_with_metadata.archivo_detalle
+		comprobante = invoice_with_metadata.receipt_file
+		detalle = invoice_with_metadata.details_file
 
 		yiqi_comprobante = None
 		yiqi_detalle = None

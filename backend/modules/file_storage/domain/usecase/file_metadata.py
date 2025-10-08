@@ -32,7 +32,7 @@ class SaveFileMetadataUseCase:
 	file_metadata_repository: FileMetadataRepository
 
 	@Transactional()
-	async def __call__(self, file_metadata: FileMetadata) -> None:
+	async def __call__(self, file_metadata: FileMetadata) -> FileMetadata | None:
 		return await self.file_metadata_repository.save(file_metadata)
 
 

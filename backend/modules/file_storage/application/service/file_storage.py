@@ -27,7 +27,7 @@ class FileStorageService:
 			self.file_metadata_repository
 		)
 
-	async def save_file(self, command: SaveFileCommand):
+	async def save_file(self, command: SaveFileCommand) -> FileMetadata | None:
 		uuid_for_file = uuid.uuid4()
 		today = datetime.now()
 		file_extension = pathlib.Path(command.filename).suffix

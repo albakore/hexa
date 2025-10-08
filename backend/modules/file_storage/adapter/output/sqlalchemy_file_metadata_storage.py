@@ -14,9 +14,10 @@ class FileMetadataSQLAlchemyRepository(FileMetadataRepository):
 	def create(self, command: CreateFileMetadataCommand) -> FileMetadata:
 		return FileMetadata.model_validate(command)
 
-	async def save(self, file_metadata: FileMetadata) -> None:
+	async def save(self, file_metadata: FileMetadata) -> FileMetadata | None:
 		session.add(file_metadata)
 		await session.flush()
+		return file_metadata
 
 	async def delete(self, file_metadata: FileMetadata) -> None:
 		await session.delete(file_metadata)
