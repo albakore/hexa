@@ -68,6 +68,7 @@ class ProviderContainer(DeclarativeContainer):
 		draft_purchase_invoice_repository=draft_invoice_repo_adapter,
 		file_storage_service=service_locator.get_dependency("file_storage_service"),
 		yiqi_service=yiqi_service,
+		currency_service=service_locator.get_dependency("currency_service"),
 	)
 
 	invoice_servicetype_service = Factory(
