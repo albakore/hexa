@@ -157,6 +157,8 @@ class DraftPurchaseInvoiceService:
 		)
 
 		yiqi_invoice = await self.yiqi_service.create_invoice(yiqi_invoice_command, 316)
+		draft_invoice.state = "Created"
+		await self.save_draft_purchase_invoice(draft_invoice)
 		return yiqi_invoice
 
 	async def _get_metadata_or_none(self, file_id: uuid.UUID | None):

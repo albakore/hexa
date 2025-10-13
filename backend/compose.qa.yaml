@@ -16,8 +16,8 @@ services:
     restart: unless-stopped
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -d hexa -U hexa" ]
-      interval: 30s
-      timeout: 10s
+      interval: 10s
+      timeout: 5s
       retries: 5
   
   redis:
@@ -31,6 +31,18 @@ services:
     command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
     volumes: 
       - redis:/data
+    networks:
+      - db
+
+  rabbit:
+    container_name: rabbitmq
+    image: rabbitmq:4-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=hexa
+      - RABBITMQ_DEFAULT_PASS=hexa
     networks:
       - db
 
@@ -72,6 +84,8 @@ services:
       db:
         condition: service_healthy
       redis:
+        condition: service_started
+      rabbit:
         condition: service_started
     networks:
       - db

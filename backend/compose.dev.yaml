@@ -34,6 +34,18 @@ services:
     networks:
       - db
 
+  rabbit:
+    container_name: rabbitmq
+    image: rabbitmq:4-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=hexa
+      - RABBITMQ_DEFAULT_PASS=hexa
+    networks:
+      - db
+
   backend:
     container_name: backend
     build:
@@ -78,6 +90,8 @@ services:
       db:
         condition: service_healthy
       redis:
+        condition: service_started
+      rabbit:
         condition: service_started
     networks:
       - db

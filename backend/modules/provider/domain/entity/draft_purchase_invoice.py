@@ -23,6 +23,7 @@ class DraftPurchaseInvoice(SQLModel, table=True):
 	receipt_date: date | None = Field(default=None, description="Fecha de recepcion")
 
 	fk_invoice: int | None = Field(default=None, description="ID de factura creada")
+	state: str | None = Field(default=None, description="Estado de la factura en draft")
 
 	id_receipt_file: uuid.UUID | None = Field(
 		default=None, description="Archivo de comprobante"
