@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 
 class CreateProviderCommand(BaseModel):
 	name: str = Field(..., description="Name of provider")
+	currency: str | None = None
 	id_yiqi_provider: int | None = Field(
 		default=None, description="Id of yiqi provider"
 	)
@@ -13,6 +14,7 @@ class CreateProviderCommand(BaseModel):
 class UpdateProviderCommand(BaseModel):
 	id: int
 	name: str = Field(..., description="Name of provider")
+	currency: str | None = None
 	id_yiqi_provider: int | None = Field(
 		default=None, description="Id of yiqi provider"
 	)

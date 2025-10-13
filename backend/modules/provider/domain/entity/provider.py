@@ -30,6 +30,8 @@ class Provider(SQLModel, table=True):
 
 	id_yiqi_provider: int | None = Field(None)
 
+	currency: str | None = Field(default=None)
+
 	users: List["User"] = Relationship(
 		back_populates="providers", link_model=UserProviderLink
 	)
