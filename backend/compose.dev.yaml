@@ -93,9 +93,54 @@ services:
         condition: service_started
       rabbit:
         condition: service_started
+
     networks:
       - db
       - frontnet
+    
+  celery_worker:
+    container_name: backend-celery
+    image: fast-hexagonal-backend:latest
+    command: /bin/sh -c "uv run hexa celery-apps"
+    env_file:
+      - .env
+    # volumes:
+    #   - .env:/app/.env
+    develop:
+      watch:
+
+        # Sync the working directory with the `/app` directory in the container
+        - action: sync
+          path: .
+          target: /app
+          # Exclude the project virtual environment — it could be for a
+          # different platform in the container
+          ignore:
+            - .venv/
+            - __pycache__/
+            - "*.pyc"
+            - .pytest_cache/
+            - .ruff_cache/
+            - "*.log"
+            - .git/
+            - docker/
+            - docs/
+            - migrations/versions/
+
+        # Rebuild the image if dependencies change by checking uv.lock
+        - action: rebuild
+          path: ./uv.lock
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      rabbit:
+        condition: service_started
+    networks:
+      - db
+      - frontnet
+
 
   nginx:
     container_name: nginx

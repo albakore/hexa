@@ -1,4 +1,5 @@
 import asyncio
+from celery import Celery
 import typer
 import uvicorn
 import sys
@@ -58,12 +59,30 @@ def verify_project_structure():
 		sys.exit(1)
 
 
-@cmd.command("celery")
+@cmd.command("celery-apps")
 def run_celery():
-	from core.celery import celery_app
+	# from core.celery import celery_app
+	from core.celery.discovery import discover_celery_apps, merge_celery_tasks
 
-	args = ["worker", "--loglevel=INFO"]
-	celery_app.worker_main(args)
+	celery_apps = discover_celery_apps("modules")
+	argv = ["worker", "--loglevel=INFO"]
+	# for app in celery_apps:
+	# 	app.start(argv)
+	app = Celery(
+		# main=celery_worker_name,
+		broker=env.RABBITMQ_URL,
+		backend=env.REDIS_URL,
+	)
+	merge_celery_tasks(app, celery_apps)
+	app.worker_main(argv)
+
+
+@cmd.command("test-celery")
+def test_celery():
+	from modules.invoicing.adapter.input.tasks.invoice import my_task_invoice
+
+	my_task_invoice.delay()
+	print("Se enviaron varias tareas")
 
 
 if __name__ == "__main__":
