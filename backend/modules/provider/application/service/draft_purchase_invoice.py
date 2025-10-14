@@ -165,6 +165,8 @@ class DraftPurchaseInvoiceService:
 		if not file_id:
 			return None
 		try:
-			return await self.file_storage_service.get_metadata(file_id)
-		except Exception:
+			metadata = await self.file_storage_service().get_metadata(file_id)
+			return metadata
+		except Exception as e:
+			print("Hubo un error al obtener la metadata:", e)
 			return None
