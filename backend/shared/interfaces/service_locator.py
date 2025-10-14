@@ -1,6 +1,7 @@
 from typing import Dict, Any, Optional, TypeVar, Type, Callable
 from abc import ABC, abstractmethod
-from dependency_injector.providers import Factory
+from dependency_injector.providers import Factory, Singleton
+from dependency_injector.wiring import Provide
 
 T = TypeVar("T")
 
