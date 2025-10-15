@@ -1,5 +1,5 @@
 """
-Sistema simplificado de auto-registro
+Sistema simplificado de auto-registro de tareas de celery
 """
 
 from pathlib import Path
@@ -48,8 +48,11 @@ def merge_celery_tasks(master_app: Celery, other_apps: list[Celery]):
 		for name, task in app.tasks.items():
 			if name.startswith("celery.") or name in master_app.tasks:
 				continue
-			master_app.tasks[name] = task
-	print(app.tasks)
+
+			name_modules_list = name.split(".")
+			new_name = ".".join([name_modules_list[1], name_modules_list[-1]])
+			master_app.tasks[new_name] = task
+	# print(app.tasks)
 
 
 def discover_celery_apps(root_dir: str):

@@ -7,4 +7,5 @@ from modules.rbac.domain.entity import *
 from modules.module.domain.entity import *
 from modules.auth.domain.entity import *
 from modules.provider.domain.entity import *
+from modules.invoicing.domain.entity import *
 from modules.file_storage.domain.entity import *

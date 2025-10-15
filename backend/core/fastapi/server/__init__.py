@@ -130,6 +130,29 @@ def create_app() -> FastAPI:
 		lifespan=lifespan,
 		root_path=env.BACKEND_PATH,
 		servers=[{"url": "http://localhost:8000", "description": "development"}],
+		swagger_ui_parameters={
+			"filter": True,
+			"syntaxHighlight": {"activated": True, "theme": "monokai"},
+			"requestSnippetsEnabled": True,
+			"requestSnippets": {
+				"generators": {
+					"curl_bash": {"title": "cURL (bash)", "syntax": "bash"},
+					"curl_powershell": {
+						"title": "cURL (PowerShell)",
+						"syntax": "powershell",
+					},
+					"curl_cmd": {"title": "cURL (CMD)", "syntax": "bash"},
+					"node_native": {
+						"title": "Node.js (Native)",
+						"syntax": "javascript",
+					},
+					"python": {"title": "Python", "syntax": "python"},
+				},
+				"defaultExpanded": True,
+				"languages": None,
+				# e.g. only show curl bash = ["curl_bash"]
+			},
+		},
 	)
 	init_containers(app_=app_)
 	init_routes_pack(app_=app_)
