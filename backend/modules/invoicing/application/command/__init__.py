@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 
 class CreatePurchaseInvoiceCommand(BaseModel):
 	fk_provider: int
+	fk_service: int
 	number: str
 	concept: str
 	issue_date: date

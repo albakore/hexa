@@ -2,21 +2,21 @@ from re import T
 from fastapi import APIRouter
 from dependency_injector.containers import DeclarativeContainer
 
+from modules.invoicing.container import InvoicingContainer
 from shared.interfaces.module_registry import ModuleInterface
-from modules.yiqi_erp.container import YiqiContainer
 from typing import Dict
 
 
-class YiqiERPModule(ModuleInterface):
-	"""Módulo de Yiqi ERP desacoplado"""
+class InvoicingModule(ModuleInterface):
+	"""Módulo de invoicing desacoplado"""
 
 	def __init__(self):
-		self._container = YiqiContainer()
+		self._container = InvoicingContainer()
 		self._routes = self._setup_routes()
 
 	@property
 	def name(self) -> str:
-		return "yiqi_erp"
+		return "invoicing"
 
 	@property
 	def container(self) -> DeclarativeContainer:
@@ -24,12 +24,7 @@ class YiqiERPModule(ModuleInterface):
 
 	@property
 	def service(self) -> Dict[str, object]:
-		from .adapter.input.tasks.yiqi_erp import emit_invoice
-
-		return {
-			"yiqi_erp_service": self._container.service,
-			"yiqi_erp_tasks": {"emit_invoice": emit_invoice},
-		}
+		return {"purchase_invoice_service": self._container.purchase_invoice_service}
 
 	@property
 	def routes(self) -> APIRouter:
@@ -37,11 +32,11 @@ class YiqiERPModule(ModuleInterface):
 
 	def _setup_routes(self) -> APIRouter:
 		"""Configura las rutas del módulo"""
-		from .adapter.input.api.v1.yiqi_erp import yiqi_erp_router as yiqi_erp_v1_router
-
-		router = APIRouter(prefix="/yiqi_erp", tags=["Yiqi ERP"])
-		router.include_router(
-			yiqi_erp_v1_router, prefix="/v1/yiqi_erp", tags=["Yiqi ERP"]
+		from .adapter.input.api.v1.purchase_invoice import (
+			purchase_invoice_router as purchase_invoice_v1_router,
 		)
+
+		router = APIRouter(prefix="/invoicing", tags=["Invoicing"])
+		router.include_router(purchase_invoice_v1_router, prefix="/v1/purchase_invoice")
 
 		return router
