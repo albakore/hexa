@@ -1,17 +1,20 @@
-import time
-from celery import Celery
-from core.config.settings import env
+"""
+Tasks del módulo YiqiERP - Input Adapter.
 
-celery_worker_name = "yiqi_erp"
-
-app = Celery(
-	celery_worker_name,
-	broker=env.RABBITMQ_URL,
-	backend=env.REDIS_URL,
-)
+Estas funciones se registrarán automáticamente como tasks de Celery
+a través del service_locator y el discovery automático.
+"""
 
 
-@app.task
 def emit_invoice(data):
+	"""
+	Task para emitir factura al ERP externo Yiqi.
+
+	Esta función se ejecutará de forma asíncrona a través de Celery.
+	Será registrada automáticamente como: "yiqi_erp.emit_invoice"
+
+	Args:
+		data: Datos de la factura a emitir
+	"""
 	print(data)
 	return f"YIQI ERP: Hola desde celery!!!"

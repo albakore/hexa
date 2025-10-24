@@ -114,6 +114,7 @@ def export_openapi(app_: FastAPI):
 @asynccontextmanager
 async def lifespan(app_: FastAPI):
 	# 🚀 Startup
+	# Los módulos ya fueron descubiertos en create_app()
 	# await sync_permissions_to_db()
 	# await sync_modules_to_db()
 	yield  # 👉 La app corre a partir de aquí
@@ -123,6 +124,20 @@ async def lifespan(app_: FastAPI):
 
 
 def create_app() -> FastAPI:
+	# IMPORTANTE: Limpiar registros en caso de reload y luego descubrir módulos
+	# Esto es necesario cuando uvicorn hace reload con --reload
+	from shared.interfaces.module_registry import ModuleRegistry
+	from shared.interfaces.service_locator import service_locator
+
+	ModuleRegistry().clear()
+	service_locator.clear()
+
+	# Descubrir módulos ANTES de crear la app para que las rutas estén disponibles
+	print("🔍 Discovering and registering modules...")
+	from shared.interfaces.module_discovery import discover_modules
+	discover_modules("modules", "module.py")
+	print("✅ Modules registered\n")
+
 	app_ = FastAPI(
 		generate_unique_id_function=custom_generate_unique_id,
 		dependencies=[Depends(Logging)],

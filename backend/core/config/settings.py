@@ -17,6 +17,7 @@ class Settings(BaseSettings):
 	REDIS_URL: str = (
 		"redis://localhost:6379/0?password=eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81"
 	)
+	REDIS_PASSWORD: str = "eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81"
 	# DATABASE_URL : str = "sqlite+aiosqlite:///db.sqlite"
 	JWT_SECRET_KEY: str = "omelettedufromage"
 	JWT_ALGORITHM: str = "HS256"

@@ -81,4 +81,7 @@ def discover_modules(root_dir: str, module_filename: str):
 	print(f"📦 Total {module_count} modules installed")
 
 
-discover_modules("modules", "module.py")
+# Note: discover_modules() debe ser llamado explícitamente:
+# - En FastAPI: core/fastapi/server.py durante lifespan
+# - En Celery: hexa/__main__.py en el comando celery-apps
+# No se llama automáticamente aquí para evitar doble registro

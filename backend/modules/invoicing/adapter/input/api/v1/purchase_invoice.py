@@ -64,8 +64,10 @@ async def create_purchase_invoice(
 ):
 	invoice = await service.create(purchase_invoice)
 	invoice_saved = await service.save(invoice)
+
+	# Ejecutar task de Celery de forma asíncrona si se solicita
 	if emit_to_yiqi:
-		service_locator.get_service("yiqi_erp_tasks")["emit_invoice"].delay(
-			invoice_saved.model_dump()
-		)
+		yiqi_tasks = service_locator.get_service("yiqi_erp_tasks")
+		yiqi_tasks["emit_invoice"].delay(invoice_saved.model_dump())
+
 	return invoice_saved

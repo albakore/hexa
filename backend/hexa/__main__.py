@@ -61,28 +61,54 @@ def verify_project_structure():
 
 @cmd.command("celery-apps")
 def run_celery():
-	# from core.celery import celery_app
-	from core.celery.discovery import discover_celery_apps, merge_celery_tasks
+	"""Inicia el worker de Celery con todas las tasks descubiertas desde service_locator"""
+	# IMPORTANTE: Limpiar registros antes de descubrir módulos
+	# Esto es necesario para cuando watchfiles reinicia el worker
+	from shared.interfaces.module_registry import ModuleRegistry
+	from shared.interfaces.service_locator import service_locator
 
-	celery_apps = discover_celery_apps("modules")
-	argv = ["worker", "--loglevel=INFO"]
-	# for app in celery_apps:
-	# 	app.start(argv)
-	app = Celery(
-		# main=celery_worker_name,
-		broker=env.RABBITMQ_URL,
-		backend=env.REDIS_URL,
-	)
-	merge_celery_tasks(app, celery_apps)
-	app.worker_main(argv)
+	ModuleRegistry().clear()
+	service_locator.clear()
+
+	# Descubrir y registrar módulos ANTES de crear el worker
+	# Esto inicializa el service_locator con todos los servicios (incluyendo tasks)
+	from shared.interfaces.module_discovery import discover_modules
+
+	print("🔍 Discovering and registering modules...")
+	discover_modules("modules", "module.py")
+	print("✅ Modules registered\n")
+
+	# Ahora crear el worker (service_locator ya tiene las tasks registradas)
+	from core.celery.discovery import create_celery_worker
+
+	app = create_celery_worker()
+	app.worker_main(["worker", "--loglevel=INFO"])
 
 
 @cmd.command("test-celery")
 def test_celery():
-	from modules.invoicing.adapter.input.tasks.invoice import my_task_invoice
+	"""Prueba ejecutar tasks de Celery"""
+	from shared.interfaces.service_locator import service_locator
 
-	my_task_invoice.delay()
-	print("Se enviaron varias tareas")
+	# Obtener tasks desde service_locator
+	invoicing_tasks = service_locator.get_service("invoicing_tasks")
+	yiqi_tasks = service_locator.get_service("yiqi_erp_tasks")
+	notification_tasks = service_locator.get_service("notifications_tasks")
+
+	# Ejecutar tasks de prueba
+	if invoicing_tasks:
+		invoicing_tasks["emit_invoice"].delay()
+		print("✅ Task de invoicing enviada")
+
+	if yiqi_tasks:
+		yiqi_tasks["emit_invoice"].delay({"test": "data"})
+		print("✅ Task de yiqi_erp enviada")
+
+	if notification_tasks:
+		notification_tasks["send_notification"].delay()
+		print("✅ Task de notifications enviada")
+
+	print("\n📤 Se enviaron todas las tareas de prueba")
 
 
 if __name__ == "__main__":

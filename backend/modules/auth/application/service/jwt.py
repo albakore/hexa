@@ -10,8 +10,6 @@ from modules.auth.application.exception import (
 from modules.auth.domain.repository.auth import AuthRepository
 from modules.auth.domain.usecase.jwt import JwtUseCase
 from modules.module.application.dto import ModuleViewDTO
-from modules.rbac.domain.entity import permission
-from modules.rbac.domain.repository import RBACRepository
 from modules.user.application.dto import LoginResponseDTO
 from modules.user.application.dto.user import UserLoginResponseDTO
 from core.helpers.token import (
@@ -20,13 +18,16 @@ from core.helpers.token import (
 	ExpiredTokenException as JwtExpiredTokenException,
 )
 
+# Protocols compartidos desde shared/
+from shared.interfaces.service_protocols import RoleServiceProtocol
+
 
 class JwtService(JwtUseCase):
 	def __init__(
-		self, auth_repository: AuthRepository, rbac_repository: RBACRepository
+		self, auth_repository: AuthRepository, role_service: RoleServiceProtocol
 	):
 		self.auth_repository = auth_repository
-		self.rbac_repository = rbac_repository
+		self.role_service = role_service
 		self.access_token_expiration_minutes = 15
 		self.refresh_token_expiration_days = 7
 
@@ -60,15 +61,11 @@ class JwtService(JwtUseCase):
 		permissions = []
 
 		if session.user.fk_role:
-			role = await self.rbac_repository.get_role_by_id(session.user.fk_role)
+			role = await self.role_service.get_role_by_id(session.user.fk_role)
 			if role:
-				permissions_of_role = (
-					await self.rbac_repository.get_all_permissions_from_role(role)
-				)
+				permissions_of_role = await self.role_service.get_permissions_from_role(role)
 				permissions = [permission.token for permission in permissions_of_role]
-				modules_of_role = await self.rbac_repository.get_all_modules_from_role(
-					role
-				)
+				modules_of_role = await self.role_service.get_modules_from_role_entity(role)
 				modules = [
 					ModuleViewDTO.model_validate(module.model_dump())
 					for module in modules_of_role

@@ -27,13 +27,10 @@ from modules.provider.application.service.provider import ProviderService
 from modules.provider.application.service.purchase_invoice_service import (
 	PurchaseInvoiceServiceTypeService,
 )
-from modules.yiqi_erp.container import YiqiContainer, YiqiService
 
 
 class ProviderContainer(DeclarativeContainer):
 	wiring_config = WiringConfiguration(packages=["."], auto_wire=True)
-
-	yiqi_service: Provider = service_locator.get_service("yiqi_service")
 
 	provider_repo = Singleton(
 		ProviderSQLAlchemyRepository,
@@ -67,7 +64,7 @@ class ProviderContainer(DeclarativeContainer):
 		DraftPurchaseInvoiceService,
 		draft_purchase_invoice_repository=draft_invoice_repo_adapter,
 		file_storage_service=service_locator.get_dependency("file_storage_service"),
-		yiqi_service=yiqi_service,
+		yiqi_service=service_locator.get_dependency("yiqi_service"),
 		currency_service=service_locator.get_dependency("currency_service"),
 	)
 

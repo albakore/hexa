@@ -118,7 +118,7 @@ class DraftPurchaseInvoiceService:
 		yiqi_detalle = None
 
 		if comprobante:
-			archivo_comprobante = await self.file_storage_service.download_file(
+			archivo_comprobante = await self.file_storage_service().download_file(
 				comprobante.id
 			)
 			yiqi_comprobante = UploadFileCommand(
@@ -129,7 +129,9 @@ class DraftPurchaseInvoiceService:
 			await self.yiqi_service.upload_file(yiqi_comprobante, 316)
 
 		if detalle:
-			archivo_detalle = await self.file_storage_service.download_file(detalle.id)
+			archivo_detalle = await self.file_storage_service().download_file(
+				detalle.id
+			)
 			yiqi_detalle = UploadFileCommand(
 				BytesIO(archivo_detalle.file),
 				size=detalle.size,

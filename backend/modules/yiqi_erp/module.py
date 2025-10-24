@@ -27,6 +27,7 @@ class YiqiERPModule(ModuleInterface):
 		from .adapter.input.tasks.yiqi_erp import emit_invoice
 
 		return {
+			"yiqi_service": self._container.service,
 			"yiqi_erp_service": self._container.service,
 			"yiqi_erp_tasks": {"emit_invoice": emit_invoice},
 		}
