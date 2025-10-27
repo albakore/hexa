@@ -11,6 +11,9 @@ from modules.invoicing.adapter.output.persistence.sqlalchemy.purchase_invoice im
 from modules.invoicing.application.service.purchase_invoice import (
 	PurchaseInvoiceService,
 )
+from modules.invoicing.application.service.invoice_orchestrator import (
+	InvoiceOrchestratorService,
+)
 
 
 class InvoicingContainer(DeclarativeContainer):
@@ -22,4 +25,8 @@ class InvoicingContainer(DeclarativeContainer):
 	)
 	purchase_invoice_service = Factory(
 		PurchaseInvoiceService, purchase_invoice_repository=purchase_invoice_adapter
+	)
+
+	invoice_orchestrator_service = Factory(
+		InvoiceOrchestratorService, purchase_invoice_service=purchase_invoice_service
 	)

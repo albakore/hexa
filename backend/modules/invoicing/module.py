@@ -24,15 +24,9 @@ class InvoicingModule(ModuleInterface):
 
 	@property
 	def service(self) -> Dict[str, object]:
-		# Importar las tasks como funciones normales
-		from .adapter.input.tasks import invoice
-
 		return {
 			"purchase_invoice_service": self._container.purchase_invoice_service,
-			# Exponer las tasks como un dict de callables
-			"invoicing_tasks": {
-				"emit_invoice": invoice.emit_invoice,
-			},
+			"invoicing.invoice_orchestrator_service": self._container.invoice_orchestrator_service,
 		}
 
 	@property

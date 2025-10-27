@@ -5,16 +5,22 @@ Estas funciones se registrarán automáticamente como tasks de Celery
 a través del service_locator y el discovery automático.
 """
 
+from shared.interfaces.service_locator import ServiceLocator
 
-def emit_invoice(data):
+
+def create_invoice_from_purchase_invoice(
+	purchase_invoice_id: int, company_id: int = 316
+):
 	"""
-	Task para emitir factura al ERP externo Yiqi.
+	Task para crear factura en YiqiERP desde una PurchaseInvoice.
 
 	Esta función se ejecutará de forma asíncrona a través de Celery.
-	Será registrada automáticamente como: "yiqi_erp.emit_invoice"
-
-	Args:
-		data: Datos de la factura a emitir
+	Será registrada automáticamente como: "yiqi_erp.create_invoice_from_purchase_invoice"
 	"""
-	print(data)
-	return f"YIQI ERP: Hola desde celery!!!"
+	service_locator = ServiceLocator()
+	invoice_integration_service = service_locator.get_service(
+		"yiqi_erp.invoice_integration_service"
+	)
+	return invoice_integration_service.create_invoice_from_purchase_invoice(
+		purchase_invoice_id, company_id
+	)

@@ -94,4 +94,4 @@ async def finalize_and_emit_invoice(
 		Provide[ProviderContainer.draft_invoice_service]
 	),
 ):
-	return await service.finalize_and_emit_invoice(id_draft_invoice)
+	return await service.finalize_draft(id_draft_invoice)

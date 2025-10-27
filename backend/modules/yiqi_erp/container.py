@@ -2,6 +2,7 @@ from dependency_injector.containers import DeclarativeContainer, WiringConfigura
 from dependency_injector.providers import Singleton, Factory, Configuration
 
 from modules.yiqi_erp.application.service.yiqi import YiqiService
+from modules.yiqi_erp.application.service.invoice_integration import InvoiceIntegrationService
 from modules.yiqi_erp.adapter.output.api.http_client import YiqiHttpClient
 from core.config.settings import env
 from modules.yiqi_erp.adapter.output.api.yiqi_rest import YiqiApiRepository
@@ -25,6 +26,11 @@ class YiqiContainer(DeclarativeContainer):
 	)
 
 	service = Factory(YiqiService, yiqi_repository=repository)
+
+	invoice_integration_service = Factory(
+		InvoiceIntegrationService,
+		yiqi_service=service,
+	)
 
 	async def shutdown(self):
 		await self.client().close()

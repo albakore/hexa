@@ -343,7 +343,7 @@ class YiqiServiceProtocol(Protocol):
 			command: CreateYiqiInvoiceCommand
 			id_schema: ID del schema/empresa
 
-		Used by: provider (finalize draft invoice)
+		Used by: invoice_integration_service
 		"""
 		...
 
@@ -363,7 +363,7 @@ class YiqiServiceProtocol(Protocol):
 		"""
 		Obtiene moneda del ERP por código.
 
-		Used by: provider (finalize draft invoice)
+		Used by: invoice_integration_service
 		"""
 		...
 
@@ -375,7 +375,40 @@ class YiqiServiceProtocol(Protocol):
 			command: UploadFileCommand
 			id_schema: ID del schema/empresa
 
-		Used by: provider (finalize draft invoice - upload attachments)
+		Used by: invoice_integration_service
+		"""
+		...
+
+
+class InvoiceIntegrationServiceProtocol(Protocol):
+	"""
+	API pública del módulo Yiqi ERP para integración de facturas.
+
+	Orquesta la creación de facturas en YiqiERP desde PurchaseInvoice.
+	"""
+
+	def __call__(self) -> Self: ...
+	async def create_invoice_from_purchase_invoice(
+		self, purchase_invoice_id: int, company_id: int = 316
+	) -> dict:
+		"""
+		Crea una factura en YiqiERP desde una PurchaseInvoice.
+
+		Este método orquesta:
+		- Obtención de la PurchaseInvoice
+		- Descarga de archivos adjuntos
+		- Upload de archivos al ERP
+		- Creación de factura en el ERP
+		- Actualización de la PurchaseInvoice con el ID de YiqiERP
+
+		Args:
+			purchase_invoice_id: ID de la factura de compra
+			company_id: ID de la empresa en YiqiERP (default: 316)
+
+		Returns:
+			dict: Respuesta del ERP con la factura creada
+
+		Used by: yiqi_erp_tasks (create_invoice_from_purchase_invoice)
 		"""
 		...
 
@@ -419,7 +452,11 @@ class DraftPurchaseInvoiceServiceProtocol(Protocol):
 	async def get_draft_purchase_invoice_by_id(
 		self, id_draft_purchase_invoice: int
 	) -> Any:
-		"""Obtiene borrador de factura por ID"""
+		"""
+		Obtiene borrador de factura por ID.
+
+		Used by: invoice_orchestrator_service
+		"""
 		...
 
 	async def get_draft_purchase_invoice_with_filemetadata(
@@ -433,7 +470,11 @@ class DraftPurchaseInvoiceServiceProtocol(Protocol):
 		...
 
 	async def save_draft_purchase_invoice(self, draft_purchase_invoice: Any) -> Any:
-		"""Guarda un borrador de factura"""
+		"""
+		Guarda un borrador de factura.
+
+		Used by: invoice_orchestrator_service
+		"""
 		...
 
 	async def delete_draft_purchase_invoice(
@@ -442,15 +483,10 @@ class DraftPurchaseInvoiceServiceProtocol(Protocol):
 		"""Elimina un borrador de factura"""
 		...
 
-	async def finalize_and_emit_invoice(self, id_draft_purchase_invoice: int) -> dict:
+	async def finalize_draft(self, id_draft_purchase_invoice: int) -> Any:
 		"""
-		Finaliza un borrador y lo emite al ERP.
-
-		Este método coordina:
-		- Obtención de archivos del storage
-		- Upload de archivos al ERP
-		- Creación de factura en el ERP
-		- Actualización del estado del borrador
+		Finaliza un draft marcándolo como listo para ser procesado.
+		Solo valida y cambia el estado, NO crea facturas.
 		"""
 		...
 
@@ -481,20 +517,63 @@ class PurchaseInvoiceServiceProtocol(Protocol):
 		"""Obtiene lista paginada de facturas de compra"""
 		...
 
-	async def get_by_id(self, id_purchase_invoice: int) -> Optional[Any]:
-		"""Obtiene factura de compra por ID"""
+	async def get_list_of_provider(
+		self, id_provider: int, limit: int, page: int
+	) -> List[Any]:
+		"""Obtiene lista de facturas de un proveedor"""
+		...
+
+	async def get_one_by_id(self, id_purchase_invoice: int) -> Optional[Any]:
+		"""
+		Obtiene factura de compra por ID.
+
+		Used by: invoice_integration_service
+		"""
 		...
 
 	async def create(self, command: Any) -> Any:
-		"""Crea una nueva factura de compra"""
+		"""
+		Crea una nueva factura de compra.
+
+		Used by: invoice_orchestrator_service
+		"""
 		...
 
 	async def save(self, purchase_invoice: Any) -> Any:
-		"""Guarda una factura de compra"""
+		"""
+		Guarda una factura de compra.
+
+		Used by: invoice_orchestrator_service, invoice_integration_service
+		"""
 		...
 
-	async def delete(self, id_purchase_invoice: int) -> Any:
-		"""Elimina una factura de compra"""
+
+class InvoiceOrchestratorServiceProtocol(Protocol):
+	"""
+	API pública del módulo Invoicing para orquestación de facturas.
+
+	Coordina la creación de facturas desde drafts y envío a sistemas externos.
+	"""
+
+	def __call__(self) -> Self: ...
+	async def create_invoice_from_draft(self, draft_purchase_invoice_id: int) -> Any:
+		"""
+		Crea una PurchaseInvoice desde un DraftPurchaseInvoice.
+
+		Este método orquesta:
+		- Obtención del draft
+		- Creación de PurchaseInvoice
+		- Envío de task a YiqiERP
+		- Actualización del estado del draft
+
+		Args:
+			draft_purchase_invoice_id: ID del borrador de factura
+
+		Returns:
+			PurchaseInvoice creada
+
+		Used by: API endpoints, workflows
+		"""
 		...
 
 
@@ -585,24 +664,27 @@ class YiqiERPTasksProtocol(Protocol):
 	"""
 
 	def __call__(self) -> Self: ...
-	def emit_invoice(self, data: Any) -> str:
+	def create_invoice_from_purchase_invoice(
+		self, purchase_invoice_id: int, company_id: int = 316
+	) -> dict:
 		"""
-		Task para emitir factura al ERP externo Yiqi.
+		Task para crear factura en YiqiERP desde una PurchaseInvoice.
 
 		Esta función se ejecutará de forma asíncrona a través de Celery.
-		Nombre registrado: "yiqi_erp.emit_invoice"
+		Nombre registrado: "yiqi_erp.create_invoice_from_purchase_invoice"
 
 		Args:
-			data: Datos de la factura a emitir (dict serializable)
+			purchase_invoice_id: ID de la factura de compra
+			company_id: ID de la empresa en YiqiERP (default: 316)
 
 		Usage:
 			tasks = service_locator.get_service("yiqi_erp_tasks")
-			tasks["emit_invoice"].delay({"invoice_id": 123})
+			tasks["create_invoice_from_purchase_invoice"].delay(123)
 
 		Returns:
-			str: Mensaje de confirmación
+			dict: Respuesta del ERP con la factura creada
 
-		Used by: invoicing (purchase_invoice endpoint)
+		Used by: draft_purchase_invoice_service (finalize_and_emit_invoice)
 		"""
 		...
 

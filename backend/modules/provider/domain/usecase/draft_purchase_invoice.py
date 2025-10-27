@@ -66,6 +66,16 @@ class DeleteDraftPurchaseInvoicesUseCase:
 
 
 @dataclass
+class FinalizeDraftPurchaseInvoiceUseCase:
+	draft_purchase_invoice_repository: DraftPurchaseInvoiceRepository
+
+	async def __call__(self, id_draft_purchase_invoice: int):
+		return await self.draft_purchase_invoice_repository.finalize_draft(
+			id_draft_purchase_invoice
+		)
+
+
+@dataclass
 class DraftPurchaseInvoiceUseCaseFactory:
 	draft_purchase_invoice_repository: DraftPurchaseInvoiceRepository
 

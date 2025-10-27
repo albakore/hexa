@@ -1,0 +1,210 @@
+services:
+  db:
+    container_name: postgres
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: hexa
+      POSTGRES_PASSWORD: hexa
+      POSTGRES_DB: hexa
+      PGDATA: /data/postgres
+    volumes:
+      - db:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - db
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d hexa -U hexa" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    container_name: redis
+    image: redis:7-alpine
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    volumes:
+      - redis:/data
+    networks:
+      - db
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  rabbit:
+    container_name: rabbitmq
+    image: rabbitmq:4-management-alpine
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=hexa
+      - RABBITMQ_DEFAULT_PASS=hexa
+    networks:
+      - db
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq
+
+  backend:
+    container_name: backend
+    build:
+      context: .
+      dockerfile: docker/hexa/dev.Dockerfile
+    # FastAPI con --dev habilita auto-reload automáticamente
+    command: /bin/sh -c "uv run hexa api --dev"
+    env_file:
+      - .env
+    environment:
+      # Forzar auto-reload en desarrollo
+      - WATCHFILES_FORCE_POLLING=false
+      - PYTHONUNBUFFERED=1
+    develop:
+      watch:
+        # Sync: Sincroniza archivos en tiempo real sin rebuild
+        - action: sync
+          path: .
+          target: /app
+          ignore:
+            - .venv/
+            - __pycache__/
+            - "**/*.pyc"
+            - "**/__pycache__/"
+            - .pytest_cache/
+            - .ruff_cache/
+            - "*.log"
+            - .git/
+            - .gitignore
+            - docker/
+            - docs/
+            - migrations/versions/
+            - htmlcov/
+            - .coverage
+            - "*.md"
+            - compose*.yaml
+
+        # Rebuild: Solo rebuildeamos si cambian las dependencias
+        - action: rebuild
+          path: ./uv.lock
+
+    ports:
+      - 8000:8000
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbit:
+        condition: service_healthy
+    networks:
+      - db
+      - frontnet
+    # Reiniciar si el proceso falla
+    restart: unless-stopped
+
+  celery_worker:
+    container_name: backend-celery
+    build:
+      context: .
+      dockerfile: docker/hexa/dev.Dockerfile
+    # Usar watchfiles para auto-reload de Celery
+    # --pool=solo para desarrollo (permite reload rápido)
+    command: /bin/sh -c "uv run watchfiles --filter python 'uv run hexa celery-apps' modules core shared"
+    env_file:
+      - .env
+    environment:
+      # Variables para mejorar el comportamiento de Celery en desarrollo
+      - PYTHONUNBUFFERED=1
+      - CELERY_TASK_ALWAYS_EAGER=false
+      - WATCHFILES_FORCE_POLLING=false
+    develop:
+      watch:
+        # Sync: Sincroniza archivos en tiempo real
+        - action: sync
+          path: .
+          target: /app
+          ignore:
+            - .venv/
+            - __pycache__/
+            - "**/*.pyc"
+            - "**/__pycache__/"
+            - .pytest_cache/
+            - .ruff_cache/
+            - "*.log"
+            - .git/
+            - .gitignore
+            - docker/
+            - docs/
+            - migrations/versions/
+            - htmlcov/
+            - .coverage
+            - "*.md"
+            - compose*.yaml
+
+        # Rebuild: Solo si cambian dependencias
+        - action: rebuild
+          path: ./uv.lock
+
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbit:
+        condition: service_healthy
+    networks:
+      - db
+      - frontnet
+    # Reiniciar automáticamente si el worker falla
+    restart: unless-stopped
+
+  nginx:
+    container_name: nginx
+    env_file:
+      - .env
+    command:
+      - /bin/sh
+      - -c
+      - |
+        envsubst '$$HEXA_BACKEND_ADDR $$HEXA_FRONTEND_ADDR $$BACKEND_PATH' \
+        < /etc/nginx/templates/default.conf.template \
+        > /etc/nginx/conf.d/default.conf
+
+        nginx -g 'daemon off;'
+    build:
+      context: ./docker/nginx
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./docker/nginx/default.dev.conf:/etc/nginx/templates/default.conf.template
+    restart: unless-stopped
+    ports:
+      - 80:80
+    depends_on:
+      backend:
+        condition: service_started
+    networks:
+      - frontnet
+
+networks:
+  frontnet:
+  db:
+    driver: bridge
+
+volumes:
+  db:
+  redis:
+    driver: local
+  rabbitmq:
+    driver: local
