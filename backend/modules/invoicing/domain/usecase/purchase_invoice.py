@@ -46,7 +46,7 @@ class GetPurchaseInvoiceById(UseCase):
 class SavePurchaseInvoice(UseCase):
 	purchase_invoice_repository: PurchaseInvoiceRepository
 
-	async def __call__(self, purchase_invoice: PurchaseInvoice):
+	async def __call__(self, purchase_invoice: PurchaseInvoice) -> PurchaseInvoice:
 		return await self.purchase_invoice_repository.save_purchase_invoice(
 			purchase_invoice
 		)

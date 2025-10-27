@@ -76,3 +76,7 @@ class ModuleRegistry:
 			if module.routes:
 				routes.append(module.routes)
 		return routes
+
+	def clear(self) -> None:
+		"""Limpia todos los módulos registrados"""
+		self._modules.clear()

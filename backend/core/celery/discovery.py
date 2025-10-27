@@ -1,97 +1,67 @@
 """
-Sistema simplificado de auto-registro de tareas de celery
+Sistema simplificado de auto-registro de tareas de celery usando service_locator.
+
+Este módulo descubre automáticamente todas las tasks registradas en el service_locator
+y las registra en una única instancia de Celery.
 """
 
-from pathlib import Path
-import importlib.util
-from types import ModuleType
-from typing import Any
-
 from celery import Celery
+from core.config.settings import env
 
 
-def eval_module_is_dir(path: Path) -> bool:
-	return path.is_dir() and not path.name.startswith("_")
+def create_celery_worker() -> Celery:
+	"""
+	Crea el worker de Celery con todas las tasks descubiertas desde service_locator.
 
+	Las tasks deben estar registradas en service_locator con nombres que terminen en "_tasks".
+	Cada servicio de tasks debe ser un diccionario con el formato:
+	{
+		"task_name": callable_function,
+		...
+	}
 
-def module_exists(path: Path) -> bool:
-	return path.exists()
+	Returns:
+		Celery: Instancia configurada de Celery con todas las tasks registradas
+	"""
+	from shared.interfaces.service_locator import service_locator
 
-
-def convert_path_to_pythonpath(path: Path) -> str:
-	return str(path.with_suffix("")).replace("/", ".")
-
-
-def import_python_module(python_path: str) -> ModuleType | None:
-	try:
-		print(python_path)
-		return importlib.import_module(python_path)
-	except ImportError as e:
-		print("❌ Error import:", e, "path:", e.path)
-		return None
-
-
-def extract_attributes_from_module(module: ModuleType) -> list[str]:
-	return dir(module)
-
-
-def is_subclass_of(subclass_attribute: Any, parent_class: type) -> bool:
-	return (
-		isinstance(subclass_attribute, parent_class)
-		# and issubclass(subclass_attribute, parent_class)
-		and subclass_attribute != parent_class
+	# Crear la aplicación maestra de Celery
+	app = Celery(
+		"hexa_worker",
+		broker=env.RABBITMQ_URL,
+		backend=env.REDIS_URL,
 	)
 
+	# Obtener todos los servicios que terminan en "_tasks"
+	task_services = {
+		name: service
+		for name, service in service_locator._services.items()
+		if name.endswith("_tasks")
+	}
 
-def merge_celery_tasks(master_app: Celery, other_apps: list[Celery]):
-	for app in other_apps:
-		for name, task in app.tasks.items():
-			if name.startswith("celery.") or name in master_app.tasks:
+	print(f"\n📦 Discovered {len(task_services)} task services from service_locator")
+
+	# Registrar cada función como task de Celery
+	registered_count = 0
+	for service_name, task_dict in task_services.items():
+		# Extraer nombre del módulo: "invoicing_tasks" -> "invoicing"
+		module_name = service_name.replace("_tasks", "")
+
+		if not isinstance(task_dict, dict):
+			print(f"  ⚠️  Skipping {service_name}: not a dict")
+			continue
+
+		for task_name, task_func in task_dict.items():
+			if not callable(task_func):
+				print(f"  ⚠️  Skipping {module_name}.{task_name}: not callable")
 				continue
 
-			name_modules_list = name.split(".")
-			new_name = ".".join([name_modules_list[1], name_modules_list[-1]])
-			master_app.tasks[new_name] = task
-	# print(app.tasks)
+			# Registrar con nombre descriptivo: "invoicing.emit_invoice"
+			full_task_name = f"{module_name}.{task_name}"
+			app.task(name=full_task_name)(task_func)
+			registered_count += 1
+			print(f"  ✓ Registered: {full_task_name}")
 
+	print(f"\n✅ Total {registered_count} tasks registered in Celery worker\n")
 
-def discover_celery_apps(root_dir: str):
-	"""Busca y devuelve una lista de instancias de celery"""
-
-	base_path = Path(root_dir)
-	celery_count = 0
-	apps: list[Celery] = []
-
-	for module_dir in base_path.iterdir():
-		if not eval_module_is_dir(module_dir):
-			continue
-
-		task_folder = module_dir / "adapter" / "input" / "tasks"
-		if not task_folder.exists():
-			continue
-
-		for task_file in task_folder.glob("*.py"):
-			if task_file.name.startswith("_"):
-				continue
-
-		try:
-			python_path = convert_path_to_pythonpath(task_file)
-		except ValueError as e:
-			# fallback si estás ejecutando desde otro lugar
-			print("ERROR:", e)
-			python_path = convert_path_to_pythonpath(
-				task_file.relative_to(base_path.parent)
-			)
-
-		module = import_python_module(python_path)
-		if not module:
-			continue
-		module_attributes = extract_attributes_from_module(module)
-		for attribute in module_attributes:
-			module_subclass: Celery = getattr(module, attribute)
-			if is_subclass_of(module_subclass, Celery):
-				apps.append(module_subclass)
-				celery_count += 1
-
-	print(f"📦 Total {celery_count} celery instances")
-	return apps
+	return app

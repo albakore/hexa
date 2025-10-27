@@ -12,12 +12,6 @@ from modules.auth.application.exception import (
 from modules.auth.domain.repository.auth import AuthRepository
 from modules.auth.domain.usecase.auth import AuthUseCase
 from modules.module.application.dto import ModuleViewDTO
-from modules.rbac.container import RoleService
-from modules.rbac.domain.repository import (
-	PermissionRepository,
-	RBACRepository,
-	RoleRepository,
-)
 from modules.user.application.dto import LoginResponseDTO
 from modules.user.application.dto.user import UserLoginResponseDTO
 from modules.user.application.exception.user import (
@@ -25,28 +19,30 @@ from modules.user.application.exception.user import (
 	UserNotFoundException,
 	UserRegisteredException,
 )
-from modules.user.domain.repository.user import UserRepository
 from modules.user.domain.entity.user import User
 from core.db.transactional import Transactional
 from core.helpers.password import PasswordHelper
 from core.helpers.token import TokenHelper
+
+# Protocols compartidos desde shared/
+from shared.interfaces.service_protocols import UserServiceProtocol, RoleServiceProtocol
 
 
 class AuthService(AuthUseCase):
 	def __init__(
 		self,
 		auth_repository: AuthRepository,
-		user_repository: UserRepository,
-		rbac_repository: RBACRepository,
+		user_service: UserServiceProtocol,
+		role_service: RoleServiceProtocol,
 	):
 		self.auth_repository = auth_repository
-		self.user_repository = user_repository
-		self.rbac_repository = rbac_repository
+		self.user_service = user_service()
+		self.role_service = role_service()
 
 	async def login(
 		self, email_or_nickname: str, password: str
 	) -> LoginResponseDTO | AuthPasswordResetResponseDTO:
-		user = await self.user_repository.get_user_by_email_or_nickname(
+		user = await self.user_service.get_user_by_email_or_nickname(
 			email=email_or_nickname, nickname=email_or_nickname, with_role=True
 		)
 		if not user:
@@ -73,10 +69,8 @@ class AuthService(AuthUseCase):
 		permissions = []
 		modules = []
 		if user.role:
-			permissions = await self.rbac_repository.get_all_permissions_from_role(
-				user.role
-			)
-			modules = await self.rbac_repository.get_all_modules_from_role(user.role)
+			permissions = await self.role_service.get_permissions_from_role(user.role)
+			modules = await self.role_service.get_modules_from_role_entity(user.role)
 
 		response = LoginResponseDTO(
 			user=user_response,
@@ -97,7 +91,7 @@ class AuthService(AuthUseCase):
 
 	@Transactional()
 	async def register(self, registration_data: AuthRegisterRequestDTO):
-		user = await self.user_repository.get_user_by_email_or_nickname(
+		user = await self.user_service.get_user_by_email_or_nickname(
 			email=registration_data.email, nickname=registration_data.nickname or ""
 		)
 
@@ -105,14 +99,14 @@ class AuthService(AuthUseCase):
 			raise UserRegisteredException
 
 		new_user = User.model_validate(registration_data)
-		user_created = await self.user_repository.save(new_user)
+		user_created = await self.user_service.save_user(new_user)
 		return user_created
 
 	@Transactional()
 	async def password_reset(
 		self, user_uuid: str, initial_password: str, new_password: str
 	) -> bool | Exception:
-		user = await self.user_repository.get_user_by_uuid(user_uuid)
+		user = await self.user_service.get_user_by_uuid(user_uuid)
 
 		if not user:
 			raise UserNotFoundException
@@ -128,5 +122,5 @@ class AuthService(AuthUseCase):
 
 		hashed_password = PasswordHelper.get_password_hash(new_password)
 
-		await self.user_repository.set_user_password(user, hashed_password)
+		await self.user_service.set_user_password(user, hashed_password)
 		return True

@@ -24,7 +24,12 @@ class AppModuleModule(ModuleInterface):
 
 	@property
 	def service(self) -> Dict[str, object]:
-		return {"app_module_service": self._container.service}
+		return {
+			"app_module_service": self._container.service,
+			# Excepción: Se expone el repositorio para RBAC porque Role tiene relación M:N con Module
+			# Esto es una dependencia de dominio legítima (aggregate roots relacionados)
+			"app_module.repository_adapter": self._container.repository_adapter,
+		}
 
 	@property
 	def routes(self) -> APIRouter:

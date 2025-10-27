@@ -20,7 +20,11 @@ class RoleService:
 
 	def __post_init__(self):
 		self.role_usecase = RoleUseCaseFactory(
-			self.role_repository, self.permission_repository, self.module_repository
+			self.role_repository,
+			self.permission_repository,
+			# Esto es un adapter, no deberia estar aca, esta siendo inyectado en el container como un servicio.
+			# Ver descripcion del module.py de app_module
+			self.module_repository(),
 		)
 
 	async def get_all_roles(self) -> list[Role]:
@@ -77,6 +81,14 @@ class RoleService:
 
 	async def get_modules_from_role(self, role: Role) -> List[Module]:
 		return await self.role_usecase.get_modules_from_role(role)
+
+	async def get_permissions_from_role(self, role: Role) -> List[Permission]:
+		"""Obtiene todos los permisos de un rol (usado por auth)"""
+		return await self.role_repository.get_all_permissions_from_role(role)
+
+	async def get_modules_from_role_entity(self, role: Role) -> List[Module]:
+		"""Obtiene todos los módulos de un rol (usado por auth)"""
+		return await self.role_repository.get_all_modules_from_role(role)
 
 	async def remove_permissions_to_role(
 		self, permissions: List[Permission], id_role: int

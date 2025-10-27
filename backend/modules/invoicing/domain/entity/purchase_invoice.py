@@ -350,3 +350,4 @@ class PurchaseInvoice(SQLModel, table=True):
 
 	# # info contabilidad | INFO_CONTABLE
 	# name: str
+	fk_yiqi_invoice: int | None = Field(default=None)

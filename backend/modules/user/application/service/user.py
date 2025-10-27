@@ -29,3 +29,19 @@ class UserService:
 
 	async def asign_role_to_user(self, user_uuid: str, role_id: int) -> User:
 		return await self.usecase.assign_role_to_user(user_uuid, role_id)
+
+	async def get_user_by_email_or_nickname(
+		self, email: str, nickname: str, with_role: bool = False
+	) -> User | None:
+		"""Obtiene usuario por email o nickname (usado por auth)"""
+		return await self.repository.get_user_by_email_or_nickname(
+			email=email, nickname=nickname, with_role=with_role
+		)
+
+	async def save_user(self, user: User) -> User:
+		"""Guarda un usuario (usado por auth para register)"""
+		return await self.repository.save(user)
+
+	async def set_user_password(self, user: User, hashed_password: str) -> User:
+		"""Establece la contraseña de un usuario (usado por auth para reset)"""
+		return await self.repository.set_user_password(user, hashed_password)

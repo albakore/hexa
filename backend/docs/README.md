@@ -1,74 +1,62 @@
-# Fast Hexagonal Backend Documentation
+# Fast Hexagonal - Documentación Completa
 
-## Índice
+Bienvenido a la documentación del proyecto Fast Hexagonal, un backend modular construido con FastAPI siguiendo los principios de Arquitectura Hexagonal (Ports & Adapters).
 
-1. [Inicio Rápido](./01-getting-started.md)
-2. [Arquitectura del Proyecto](./02-architecture.md)
-3. [Desarrollo de Nuevas Funcionalidades](./03-development-guide.md)
-4. [Sistema de Dependencias](./04-dependency-injection.md)
-5. [Roles y Permisos](./05-roles-permissions.md)
-6. [Autenticación](./06-authentication.md)
-7. [Módulos del Sistema](./modules/README.md)
-8. [Descubrimiento de Módulos](./08-module-discovery.md)
-9. [Service Locator](./09-service-locator.md)
-10. [Inyección en Rutas](./10-route-injection.md)
-11. [Buenas Prácticas](./11-best-practices.md)
-12. [Tutorial Completo](./12-tutorial.md)
+## 📚 Índice de Documentación
 
-## Descripción General
+### 🏗️ Arquitectura
+- [**Visión General de la Arquitectura**](./architecture/01-overview.md) - Introducción a la arquitectura hexagonal del proyecto
+- [**Estructura del Proyecto**](./architecture/02-project-structure.md) - Organización de carpetas y archivos
+- [**Módulos y Desacoplamiento**](./architecture/03-modules.md) - Sistema de módulos independientes
+- [**Service Locator Pattern**](./architecture/04-service-locator.md) - Comunicación entre módulos
+- [**Dependency Injection**](./architecture/05-dependency-injection.md) - Containers y DI
 
-Este proyecto implementa una **arquitectura hexagonal modular** con **FastAPI**, utilizando **dependency injection** y un sistema de **service locator** para la comunicación entre módulos.
+### 🧩 Módulos
+- [**Anatomía de un Módulo**](./modules/01-module-anatomy.md) - Estructura interna de un módulo
+- [**Crear un Nuevo Módulo**](./modules/02-creating-module.md) - Guía paso a paso
+- [**Auto-registro de Módulos**](./modules/03-module-registry.md) - Sistema de descubrimiento automático
+- [**Módulos Existentes**](./modules/04-existing-modules.md) - Documentación de cada módulo
 
-### Características Principales
+### ⚙️ Core
+- [**Base de Datos**](./core/01-database.md) - SQLAlchemy, sesiones y transacciones
+- [**FastAPI Server**](./core/02-fastapi-server.md) - Configuración y middlewares
+- [**Celery**](./core/03-celery.md) - Sistema de tareas asíncronas
+- [**Configuración**](./core/04-configuration.md) - Settings y variables de entorno
+- [**Helpers y Utilities**](./core/05-helpers.md) - Utilidades compartidas
 
-- ✅ **Arquitectura Hexagonal**: Separación clara entre dominio, aplicación e infraestructura
-- ✅ **Modular**: Cada funcionalidad es un módulo independiente y portable
-- ✅ **Dependency Injection**: Usando `dependency_injector` para gestión de dependencias
-- ✅ **Service Locator**: Para comunicación entre módulos sin acoplamiento
-- ✅ **Auto-discovery**: Los módulos se registran automáticamente
-- ✅ **FastAPI**: API REST moderna con documentación automática
-- ✅ **Roles y Permisos**: Sistema RBAC completo
-- ✅ **Autenticación JWT**: Seguridad basada en tokens
+### 🔧 Desarrollo
+- [**Inicio Rápido**](./development/01-quick-start.md) - Primeros pasos
+- [**Docker Compose**](./development/02-docker-compose.md) - Desarrollo con Docker
+- [**Comandos CLI**](./development/03-cli-commands.md) - Comandos disponibles en hexa
+- [**Migraciones**](./development/04-migrations.md) - Alembic y gestión de DB
+- [**Hot Reload**](./development/05-hot-reload.md) - Desarrollo con auto-recarga
 
-### Tecnologías Utilizadas
+### 🧪 Testing
+- [**Estrategia de Testing**](./testing/01-strategy.md) - Tests unitarios, integración y e2e
+- [**Configuración de Pytest**](./testing/02-pytest-config.md) - Fixtures y configuración
+- [**Testing de Repositorios**](./testing/03-repository-tests.md) - Tests de integración con DB
+- [**Testing de Use Cases**](./testing/04-usecase-tests.md) - Tests unitarios con mocks
+- [**Testing de Servicios**](./testing/05-service-tests.md) - Tests de servicios
 
-- **FastAPI**: Framework web moderno
-- **SQLAlchemy**: ORM para base de datos
-- **dependency_injector**: Contenedor de inyección de dependencias
-- **Alembic**: Migraciones de base de datos
-- **Redis**: Cache y sesiones
-- **JWT**: Autenticación basada en tokens
-- **Pydantic**: Validación de datos
-
-## Estructura del Proyecto
-
-```
-backend/
-├── core/                    # Configuración y utilidades centrales
-├── modules/                 # Módulos de negocio
-│   ├── auth/               # Autenticación
-│   ├── user/               # Gestión de usuarios
-│   ├── rbac/               # Roles y permisos
-│   └── ...                 # Otros módulos
-├── shared/                 # Interfaces y utilidades compartidas
-├── migrations/             # Migraciones de base de datos
-└── docs/                   # Documentación
-```
-
-## Inicio Rápido
+## 🚀 Inicio Rápido
 
 ```bash
-# Instalar dependencias
-uv install
+# 1. Iniciar servicios
+docker compose -f compose.dev.yaml up -d
 
-# Configurar variables de entorno
-cp .env.example .env
+# 2. Migrar base de datos
+docker compose -f compose.dev.yaml exec backend uv run hexa migrate-db
 
-# Ejecutar migraciones
-alembic upgrade head
-
-# Iniciar servidor de desarrollo
-python -m hexa api --dev
+# 3. Acceder a http://localhost:8000/api/docs
 ```
 
-Para más detalles, consulta la [Guía de Inicio](./01-getting-started.md).
+## 📖 Para Empezar
+
+1. [Visión General de la Arquitectura](./architecture/01-overview.md)
+2. [Estructura del Proyecto](./architecture/02-project-structure.md)
+3. [Inicio Rápido](./development/01-quick-start.md)
+4. [Crear un Nuevo Módulo](./modules/02-creating-module.md)
+
+---
+
+**Última actualización**: 2025-10-24

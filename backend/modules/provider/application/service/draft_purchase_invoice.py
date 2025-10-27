@@ -1,13 +1,23 @@
 from dataclasses import dataclass
-from io import BytesIO
 from typing import Sequence
 import uuid
 
-from dependency_injector.providers import Factory
+from core.db.transactional import Transactional
+from modules.provider.application.service.purchase_invoice_service import (
+	PurchaseInvoiceServiceTypeService,
+)
+from shared.interfaces.service_protocols import (
+	CurrencyServiceProtocol,
+	FileStorageServiceProtocol,
+	PurchaseInvoiceServiceProtocol,
+)
 from modules.provider.application.dto import DraftPurchaseInvoiceDTO
 from modules.provider.application.exception import (
 	DraftPurchaseInvoiceCurrencyNotFoundException,
+	DraftPurchaseInvoiceDetailFileInvalidException,
 	DraftPurchaseInvoiceNotFoundException,
+	DraftPurchaseInvoiceReceiptFileInvalidException,
+	DraftPurchaseInvoiceServiceNotFoundException,
 )
 from modules.provider.domain.command import CreateDraftPurchaseInvoiceCommand
 from modules.provider.domain.entity.draft_purchase_invoice import DraftPurchaseInvoice
@@ -17,16 +27,15 @@ from modules.provider.domain.repository.draft_purchase_invoice import (
 from modules.provider.domain.usecase.draft_purchase_invoice import (
 	DraftPurchaseInvoiceUseCaseFactory,
 )
-from modules.yiqi_erp.application.service.yiqi import YiqiService
-from modules.yiqi_erp.domain.command import CreateYiqiInvoiceCommand, UploadFileCommand
 
 
 @dataclass
 class DraftPurchaseInvoiceService:
 	draft_purchase_invoice_repository: DraftPurchaseInvoiceRepository
-	file_storage_service: type
-	yiqi_service: YiqiService
-	currency_service: type | None
+	draft_purchase_invoice_servicetype_service: PurchaseInvoiceServiceTypeService
+	purchase_invoice_service: PurchaseInvoiceServiceProtocol
+	file_storage_service: FileStorageServiceProtocol
+	currency_service: CurrencyServiceProtocol | None
 
 	def __post_init__(self):
 		self.draft_purchase_invoice_usecase = DraftPurchaseInvoiceUseCaseFactory(
@@ -98,68 +107,102 @@ class DraftPurchaseInvoiceService:
 			draft_purchase_invoice
 		)
 
-	async def finalize_and_emit_invoice(self, id_draft_purchase_invoice: int):
+	@Transactional()
+	async def finalize_draft(self, id_draft_purchase_invoice: int):
+		"""
+		Valida, finaliza el draft y crea la factura asociada.
+
+		Flujo:
+		1. Valida archivos en storage (capa aplicación)
+		2. Valida campos obligatorios (capa dominio)
+		3. Marca como "Finalized"
+		4. Crea PurchaseInvoice asociada
+		5. Vincula factura con draft
+
+		Returns:
+			PurchaseInvoice creada
+		"""
+		# Obtener draft
 		draft_invoice = await self.get_draft_purchase_invoice_by_id(
 			id_draft_purchase_invoice
 		)
-		invoice_with_metadata = await self.get_draft_purchase_invoice_with_filemetadata(
-			draft_invoice
-		)
-		if not draft_invoice.currency:
-			raise DraftPurchaseInvoiceCurrencyNotFoundException
-		yiqi_currency = await self.yiqi_service.get_currency_by_code(
-			draft_invoice.currency, 316
-		)
 
-		comprobante = invoice_with_metadata.receipt_file
-		detalle = invoice_with_metadata.details_file
-
-		yiqi_comprobante = None
-		yiqi_detalle = None
-
-		if comprobante:
-			archivo_comprobante = await self.file_storage_service.download_file(
-				comprobante.id
-			)
-			yiqi_comprobante = UploadFileCommand(
-				BytesIO(archivo_comprobante.file),
-				size=comprobante.size,
-				filename=comprobante.download_filename,
-			)
-			await self.yiqi_service.upload_file(yiqi_comprobante, 316)
-
-		if detalle:
-			archivo_detalle = await self.file_storage_service.download_file(detalle.id)
-			yiqi_detalle = UploadFileCommand(
-				BytesIO(archivo_detalle.file),
-				size=detalle.size,
-				filename=detalle.download_filename,
+		# Si ya tiene factura asociada, retornar la factura existente
+		if draft_invoice.fk_invoice:
+			return await self.purchase_invoice_service().get_one_by_id(
+				draft_invoice.fk_invoice
 			)
 
-			await self.yiqi_service.upload_file(yiqi_detalle, 316)
+		# Obtener configuración del servicio
+		if not draft_invoice.fk_invoice_service:
+			raise DraftPurchaseInvoiceServiceNotFoundException
 
-		yiqi_invoice_command = CreateYiqiInvoiceCommand(
-			Provider=draft_invoice.fk_provider,
-			Numero=draft_invoice.number,
-			Concepto=draft_invoice.concept or "Sin concepto agregado",
-			Servicio=draft_invoice.fk_invoice_service,
-			Moneda_original=yiqi_currency["id"],
-			Precio_unitario=draft_invoice.unit_price or 0.0,
-			Mes_servicio=draft_invoice.service_month,
-			Comprobante=yiqi_comprobante,
-			Detalle=yiqi_detalle,
-			Fecha_emision=draft_invoice.issue_date,
-			Fecha_recepcion=draft_invoice.receipt_date,
-			AWB=draft_invoice.awb,
-			Items=draft_invoice.items,
-			Kg=draft_invoice.kg,
-			creado_en_portal=True,
+		service = (
+			await self.draft_purchase_invoice_servicetype_service.get_services_by_id(
+				draft_invoice.fk_invoice_service
+			)
 		)
 
-		yiqi_invoice = await self.yiqi_service.create_invoice(yiqi_invoice_command, 316)
-		draft_invoice.state = "Created"
-		await self.save_draft_purchase_invoice(draft_invoice)
-		return yiqi_invoice
+		if not service:
+			raise DraftPurchaseInvoiceServiceNotFoundException
+
+		# Validar archivos en storage (capa de aplicación)
+		if draft_invoice.id_receipt_file:
+			receipt_file_metadata = await self._get_metadata_or_none(
+				draft_invoice.id_receipt_file
+			)
+			if not receipt_file_metadata:
+				raise DraftPurchaseInvoiceReceiptFileInvalidException
+
+		if service.require_detail_file and draft_invoice.id_details_file:
+			detail_file_metadata = await self._get_metadata_or_none(
+				draft_invoice.id_details_file
+			)
+			if not detail_file_metadata:
+				raise DraftPurchaseInvoiceDetailFileInvalidException
+
+		# Validar campos obligatorios (capa de dominio)
+		await self.draft_purchase_invoice_usecase.validate_draft_purchase_invoice(
+			draft_invoice, service
+		)
+
+		# Marcar como "Finalized"
+		finalized_draft = (
+			await self.draft_purchase_invoice_usecase.finalize_draft_purchase_invoice(
+				draft_invoice
+			)
+		)
+
+		# Crear PurchaseInvoice desde el draft
+		new_purchase_invoice = {
+			"fk_provider": finalized_draft.fk_provider,
+			"fk_service": finalized_draft.fk_invoice_service,
+			"number": finalized_draft.number,
+			"concept": finalized_draft.concept,
+			"issue_date": finalized_draft.issue_date,
+			"receipt_date": finalized_draft.receipt_date,
+			"service_month": finalized_draft.service_month,
+			"currency": finalized_draft.currency,
+			"unit_price": finalized_draft.unit_price,
+			"air_waybill": finalized_draft.awb,
+			"kilograms": finalized_draft.kg,
+			"items": finalized_draft.items,
+			"fk_receipt_file": finalized_draft.id_receipt_file,
+			"fk_detail_file": finalized_draft.id_details_file,
+		}
+
+		purchase_invoice = await self.purchase_invoice_service().create(
+			new_purchase_invoice
+		)
+		purchase_invoice_created = await self.purchase_invoice_service().save(
+			purchase_invoice
+		)
+
+		# Vincular factura con draft
+		finalized_draft.fk_invoice = purchase_invoice_created.id
+		await self.save_draft_purchase_invoice(finalized_draft)
+
+		return purchase_invoice_created
 
 	async def _get_metadata_or_none(self, file_id: uuid.UUID | None):
 		if not file_id:

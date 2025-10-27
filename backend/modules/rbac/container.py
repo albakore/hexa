@@ -9,8 +9,7 @@ from modules.rbac.adapter.output.persistence.sqlalchemy.rbac import (
 )
 from modules.rbac.application.service.role import RoleService
 from modules.rbac.application.service.permission import PermissionService
-
-from modules.module.container import AppModuleContainer
+from shared.interfaces.service_locator import service_locator
 
 
 class RBACContainer(DeclarativeContainer):
@@ -30,7 +29,7 @@ class RBACContainer(DeclarativeContainer):
 		RoleService,
 		role_repository=repository_adapter,
 		permission_repository=repository_adapter,
-		module_repository=AppModuleContainer.repository_adapter,
+		module_repository=service_locator.get_dependency("app_module.repository_adapter"),
 	)
 
 	permission_service = Factory(

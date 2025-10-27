@@ -24,7 +24,16 @@ class YiqiERPModule(ModuleInterface):
 
 	@property
 	def service(self) -> Dict[str, object]:
-		return {"yiqi_erp_service": self._container.service}
+		from .adapter.input.tasks.yiqi_erp import create_invoice_from_purchase_invoice
+
+		return {
+			"yiqi_service": self._container.service,
+			"yiqi_erp_service": self._container.service,
+			"yiqi_erp.invoice_integration_service": self._container.invoice_integration_service,
+			"yiqi_erp_tasks": {
+				"create_invoice_from_purchase_invoice": create_invoice_from_purchase_invoice
+			},
+		}
 
 	@property
 	def routes(self) -> APIRouter:

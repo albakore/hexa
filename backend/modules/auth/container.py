@@ -7,8 +7,7 @@ from modules.auth.adapter.output.persistence.repository_adapter import (
 )
 from modules.auth.application.service.auth import AuthService
 from modules.auth.application.service.jwt import JwtService
-from modules.rbac.container import RBACContainer
-from modules.user.container import UserContainer
+from shared.interfaces.service_locator import service_locator
 from core.db.redis_db import RedisClient
 
 
@@ -29,12 +28,12 @@ class AuthContainer(DeclarativeContainer):
 	service = Factory(
 		AuthService,
 		auth_repository=repository_adapter,
-		user_repository=UserContainer.repository_adapter,
-		rbac_repository=RBACContainer.repository_adapter,
+		user_service=service_locator.get_dependency("user_service"),
+		role_service=service_locator.get_dependency("rbac.role_service"),
 	)
 
 	jwt_service = Factory(
 		JwtService,
 		auth_repository=repository_adapter,
-		rbac_repository=RBACContainer.repository_adapter,
+		role_service=service_locator.get_dependency("rbac.role_service"),
 	)
