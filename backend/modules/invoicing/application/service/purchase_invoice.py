@@ -28,7 +28,7 @@ class PurchaseInvoiceService:
 	async def get_one_by_id(self, id_purchase_invoice: int):
 		return await self.usecase.get_purchase_invoice_by_id(id_purchase_invoice)
 
-	async def create(self, command: CreatePurchaseInvoiceCommand):
+	async def create(self, command: CreatePurchaseInvoiceCommand | dict):
 		purchase_invoice = PurchaseInvoice.model_validate(command)
 		return purchase_invoice
 

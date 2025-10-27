@@ -9,7 +9,9 @@ from modules.provider.domain.command import (
 from modules.provider.domain.entity.purchase_invoice_service import (
 	PurchaseInvoiceService,
 )
-from modules.provider.domain.exception import PurchaseInvoiceServiceNotFoundException
+from modules.provider.domain.exception import (
+	DraftPurchaseInvoiceServiceNotFoundException,
+)
 from modules.provider.domain.repository.purchase_invoice_service import (
 	PurchaseInvoiceServiceRepository,
 )
@@ -51,7 +53,7 @@ class UpdatePurchaseInvoiceServiceUseCase:
 	async def __call__(self, command: UpdatePurchaseInvoiceServiceCommand):
 		service = await self.purchase_invoice_repository.get_services_by_id(command.id)
 		if not service:
-			raise PurchaseInvoiceServiceNotFoundException
+			raise DraftPurchaseInvoiceServiceNotFoundException
 		service.sqlmodel_update(command)
 		return await self.purchase_invoice_repository.save_service(service)
 

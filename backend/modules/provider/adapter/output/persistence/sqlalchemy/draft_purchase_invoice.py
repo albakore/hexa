@@ -35,7 +35,7 @@ class DraftPurchaseInvoiceSQLAlchemyRepository(DraftPurchaseInvoiceRepository):
 
 	async def save_draft_invoice(
 		self, draft_purchase_invoice: DraftPurchaseInvoice
-	) -> DraftPurchaseInvoice | None:
+	) -> DraftPurchaseInvoice:
 		global_session.add(draft_purchase_invoice)
 		await global_session.flush()
 		return draft_purchase_invoice

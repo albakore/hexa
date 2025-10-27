@@ -8,7 +8,9 @@ from modules.provider.domain.command import (
 from modules.provider.domain.entity.purchase_invoice_service import (
 	PurchaseInvoiceService,
 )
-from modules.provider.domain.exception import PurchaseInvoiceServiceNotFoundException
+from modules.provider.domain.exception import (
+	DraftPurchaseInvoiceServiceNotFoundException,
+)
 from modules.provider.domain.repository.purchase_invoice_service import (
 	PurchaseInvoiceServiceRepository,
 )
@@ -42,7 +44,7 @@ class PurchaseInvoiceServiceTypeService:
 			)
 		)
 		if not purchase_invoice_service:
-			raise PurchaseInvoiceServiceNotFoundException
+			raise DraftPurchaseInvoiceServiceNotFoundException
 		return purchase_invoice_service
 
 	async def create_purchase_invoice_service(
@@ -66,7 +68,7 @@ class PurchaseInvoiceServiceTypeService:
 			)
 		)
 		if not purchase_invoice_service:
-			raise PurchaseInvoiceServiceNotFoundException
+			raise DraftPurchaseInvoiceServiceNotFoundException
 		return await self.purchase_invoice_service_usecase.delete_invoice_service(
 			purchase_invoice_service
 		)

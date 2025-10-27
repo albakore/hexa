@@ -2,14 +2,22 @@ from dataclasses import dataclass
 from typing import Sequence
 import uuid
 
+from core.db.transactional import Transactional
+from modules.provider.application.service.purchase_invoice_service import (
+	PurchaseInvoiceServiceTypeService,
+)
 from shared.interfaces.service_protocols import (
 	CurrencyServiceProtocol,
 	FileStorageServiceProtocol,
+	PurchaseInvoiceServiceProtocol,
 )
 from modules.provider.application.dto import DraftPurchaseInvoiceDTO
 from modules.provider.application.exception import (
 	DraftPurchaseInvoiceCurrencyNotFoundException,
+	DraftPurchaseInvoiceDetailFileInvalidException,
 	DraftPurchaseInvoiceNotFoundException,
+	DraftPurchaseInvoiceReceiptFileInvalidException,
+	DraftPurchaseInvoiceServiceNotFoundException,
 )
 from modules.provider.domain.command import CreateDraftPurchaseInvoiceCommand
 from modules.provider.domain.entity.draft_purchase_invoice import DraftPurchaseInvoice
@@ -24,6 +32,8 @@ from modules.provider.domain.usecase.draft_purchase_invoice import (
 @dataclass
 class DraftPurchaseInvoiceService:
 	draft_purchase_invoice_repository: DraftPurchaseInvoiceRepository
+	draft_purchase_invoice_servicetype_service: PurchaseInvoiceServiceTypeService
+	purchase_invoice_service: PurchaseInvoiceServiceProtocol
 	file_storage_service: FileStorageServiceProtocol
 	currency_service: CurrencyServiceProtocol | None
 
@@ -97,24 +107,102 @@ class DraftPurchaseInvoiceService:
 			draft_purchase_invoice
 		)
 
+	@Transactional()
 	async def finalize_draft(self, id_draft_purchase_invoice: int):
 		"""
-		Finaliza un draft marcándolo como listo para ser procesado.
-		Solo valida y cambia el estado, NO crea facturas.
+		Valida, finaliza el draft y crea la factura asociada.
+
+		Flujo:
+		1. Valida archivos en storage (capa aplicación)
+		2. Valida campos obligatorios (capa dominio)
+		3. Marca como "Finalized"
+		4. Crea PurchaseInvoice asociada
+		5. Vincula factura con draft
+
+		Returns:
+			PurchaseInvoice creada
 		"""
+		# Obtener draft
 		draft_invoice = await self.get_draft_purchase_invoice_by_id(
 			id_draft_purchase_invoice
 		)
 
-		if not draft_invoice.currency:
-			raise DraftPurchaseInvoiceCurrencyNotFoundException
+		# Si ya tiene factura asociada, retornar la factura existente
+		if draft_invoice.fk_invoice:
+			return await self.purchase_invoice_service().get_one_by_id(
+				draft_invoice.fk_invoice
+			)
 
-		if not draft_invoice.id_receipt_file:
-			raise ValueError("El archivo de comprobante es requerido")
+		# Obtener configuración del servicio
+		if not draft_invoice.fk_invoice_service:
+			raise DraftPurchaseInvoiceServiceNotFoundException
 
-		draft_invoice.state = "Finalized"
-		await self.save_draft_purchase_invoice(draft_invoice)
-		return draft_invoice
+		service = (
+			await self.draft_purchase_invoice_servicetype_service.get_services_by_id(
+				draft_invoice.fk_invoice_service
+			)
+		)
+
+		if not service:
+			raise DraftPurchaseInvoiceServiceNotFoundException
+
+		# Validar archivos en storage (capa de aplicación)
+		if draft_invoice.id_receipt_file:
+			receipt_file_metadata = await self._get_metadata_or_none(
+				draft_invoice.id_receipt_file
+			)
+			if not receipt_file_metadata:
+				raise DraftPurchaseInvoiceReceiptFileInvalidException
+
+		if service.require_detail_file and draft_invoice.id_details_file:
+			detail_file_metadata = await self._get_metadata_or_none(
+				draft_invoice.id_details_file
+			)
+			if not detail_file_metadata:
+				raise DraftPurchaseInvoiceDetailFileInvalidException
+
+		# Validar campos obligatorios (capa de dominio)
+		await self.draft_purchase_invoice_usecase.validate_draft_purchase_invoice(
+			draft_invoice, service
+		)
+
+		# Marcar como "Finalized"
+		finalized_draft = (
+			await self.draft_purchase_invoice_usecase.finalize_draft_purchase_invoice(
+				draft_invoice
+			)
+		)
+
+		# Crear PurchaseInvoice desde el draft
+		new_purchase_invoice = {
+			"fk_provider": finalized_draft.fk_provider,
+			"fk_service": finalized_draft.fk_invoice_service,
+			"number": finalized_draft.number,
+			"concept": finalized_draft.concept,
+			"issue_date": finalized_draft.issue_date,
+			"receipt_date": finalized_draft.receipt_date,
+			"service_month": finalized_draft.service_month,
+			"currency": finalized_draft.currency,
+			"unit_price": finalized_draft.unit_price,
+			"air_waybill": finalized_draft.awb,
+			"kilograms": finalized_draft.kg,
+			"items": finalized_draft.items,
+			"fk_receipt_file": finalized_draft.id_receipt_file,
+			"fk_detail_file": finalized_draft.id_details_file,
+		}
+
+		purchase_invoice = await self.purchase_invoice_service().create(
+			new_purchase_invoice
+		)
+		purchase_invoice_created = await self.purchase_invoice_service().save(
+			purchase_invoice
+		)
+
+		# Vincular factura con draft
+		finalized_draft.fk_invoice = purchase_invoice_created.id
+		await self.save_draft_purchase_invoice(finalized_draft)
+
+		return purchase_invoice_created
 
 	async def _get_metadata_or_none(self, file_id: uuid.UUID | None):
 		if not file_id:
