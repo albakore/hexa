@@ -24,10 +24,7 @@ class InvoicingModule(ModuleInterface):
 
 	@property
 	def service(self) -> Dict[str, object]:
-		return {
-			"purchase_invoice_service": self._container.purchase_invoice_service,
-			"invoicing.invoice_orchestrator_service": self._container.invoice_orchestrator_service,
-		}
+		return {"purchase_invoice_service": self._container.purchase_invoice_service}
 
 	@property
 	def routes(self) -> APIRouter:

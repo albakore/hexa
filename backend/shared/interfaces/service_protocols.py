@@ -343,7 +343,7 @@ class YiqiServiceProtocol(Protocol):
 			command: CreateYiqiInvoiceCommand
 			id_schema: ID del schema/empresa
 
-		Used by: invoice_integration_service
+		Used by:
 		"""
 		...
 
@@ -363,7 +363,7 @@ class YiqiServiceProtocol(Protocol):
 		"""
 		Obtiene moneda del ERP por código.
 
-		Used by: invoice_integration_service
+		Used by:
 		"""
 		...
 
@@ -375,7 +375,7 @@ class YiqiServiceProtocol(Protocol):
 			command: UploadFileCommand
 			id_schema: ID del schema/empresa
 
-		Used by: invoice_integration_service
+		Used by:
 		"""
 		...
 
@@ -499,7 +499,7 @@ class PurchaseInvoiceServiceTypeServiceProtocol(Protocol):
 		"""Obtiene lista de tipos de servicio"""
 		...
 
-	async def get_service_type_by_id(self, id_service_type: int) -> Optional[Any]:
+	async def get_services_by_id(self, id_service_type: int) -> Optional[Any]:
 		"""Obtiene tipo de servicio por ID"""
 		...
 
@@ -527,7 +527,7 @@ class PurchaseInvoiceServiceProtocol(Protocol):
 		"""
 		Obtiene factura de compra por ID.
 
-		Used by: invoice_integration_service
+		Used by:
 		"""
 		...
 
@@ -543,7 +543,15 @@ class PurchaseInvoiceServiceProtocol(Protocol):
 		"""
 		Guarda una factura de compra.
 
-		Used by: invoice_orchestrator_service, invoice_integration_service
+		Used by: invoice_orchestrator_service,
+		"""
+		...
+
+	async def save_and_emit(self, purchase_invoice: Any) -> Any:
+		"""
+		Guarda una factura de compra y lo emite a yiqi.
+
+		Used by: draft_purchase_invoice_service
 		"""
 		...
 

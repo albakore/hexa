@@ -24,14 +24,23 @@ class YiqiERPModule(ModuleInterface):
 
 	@property
 	def service(self) -> Dict[str, object]:
-		from .adapter.input.tasks.yiqi_erp import create_invoice_from_purchase_invoice
+		from .adapter.input.tasks.yiqi_erp import (
+			create_invoice_from_purchase_invoice_tasks,
+		)
 
 		return {
 			"yiqi_service": self._container.service,
-			"yiqi_erp_service": self._container.service,
-			"yiqi_erp.invoice_integration_service": self._container.invoice_integration_service,
 			"yiqi_erp_tasks": {
-				"create_invoice_from_purchase_invoice": create_invoice_from_purchase_invoice
+				"create_invoice_from_purchase_invoice_tasks": {
+					"task": create_invoice_from_purchase_invoice_tasks,
+					"config": {
+						"autoretry_for": (Exception,),
+						"retry_kwargs": {"max_retries": 5},
+						"retry_backoff": True,
+						"retry_backoff_max": 600,
+						"retry_jitter": True,
+					},
+				}
 			},
 		}
 

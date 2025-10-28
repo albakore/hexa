@@ -27,6 +27,7 @@ class ProviderModule(ModuleInterface):
 		return {
 			"provider_service": self._container.provider_service,
 			"draft_invoice_service": self._container.draft_invoice_service,
+			"draft_invoice_servicetype_service": self._container.invoice_servicetype_service,
 		}
 
 	@property

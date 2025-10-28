@@ -173,21 +173,198 @@ def send_notification(user_id: int, message: str):
 app.send_task("notifications.send_notification", args=[123, "Hello!"])
 ```
 
-## Tasks con Retry
+## Tasks Asíncronas (async/await)
+
+El sistema **soporta automáticamente funciones `async`**. Las envuelve en un wrapper síncrono usando `asyncio.run()`:
 
 ```python
-def process_invoice():
-    """Task con retry automático"""
-    try:
-        # Lógica que puede fallar
-        result = external_api.call()
-        return result
-    except Exception as e:
-        # Celery manejará el retry automáticamente
-        raise
+# modules/yiqi_erp/adapter/input/tasks/yiqi_erp.py
+async def create_invoice_from_purchase_invoice_tasks(
+    purchase_invoice_id: int, company_id: int = 316
+):
+    """Task async - soportada automáticamente"""
+    yiqi_service = YiqiContainer.service()
+    purchase_invoice_service = service_locator.get_service("purchase_invoice_service")()
 
-# Para configurar retry, necesitas usar el decorador
-# NOTA: Esto rompe el patrón actual. Mejor manejar retry en el dominio
+    # Usar await normalmente
+    purchase_invoice = await purchase_invoice_service.get_one_by_id(purchase_invoice_id)
+    yiqi_response = await yiqi_service.create_invoice(...)
+
+    return yiqi_response
+
+# Registrar igual que una función síncrona
+"yiqi_erp_tasks": {
+    "create_invoice_from_purchase_invoice_tasks": {
+        "task": create_invoice_from_purchase_invoice_tasks,
+        "config": {...}
+    }
+}
+```
+
+**Al registrarse, verás**:
+```
+✓ Registered: yiqi_erp.create_invoice_from_purchase_invoice_tasks [async] (autoretry_for=...)
+```
+
+El marcador `[async]` indica que la función fue envuelta automáticamente.
+
+### Ventajas de Tasks Async
+
+- ✅ Código limpio y consistente con el resto del proyecto
+- ✅ Usa `await` con servicios async (repositorios, APIs, etc.)
+- ✅ No necesitas `asyncio.run()` manual
+- ✅ Compatible con reintentos automáticos de Celery
+
+## Tasks con Retry y Configuración Avanzada
+
+El sistema ahora soporta dos formatos para registrar tasks:
+
+### Formato Simple (sin configuración)
+
+```python
+# modules/invoicing/module.py
+@property
+def service(self) -> Dict[str, object]:
+    from .adapter.input.tasks import invoice
+
+    return {
+        "invoicing_tasks": {
+            "emit_invoice": invoice.emit_invoice,  # Función directa
+        },
+    }
+```
+
+### Formato Avanzado (con configuración de reintentos)
+
+```python
+# modules/yiqi_erp/module.py
+@property
+def service(self) -> Dict[str, object]:
+    from .adapter.input.tasks.yiqi_erp import (
+        create_invoice_from_purchase_invoice_tasks,
+    )
+
+    return {
+        "yiqi_erp_tasks": {
+            "create_invoice_from_purchase_invoice_tasks": {
+                "task": create_invoice_from_purchase_invoice_tasks,
+                "config": {
+                    "autoretry_for": (Exception,),  # Reintentar en cualquier excepción
+                    "retry_kwargs": {"max_retries": 5},  # Máximo 5 reintentos
+                    "retry_backoff": True,  # Backoff exponencial
+                    "retry_backoff_max": 600,  # Máximo 10 minutos de espera
+                    "retry_jitter": True,  # Añadir jitter aleatorio
+                },
+            }
+        },
+    }
+```
+
+### Opciones de Configuración Disponibles
+
+| Parámetro | Descripción | Ejemplo |
+|-----------|-------------|---------|
+| `autoretry_for` | Tupla de excepciones que disparan reintento automático | `(Exception,)`, `(ConnectionError, TimeoutError)` |
+| `retry_kwargs` | Configuración de reintentos (`max_retries`) | `{"max_retries": 5}` |
+| `retry_backoff` | Activar backoff exponencial entre reintentos | `True` |
+| `retry_backoff_max` | Tiempo máximo de espera entre reintentos (segundos) | `600` (10 minutos) |
+| `retry_jitter` | Añadir variación aleatoria al backoff | `True` |
+| `bind` | Pasar la instancia de task como primer argumento | `True` |
+| `max_retries` | Máximo de reintentos (alternativa a `retry_kwargs`) | `3` |
+| `default_retry_delay` | Delay fijo entre reintentos (segundos) | `60` |
+
+### Estrategias de Retry
+
+#### 1. Retry con Backoff Exponencial (Recomendado)
+
+```python
+"config": {
+    "autoretry_for": (Exception,),
+    "retry_kwargs": {"max_retries": 5},
+    "retry_backoff": True,  # 1s, 2s, 4s, 8s, 16s...
+    "retry_backoff_max": 600,
+    "retry_jitter": True,  # Previene thundering herd
+}
+```
+
+**Cuándo usar**: APIs externas, servicios que pueden saturarse
+
+#### 2. Retry con Delay Fijo
+
+```python
+"config": {
+    "autoretry_for": (ConnectionError, TimeoutError),
+    "max_retries": 3,
+    "default_retry_delay": 60,  # 60s entre cada reintento
+}
+```
+
+**Cuándo usar**: Servicios con rate limiting conocido
+
+#### 3. Retry Solo para Errores Específicos
+
+```python
+"config": {
+    "autoretry_for": (HTTPException,),  # Solo reintentar HTTPException
+    "retry_kwargs": {"max_retries": 3},
+}
+```
+
+**Cuándo usar**: Cuando quieres que ciertos errores fallen inmediatamente
+
+### Comportamiento del Retry
+
+Con la configuración anterior, cuando una task falla:
+
+1. **Primera ejecución**: Falla con `Exception`
+2. **Primer reintento**: Espera ~1s (con jitter)
+3. **Segundo reintento**: Espera ~2s (con jitter)
+4. **Tercer reintento**: Espera ~4s (con jitter)
+5. **Cuarto reintento**: Espera ~8s (con jitter)
+6. **Quinto reintento**: Espera ~16s (con jitter)
+7. **Si falla**: La task se marca como FAILED definitivamente
+
+### Cómo Llamar Tasks (send_task)
+
+**IMPORTANTE**: Los parámetros de retry se configuran al REGISTRAR la task, NO al llamarla.
+
+```python
+# ✅ CORRECTO - Solo parámetros válidos de send_task
+self.tasks_service.send_task(
+    "yiqi_erp.create_invoice_from_purchase_invoice_tasks",
+    args=[purchase_invoice.id],
+    countdown=30,  # Delay antes de ejecutar (segundos)
+    # Los reintentos YA están configurados en el módulo
+)
+
+# ❌ INCORRECTO - Estos parámetros NO existen en send_task
+self.tasks_service.send_task(
+    "yiqi_erp.create_invoice_from_purchase_invoice_tasks",
+    args=[purchase_invoice.id],
+    retries=3,  # ❌ NO existe
+    retry_policy={...},  # ❌ NO existe
+)
+```
+
+### Parámetros Válidos para send_task
+
+- `args`: Argumentos posicionales para la task
+- `kwargs`: Argumentos nombrados para la task
+- `countdown`: Delay en segundos antes de ejecutar
+- `eta`: Timestamp absoluto para ejecutar la task
+- `expires`: Tiempo de expiración de la task
+- `priority`: Prioridad de la task (0-9)
+- `queue`: Cola específica para la task
+
+### Monitorear Reintentos
+
+En los logs del worker verás:
+
+```
+[2025-01-15 10:30:00] Task yiqi_erp.create_invoice_from_purchase_invoice_tasks[abc-123] received
+[2025-01-15 10:30:01] Task yiqi_erp.create_invoice_from_purchase_invoice_tasks[abc-123] retry: Retry in 1s: Exception('Connection failed')
+[2025-01-15 10:30:03] Task yiqi_erp.create_invoice_from_purchase_invoice_tasks[abc-123] retry: Retry in 2s: Exception('Connection failed')
+[2025-01-15 10:30:06] Task yiqi_erp.create_invoice_from_purchase_invoice_tasks[abc-123] succeeded in 0.5s
 ```
 
 ## Tasks Periódicas (Cron)

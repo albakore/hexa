@@ -56,10 +56,10 @@ graph TB
 ```python
 @property
 def service(self) -> Dict[str, object]:
-    return {"yiqi_erp_service": self._container.service}
+    return {"yiqi_service": self._container.service}
 ```
 
-### yiqi_erp_service
+### yiqi_service
 - **Propósito**: Integración completa con Yiqi ERP
 - **Funciones**: Consultas de datos maestros, carga de archivos
 - **Dependencias**: Configuración de API externa
@@ -161,7 +161,7 @@ class YiqiHttpClient:
 from shared.interfaces.service_locator import service_locator
 
 # Obtener servicio Yiqi ERP
-yiqi_service = service_locator.get_service("yiqi_erp_service")
+yiqi_service = service_locator.get_service("yiqi_service")
 
 # Obtener monedas del ERP
 erp_currencies = await yiqi_service.get_currency_list(schema_id=123)
@@ -187,7 +187,7 @@ for erp_currency in erp_currencies:
 ```python
 # En módulo Provider
 async def validate_provider_in_erp(self, provider_id: int):
-    yiqi_service = service_locator.get_service("yiqi_erp_service")
+    yiqi_service = service_locator.get_service("yiqi_service")
     
     try:
         # Consultar proveedor en ERP
@@ -218,7 +218,7 @@ from shared.interfaces.service_locator import service_locator
 
 @router.post("/sync-erp-data")
 async def sync_erp_data(
-    yiqi_service = Depends(service_locator.get_dependency("yiqi_erp_service")),
+    yiqi_service = Depends(service_locator.get_dependency("yiqi_service")),
     data_type: str = Query(..., description="currency|services|providers"),
 ):
     if data_type == "currency":
@@ -246,7 +246,7 @@ from datetime import datetime
 
 async def scheduled_erp_sync():
     """Sincronización programada con Yiqi ERP"""
-    yiqi_service = service_locator.get_service("yiqi_erp_service")
+    yiqi_service = service_locator.get_service("yiqi_service")
     
     try:
         print(f"[{datetime.now()}] Iniciando sincronización ERP...")
@@ -276,7 +276,7 @@ async def start_sync_scheduler():
 ```python
 # Cargar factura al ERP
 async def upload_invoice_to_erp(invoice_file: bytes, invoice_data: dict):
-    yiqi_service = service_locator.get_service("yiqi_erp_service")
+    yiqi_service = service_locator.get_service("yiqi_service")
     
     # Preparar request de carga
     upload_request = YiqiUploadFileRequest(
@@ -301,7 +301,7 @@ async def upload_invoice_to_erp(invoice_file: bytes, invoice_data: dict):
 ```python
 @router.get("/health/erp")
 async def check_erp_health():
-    yiqi_service = service_locator.get_service("yiqi_erp_service")
+    yiqi_service = service_locator.get_service("yiqi_service")
     
     try:
         # Test simple: obtener lista de monedas

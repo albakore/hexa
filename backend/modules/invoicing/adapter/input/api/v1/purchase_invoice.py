@@ -71,3 +71,14 @@ async def create_purchase_invoice(
 		yiqi_tasks["emit_invoice"].delay(invoice_saved.model_dump())
 
 	return invoice_saved
+
+
+@purchase_invoice_router.post("/reemit/{id_purchase_invoice}")
+@inject
+async def reemit_purchase_invoice(
+	id_purchase_invoice: int,
+	service: PurchaseInvoiceService = Depends(
+		Provide[InvoicingContainer.purchase_invoice_service]
+	),
+):
+	return await service.reemit(id_purchase_invoice)
