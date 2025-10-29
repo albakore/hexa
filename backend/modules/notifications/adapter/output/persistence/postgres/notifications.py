@@ -5,7 +5,6 @@ from sqlmodel import select
 from modules.notifications.domain.entity import Notification
 from modules.notifications.domain.repository.notifications import NotificationsRepository
 
-
 class PostgresNotificationRepository(NotificationsRepository):
 
     async def get_all_notifications(self) -> list[Notification] | Sequence[Notification]:
@@ -33,4 +32,3 @@ class PostgresNotificationRepository(NotificationsRepository):
         global_session.add(notification)
         await global_session.flush()
         return notification
-

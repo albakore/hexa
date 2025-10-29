@@ -1,4 +1,3 @@
-
 from abc import ABC, abstractmethod
 from typing import Sequence
 from modules.notifications.domain.entity import Notification

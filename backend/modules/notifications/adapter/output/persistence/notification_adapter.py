@@ -1,4 +1,3 @@
-
 from dataclasses import dataclass
 from typing import Sequence
 from modules.notifications.domain.entity import Notification
@@ -19,5 +18,3 @@ class NotificationRepositoryAdapter(NotificationsRepository):
 
     async def create_notification(self, notification: Notification) -> Notification:
         return await self.notification_repository.create_notification(notification)
-
-

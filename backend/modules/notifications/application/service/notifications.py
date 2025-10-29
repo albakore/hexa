@@ -24,7 +24,11 @@ class NotificationService:
         new_notification = self.usecase.create_notification(command)
         return new_notification
     
+    #TODO: agregar envíos de notificaciones por email y probarlas
+    # def send_notification_email(self, id: int):
+    
     # def get_notifications_by_user(self, id_user: int):
     #     #TODO: Implement this use case in the factory and usecase classes
     #     notification = self.usecase.get_notifications_by_user(id_user)
     #     return notification
+    
