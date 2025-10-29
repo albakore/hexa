@@ -88,12 +88,15 @@ def register_celery_tasks() -> int:
 			# Si la función es async, envolverla en un wrapper síncrono
 			if inspect.iscoroutinefunction(task_func):
 				original_func = task_func
+
 				def make_sync_wrapper(async_func):
 					def sync_wrapper(*args, **kwargs):
 						return asyncio.run(async_func(*args, **kwargs))
+
 					sync_wrapper.__name__ = async_func.__name__
 					sync_wrapper.__doc__ = async_func.__doc__
 					return sync_wrapper
+
 				task_func = make_sync_wrapper(original_func)
 				is_async = True
 			else:
