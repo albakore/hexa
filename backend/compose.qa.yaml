@@ -33,6 +33,11 @@ services:
       - redis:/data
     networks:
       - db
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
 
   rabbit:
     container_name: rabbitmq
@@ -45,21 +50,25 @@ services:
       - RABBITMQ_DEFAULT_PASS=hexa
     networks:
       - db
-
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq
   backend:
     container_name: backend
     build:
       context: .
       dockerfile: docker/hexa/qa.Dockerfile
     command: /bin/sh -c "uv run hexa api"
-    # environment:
-    #   BACKEND_PATH: ${BACKEND_PATH}
-    #   DATABASE_URL: ${DATABASE_URL}
-    #   REDIS_URL: ${REDIS_URL}
     env_file:
       - .env
-    # volumes:
-    #   - .env:/app/.env
+    environment:
+      # Forzar auto-reload en desarrollo
+      - WATCHFILES_FORCE_POLLING=false
+      - PYTHONUNBUFFERED=1
     develop:
       watch:
         - action: sync
@@ -68,14 +77,21 @@ services:
           ignore:
             - .venv/
             - __pycache__/
-            - "*.pyc"
+            - "**/*.pyc"
+            - "**/__pycache__/"
             - .pytest_cache/
             - .ruff_cache/
             - "*.log"
             - .git/
+            - .gitignore
             - docker/
             - docs/
             - migrations/versions/
+            - htmlcov/
+            - .coverage
+            - "*.md"
+            - compose*.yaml
+
         - action: rebuild
           path: ./uv.lock
     ports:
@@ -84,56 +100,69 @@ services:
       db:
         condition: service_healthy
       redis:
-        condition: service_started
+        condition: service_healthy
       rabbit:
-        condition: service_started
+        condition: service_healthy
     networks:
       - db
       - frontnet
-
+    # Reiniciar si el proceso falla
+    restart: unless-stopped
   celery_worker:
     container_name: backend-celery
-    image: fast-hexagonal-backend:latest
-    command: /bin/sh -c "uv run hexa celery-apps"
+    build:
+      context: .
+      dockerfile: docker/hexa/dev.Dockerfile
+    # Usar watchfiles para auto-reload de Celery
+    # --pool=solo para desarrollo (permite reload rápido)
+    command: /bin/sh -c "uv run watchfiles --filter python 'uv run hexa celery-apps' modules core shared"
     env_file:
       - .env
-    # volumes:
-    #   - .env:/app/.env
+    environment:
+      # Variables para mejorar el comportamiento de Celery en desarrollo
+      - PYTHONUNBUFFERED=1
+      - CELERY_TASK_ALWAYS_EAGER=false
+      - WATCHFILES_FORCE_POLLING=false
     develop:
       watch:
-
-        # Sync the working directory with the `/app` directory in the container
+        # Sync: Sincroniza archivos en tiempo real
         - action: sync
           path: .
           target: /app
-          # Exclude the project virtual environment — it could be for a
-          # different platform in the container
           ignore:
             - .venv/
             - __pycache__/
-            - "*.pyc"
+            - "**/*.pyc"
+            - "**/__pycache__/"
             - .pytest_cache/
             - .ruff_cache/
             - "*.log"
             - .git/
+            - .gitignore
             - docker/
             - docs/
             - migrations/versions/
+            - htmlcov/
+            - .coverage
+            - "*.md"
+            - compose*.yaml
 
-        # Rebuild the image if dependencies change by checking uv.lock
+        # Rebuild: Solo si cambian dependencias
         - action: rebuild
           path: ./uv.lock
+
     depends_on:
       db:
         condition: service_healthy
       redis:
-        condition: service_started
+        condition: service_healthy
       rabbit:
-        condition: service_started
+        condition: service_healthy
     networks:
       - db
       - frontnet
-
+    # Reiniciar automáticamente si el worker falla
+    restart: unless-stopped
 
   nginx:
     container_name: nginx
@@ -154,7 +183,7 @@ services:
       dockerfile: qa.Dockerfile
     volumes:
       - ./docker/nginx/default.qa.conf:/etc/nginx/templates/default.conf.template
-    restart: always
+    restart: unless-stopped
     ports:
       - 80:80
     depends_on:
@@ -171,4 +200,6 @@ networks:
 volumes:
   db:
   redis:
+    driver: local
+  rabbitmq:
     driver: local

@@ -3,13 +3,15 @@ FROM ghcr.io/astral-sh/uv:python3.11-alpine
 # Install the project into `/app`
 WORKDIR /app
 
+# Set Python import root
+ENV PYTHONPATH=/app
 # Enable bytecode compilation
 ENV UV_COMPILE_BYTECODE=1
 
 # Copy from the cache instead of linking since it's a mounted volume
 ENV UV_LINK_MODE=copy
 
-RUN apk add g++ unixodbc-dev
+RUN apk add g++ unixodbc-dev postgresql-dev
 
 # Install the project's dependencies using the lockfile and settings
 RUN --mount=type=cache,target=/root/.cache/uv \
