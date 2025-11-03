@@ -15,7 +15,8 @@ class DraftPurchaseInvoiceSQLAlchemyRepository(DraftPurchaseInvoiceRepository):
 		query = select(DraftPurchaseInvoice).where(
 			DraftPurchaseInvoice.fk_provider == int(id_provider)
 		)
-		query = query.slice(page, limit)
+		offset = page * limit
+		query = query.offset(offset).limit(limit)
 
 		async with session_factory() as session:
 			result = await session.execute(query)

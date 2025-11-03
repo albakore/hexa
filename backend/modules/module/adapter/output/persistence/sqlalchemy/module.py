@@ -21,7 +21,8 @@ class AppModuleSQLAlchemyRepository(AppModuleRepository):
 		self, limit: int, page: int
 	) -> List[Module] | Sequence[Module]:
 		query = select(Module)
-		query = query.slice(page, limit)
+		offset = page * limit
+		query = query.offset(offset).limit(limit)
 
 		async with session_factory() as session:
 			result = await session.execute(query)

@@ -11,7 +11,8 @@ from core.db.session import session as global_session, session_factory
 class ProviderSQLAlchemyRepository(ProviderRepository):
 	async def get_all_providers(self, limit: int = 12, page: int = 0) -> list[Provider] | Sequence[Provider]:
 		query = select(Provider)
-		query = query.slice(page, limit)
+		offset = page * limit
+		query = query.offset(offset).limit(limit)
 
 		async with session_factory() as session:
 			result = await session.execute(query)

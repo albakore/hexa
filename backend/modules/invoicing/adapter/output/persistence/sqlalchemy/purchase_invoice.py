@@ -17,7 +17,8 @@ class PurchaseInvoiceSQLAlchemyRepository(PurchaseInvoiceRepository):
 
 	async def get_purchase_invoice_list(self, limit: int, page: int):
 		query = select(PurchaseInvoice)
-		query = query.slice(page, limit)
+		offset = page * limit
+		query = query.offset(offset).limit(limit)
 
 		async with session_factory() as session:
 			result = await session.execute(query)
@@ -35,7 +36,8 @@ class PurchaseInvoiceSQLAlchemyRepository(PurchaseInvoiceRepository):
 		query = select(PurchaseInvoice).where(
 			PurchaseInvoice.fk_provider == int(id_provider)
 		)
-		query = query.slice(page, limit)
+		offset = page * limit
+		query = query.offset(offset).limit(limit)
 
 		async with session_factory() as session:
 			result = await session.execute(query)

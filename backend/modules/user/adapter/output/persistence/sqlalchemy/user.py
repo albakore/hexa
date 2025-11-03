@@ -13,7 +13,8 @@ class UserSQLAlchemyRepository(UserRepository):
 		self, limit: int = 12, page: int = 0
 	) -> List[User] | Sequence[User]:
 		query = select(User)
-		query = query.slice(page, limit)
+		offset = page * limit
+		query = query.offset(offset).limit(limit)
 
 		async with session_factory() as session:
 			result = await session.execute(query)

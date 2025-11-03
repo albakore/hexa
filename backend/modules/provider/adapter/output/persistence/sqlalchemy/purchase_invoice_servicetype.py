@@ -16,7 +16,8 @@ class PurchaseInvoiceServiceSQLAlchemyRepository(PurchaseInvoiceServiceRepositor
 		self, limit: int = 12, page: int = 0
 	) -> List[PurchaseInvoiceService] | Sequence[PurchaseInvoiceService]:
 		query = select(PurchaseInvoiceService)
-		query = query.slice(page, limit)
+		offset = page * limit
+		query = query.offset(offset).limit(limit)
 
 		async with session_factory() as session:
 			result = await session.execute(query)
