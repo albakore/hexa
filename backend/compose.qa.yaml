@@ -112,7 +112,7 @@ services:
     container_name: backend-celery
     build:
       context: .
-      dockerfile: docker/hexa/dev.Dockerfile
+      dockerfile: docker/hexa/qa.Dockerfile
     # Usar watchfiles para auto-reload de Celery
     # --pool=solo para desarrollo (permite reload rápido)
     command: /bin/sh -c "uv run watchfiles --filter python 'uv run hexa celery-apps' modules core shared"
