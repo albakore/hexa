@@ -9,6 +9,7 @@ class CreateProviderCommand(BaseModel):
 	id_yiqi_provider: int | None = Field(
 		default=None, description="Id of yiqi provider"
 	)
+	allow_multi_invoice: bool = Field(default=False, description="Allow multiple invoices")
 
 
 class UpdateProviderCommand(BaseModel):
@@ -18,6 +19,7 @@ class UpdateProviderCommand(BaseModel):
 	id_yiqi_provider: int | None = Field(
 		default=None, description="Id of yiqi provider"
 	)
+	allow_multi_invoice: bool = Field(default=False, description="Allow multiple invoices")
 
 
 class CreateDraftPurchaseInvoiceCommand(BaseModel):

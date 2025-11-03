@@ -31,6 +31,7 @@ class Provider(SQLModel, table=True):
 	id_yiqi_provider: int | None = Field(None)
 
 	currency: str | None = Field(default=None)
+	allow_multi_invoice: bool = Field(default=False)
 
 	users: List["User"] = Relationship(
 		back_populates="providers", link_model=UserProviderLink
