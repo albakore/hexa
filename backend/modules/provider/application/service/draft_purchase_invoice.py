@@ -194,7 +194,7 @@ class DraftPurchaseInvoiceService:
 		purchase_invoice = await self.purchase_invoice_service().create(
 			new_purchase_invoice
 		)
-		purchase_invoice_created = await self.purchase_invoice_service().save(
+		purchase_invoice_created = await self.purchase_invoice_service().save_and_emit(
 			purchase_invoice
 		)
 

@@ -3,6 +3,7 @@ from typing import Optional
 from fastapi import File, UploadFile
 from pydantic import BaseModel, Field, field_serializer, field_validator
 
+
 class YiqiInvoice(BaseModel):
 	Provider: int = Field(serialization_alias="2880")
 	Numero: str = Field(serialization_alias="2879")
@@ -42,22 +43,18 @@ class YiqiInvoice(BaseModel):
 	# ID_en_Uruguay : Optional[str] 								= Field(serialization_alias='7092')
 	creado_en_portal: Optional[bool] = Field(serialization_alias="7677")
 
-	model_config = {
-		"extra": "forbid"
-	}
-
+	model_config = {"extra": "forbid"}
 
 	@field_validator("Fecha_emision", "Fecha_recepcion", "Mes_servicio", mode="after")
 	def parse_dob(cls, v):
 		return date.strftime(v, "%d/%m/%Y")
 
+
 class YiqiInvoiceAttach(BaseModel):
 	Comprobante: Optional[UploadFile] = File(serialization_alias="2891")
 	Detalle: Optional[UploadFile] = File(serialization_alias="5494")
 
-	model_config = {
-		"extra": "forbid"
-	}
+	model_config = {"extra": "forbid"}
 
 	# @field_validator("Comprobante","Detalle", mode="after")
 	# def validate_file(cls, value : UploadFile):
@@ -69,6 +66,8 @@ class YiqiInvoiceAttach(BaseModel):
 		if value:
 			return value.filename
 
-class CreateYiqiInvoiceCommand(YiqiInvoice,YiqiInvoiceAttach): ...
+
+class CreateYiqiInvoiceCommand(YiqiInvoice, YiqiInvoiceAttach): ...
+
 
 class UploadFileCommand(UploadFile): ...

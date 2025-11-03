@@ -2,6 +2,9 @@ from re import T
 from fastapi import APIRouter
 from dependency_injector.containers import DeclarativeContainer
 
+from modules.yiqi_erp.adapter.input.tasks.yiqi_erp_improved import (
+	create_invoice_from_purchase_invoice_improved_tasks,
+)
 from shared.interfaces.module_registry import ModuleInterface
 from modules.yiqi_erp.container import YiqiContainer
 from typing import Dict
@@ -24,14 +27,33 @@ class YiqiERPModule(ModuleInterface):
 
 	@property
 	def service(self) -> Dict[str, object]:
-		from .adapter.input.tasks.yiqi_erp import create_invoice_from_purchase_invoice
+		from .adapter.input.tasks.yiqi_erp import (
+			create_invoice_from_purchase_invoice_tasks,
+		)
 
 		return {
 			"yiqi_service": self._container.service,
-			"yiqi_erp_service": self._container.service,
-			"yiqi_erp.invoice_integration_service": self._container.invoice_integration_service,
 			"yiqi_erp_tasks": {
-				"create_invoice_from_purchase_invoice": create_invoice_from_purchase_invoice
+				"create_invoice_from_purchase_invoice_tasks": {
+					"task": create_invoice_from_purchase_invoice_tasks,
+					"config": {
+						"autoretry_for": (Exception,),
+						"retry_kwargs": {"max_retries": 5},
+						"retry_backoff": True,
+						"retry_backoff_max": 600,
+						"retry_jitter": True,
+					},
+				},
+				"create_invoice_from_purchase_invoice_improved_tasks": {
+					"task": create_invoice_from_purchase_invoice_improved_tasks,
+					"config": {
+						"autoretry_for": (Exception,),
+						"retry_kwargs": {"max_retries": 5},
+						"retry_backoff": True,
+						"retry_backoff_max": 600,
+						"retry_jitter": True,
+					},
+				},
 			},
 		}
 

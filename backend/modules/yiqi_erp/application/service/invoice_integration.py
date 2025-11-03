@@ -21,7 +21,7 @@ class InvoiceIntegrationService:
 			service_locator.get_service("invoicing.purchase_invoice_service")
 		)
 		file_storage_service: FileStorageServiceProtocol = service_locator.get_service(
-			"file_storage.file_storage_service"
+			"file_storage_service"
 		)
 
 		purchase_invoice = await purchase_invoice_service.get_one_by_id(
@@ -30,6 +30,7 @@ class InvoiceIntegrationService:
 		yiqi_currency = await self.yiqi_service.get_currency_by_code(
 			purchase_invoice.currency, company_id
 		)
+		print(yiqi_currency)
 
 		yiqi_comprobante = None
 		yiqi_detalle = None

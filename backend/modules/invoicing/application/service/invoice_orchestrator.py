@@ -54,7 +54,8 @@ class InvoiceOrchestratorService:
 		# Enviar task a YiqiERP
 		celery_app = service_locator.get_service("celery_app")
 		celery_app.send_task(
-			"yiqi_erp.create_invoice_from_purchase_invoice", args=[saved_invoice.id]
+			"yiqi_erp.create_invoice_from_purchase_invoice_tasks",
+			args=[saved_invoice.id],
 		)
 
 		# Actualizar estado del draft

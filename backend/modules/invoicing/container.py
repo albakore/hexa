@@ -2,6 +2,7 @@ from typing_extensions import final
 from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
 from dependency_injector.providers import Factory, Singleton
 
+from modules.auth.container import service_locator
 from modules.invoicing.adapter.output.persistence.purchase_invoice_adapter import (
 	PurchaseInvoiceRepositoryAdapter,
 )
@@ -10,9 +11,6 @@ from modules.invoicing.adapter.output.persistence.sqlalchemy.purchase_invoice im
 )
 from modules.invoicing.application.service.purchase_invoice import (
 	PurchaseInvoiceService,
-)
-from modules.invoicing.application.service.invoice_orchestrator import (
-	InvoiceOrchestratorService,
 )
 
 
@@ -24,9 +22,7 @@ class InvoicingContainer(DeclarativeContainer):
 		PurchaseInvoiceRepositoryAdapter, repository=purchase_invoice_repo
 	)
 	purchase_invoice_service = Factory(
-		PurchaseInvoiceService, purchase_invoice_repository=purchase_invoice_adapter
-	)
-
-	invoice_orchestrator_service = Factory(
-		InvoiceOrchestratorService, purchase_invoice_service=purchase_invoice_service
+		PurchaseInvoiceService,
+		purchase_invoice_repository=purchase_invoice_adapter,
+		tasks_service=service_locator.get_service("celery_app"),
 	)

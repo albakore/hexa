@@ -189,7 +189,7 @@ class YiqiApiRepository(YiqiRepository):
 		id_parent: bool | None = None,
 		id_child: bool | None = None,
 		id_entity: int = 660,
-	):
+	) -> dict:
 		url = "/api/InstancesAPI/Save"
 
 		form = YiqiInvoice.model_validate(command).model_dump(
@@ -217,7 +217,7 @@ class YiqiApiRepository(YiqiRepository):
 		response = await self.client.post(url, json=json)
 		if response.is_success:
 			return response.json()
-		return response.text
+		raise Exception("Error creating invoice in YiqiERP", response.text)
 
 	async def upload_file(self, file: UploadFile, id_schema: int = 316):
 		url = "/api/InstancesAPI/SaveFile"

@@ -18,13 +18,17 @@ class ServiceLocator:
 		self._factories: Dict[str, Callable[[], Any]] = {}
 		self._type_hints: Dict[str, Type] = {}  # Para almacenar type hints
 
-	def register_service(self, name: str, service: Any, type_hint: Optional[Type] = None) -> None:
+	def register_service(
+		self, name: str, service: Any, type_hint: Optional[Type] = None
+	) -> None:
 		"""Registra un servicio con un type hint opcional para type checking"""
 		self._services[name] = service
 		if type_hint:
 			self._type_hints[name] = type_hint
 
-	def register_factory(self, name: str, factory: Callable[[], Any], type_hint: Optional[Type] = None) -> None:
+	def register_factory(
+		self, name: str, factory: Callable[[], Any], type_hint: Optional[Type] = None
+	) -> None:
 		"""Registra una factory con un type hint opcional para type checking"""
 		self._factories[name] = factory
 		if type_hint:
@@ -93,6 +97,7 @@ class ServiceLocator:
 		        # user_service tiene type: UserServiceProtocol
 		        ...
 		"""
+
 		def wrapper() -> T:
 			if name in self._services:
 				service = self._services[name]

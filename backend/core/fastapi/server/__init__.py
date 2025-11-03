@@ -132,11 +132,23 @@ def create_app() -> FastAPI:
 	ModuleRegistry().clear()
 	service_locator.clear()
 
-	# Descubrir módulos ANTES de crear la app para que las rutas estén disponibles
+	# IMPORTANTE: Registrar celery_app ANTES de descubrir módulos
+	# Los containers de los módulos pueden necesitar celery_app durante su inicialización
+	from core.celery.discovery import get_celery_app, register_celery_tasks
+
+	print("📱 Registering celery_app...")
+	service_locator.register_service("celery_app", get_celery_app())
+
+	# Descubrir módulos DESPUÉS de registrar servicios base
 	print("🔍 Discovering and registering modules...")
 	from shared.interfaces.module_discovery import discover_modules
+
 	discover_modules("modules", "module.py")
-	print("✅ Modules registered\n")
+
+	# Registrar tasks de Celery DESPUÉS de descubrir módulos
+	print("📝 Registering Celery tasks...")
+	register_celery_tasks()
+	print("✅ Modules and tasks registered\n")
 
 	app_ = FastAPI(
 		generate_unique_id_function=custom_generate_unique_id,
