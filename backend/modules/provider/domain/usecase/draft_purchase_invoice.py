@@ -7,6 +7,7 @@ from modules.provider.domain.entity import PurchaseInvoiceService
 from modules.provider.domain.entity.draft_purchase_invoice import DraftPurchaseInvoice
 from modules.provider.domain.exception import (
 	DraftPurchaseInvoiceAwbRequiredException,
+	DraftPurchaseInvoiceConceptTooShortException,
 	DraftPurchaseInvoiceCurrencyNotFoundException,
 	DraftPurchaseInvoiceDetailFileRequiredException,
 	DraftPurchaseInvoiceIssueDateNotFoundException,
@@ -158,6 +159,9 @@ class ValidateDraftPurchaseInvoiceUseCase:
 
 		if not draft_purchase_invoice.unit_price:
 			raise DraftPurchaseInvoiceUnitPriceNotFoundException
+
+		if len(draft_purchase_invoice.concept) < 1:
+			raise DraftPurchaseInvoiceConceptTooShortException
 
 		# Validate service-specific required fields dynamically
 		# These validations depend on the service type configuration

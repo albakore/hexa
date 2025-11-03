@@ -55,6 +55,12 @@ class DraftPurchaseInvoiceUnitPriceNotFoundException(CustomException):
 	message = "Unit price is required to finalize the draft purchase invoice"
 
 
+class DraftPurchaseInvoiceConceptTooShortException(CustomException):
+	code = 400
+	error_code = "DRAFT_PURCHASE_INVOICE_CONCEPT__TOO_SHORT_ERROR"
+	message = "Concept is too short (minimum 1 character) to finalize the draft purchase invoice"
+
+
 class DraftPurchaseInvoiceValidationException(CustomException):
 	code = 400
 	error_code = "DRAFT_PURCHASE_INVOICE__VALIDATION_ERROR"
