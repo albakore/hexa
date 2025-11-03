@@ -5,5 +5,5 @@ from core.config.settings import env
 celery_app = Celery(
 	"hexa_worker",
 	broker=env.RABBITMQ_URL,
-	backend=env.REDIS_URL,
+	backend=f"{env.REDIS_URL}?password={env.REDIS_PASSWORD}",
 )
