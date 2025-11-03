@@ -71,6 +71,9 @@ class PurchaseInvoice(SQLModel, table=True):
 	# Agentes Independientes | AGENTES_INDEPENDIENT
 	independent_agents: str | None = Field(default=None)
 
+	# Estado de la factura (Interno)
+	invoice_status: str | None = Field(default=None)
+
 	# TC | TC
 	# tc: str
 

@@ -128,6 +128,7 @@ async def create_invoice_from_purchase_invoice_tasks(
 				f"Error al crear la factura en YiqiERP: {yiqi_response.get('error')}"
 			)
 		purchase_invoice.fk_yiqi_invoice = yiqi_response.get("newId")
+		purchase_invoice.invoice_status = "SENT"
 		await purchase_invoice_service.save(purchase_invoice)
 		reset_session_context(context)
 		print(yiqi_response)

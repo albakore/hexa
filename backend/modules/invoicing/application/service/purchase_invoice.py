@@ -39,6 +39,7 @@ class PurchaseInvoiceService:
 
 	@Transactional()
 	async def save(self, purchase_invoice_dto: PurchaseInvoice):
+		purchase_invoice_dto.invoice_status = "SENDING"
 		return await self.usecase.save_purchase_invoice(purchase_invoice_dto)
 
 	@Transactional()
