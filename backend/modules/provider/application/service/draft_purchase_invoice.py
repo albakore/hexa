@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Sequence
+from typing import List, Sequence
 import uuid
 
 from core.db.transactional import Transactional
@@ -19,7 +19,10 @@ from modules.provider.application.exception import (
 	DraftPurchaseInvoiceReceiptFileInvalidException,
 	DraftPurchaseInvoiceServiceNotFoundException,
 )
-from modules.provider.domain.command import CreateDraftPurchaseInvoiceCommand
+from modules.provider.domain.command import (
+	CreateDraftPurchaseInvoiceCommand,
+	SearchDraftPurchaseInvoiceCommand,
+)
 from modules.provider.domain.entity.draft_purchase_invoice import DraftPurchaseInvoice
 from modules.provider.domain.repository.draft_purchase_invoice import (
 	DraftPurchaseInvoiceRepository,
@@ -105,6 +108,13 @@ class DraftPurchaseInvoiceService:
 			raise DraftPurchaseInvoiceNotFoundException
 		return await self.draft_purchase_invoice_usecase.delete_draft_purchase_invoice(
 			draft_purchase_invoice
+		)
+
+	async def search_draft_purchase_invoices(
+		self, command: SearchDraftPurchaseInvoiceCommand
+	) -> tuple[List[DraftPurchaseInvoice] | Sequence[DraftPurchaseInvoice], int]:
+		return await self.draft_purchase_invoice_usecase.search_draft_purchase_invoices(
+			command
 		)
 
 	@Transactional()

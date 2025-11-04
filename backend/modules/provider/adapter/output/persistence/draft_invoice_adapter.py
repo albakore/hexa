@@ -1,9 +1,10 @@
 from dataclasses import dataclass
-from typing import Sequence
+from typing import List, Sequence
 from modules.provider.domain.entity.draft_purchase_invoice import DraftPurchaseInvoice
 from modules.provider.domain.repository.draft_purchase_invoice import (
 	DraftPurchaseInvoiceRepository,
 )
+from modules.provider.domain.command import SearchDraftPurchaseInvoiceCommand
 
 
 class DraftPurchaseInvoiceAdapter(DraftPurchaseInvoiceRepository):
@@ -37,3 +38,8 @@ class DraftPurchaseInvoiceAdapter(DraftPurchaseInvoiceRepository):
 		return await self.draft_purchase_invoice_repository.delete_draft_invoice(
 			draft_purchase_invoice
 		)
+
+	async def search_draft_invoices(
+		self, command: SearchDraftPurchaseInvoiceCommand
+	) -> tuple[List[DraftPurchaseInvoice] | Sequence[DraftPurchaseInvoice], int]:
+		return await self.draft_purchase_invoice_repository.search_draft_invoices(command)

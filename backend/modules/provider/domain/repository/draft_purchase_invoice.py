@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import Sequence
+from typing import List, Sequence
 
 from modules.provider.domain.entity.draft_purchase_invoice import DraftPurchaseInvoice
+from modules.provider.domain.command import SearchDraftPurchaseInvoiceCommand
 
 
 class DraftPurchaseInvoiceRepository(ABC):
@@ -24,3 +25,9 @@ class DraftPurchaseInvoiceRepository(ABC):
 	async def delete_draft_invoice(
 		self, draft_purchase_invoice: DraftPurchaseInvoice
 	): ...
+
+	@abstractmethod
+	async def search_draft_invoices(
+		self, command: SearchDraftPurchaseInvoiceCommand
+	) -> tuple[List[DraftPurchaseInvoice] | Sequence[DraftPurchaseInvoice], int]: ...
+	# Devuelve (lista_resultados, total_encontrado)

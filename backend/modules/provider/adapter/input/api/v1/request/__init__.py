@@ -6,6 +6,7 @@ from modules.provider.domain.command import (
 	UpdateDraftPurchaseInvoiceCommand,
 	UpdateProviderCommand,
 	UpdatePurchaseInvoiceServiceCommand,
+	SearchDraftPurchaseInvoiceCommand,
 )
 
 
@@ -19,6 +20,9 @@ class DraftPurchaseInvoiceCreateRequest(CreateDraftPurchaseInvoiceCommand): ...
 
 
 class DraftPurchaseInvoiceUpdateRequest(UpdateDraftPurchaseInvoiceCommand): ...
+
+
+class DraftPurchaseInvoiceSearchRequest(SearchDraftPurchaseInvoiceCommand): ...
 
 
 class PurchaseInvoiceServiceCreateRequest(CreatePurchaseInvoiceServiceCommand): ...

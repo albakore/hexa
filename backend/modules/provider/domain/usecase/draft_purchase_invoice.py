@@ -1,8 +1,11 @@
 from dataclasses import dataclass
-from typing import Sequence
+from typing import List, Sequence
 
 from core.db import Transactional
-from modules.provider.domain.command import CreateDraftPurchaseInvoiceCommand
+from modules.provider.domain.command import (
+	CreateDraftPurchaseInvoiceCommand,
+	SearchDraftPurchaseInvoiceCommand,
+)
 from modules.provider.domain.entity import PurchaseInvoiceService
 from modules.provider.domain.entity.draft_purchase_invoice import DraftPurchaseInvoice
 from modules.provider.domain.exception import (
@@ -197,6 +200,18 @@ class FinalizeDraftPurchaseInvoiceUseCase:
 
 
 @dataclass
+class SearchDraftPurchaseInvoicesUseCase:
+	draft_purchase_invoice_repository: DraftPurchaseInvoiceRepository
+
+	async def __call__(
+		self, command: SearchDraftPurchaseInvoiceCommand
+	) -> tuple[List[DraftPurchaseInvoice] | Sequence[DraftPurchaseInvoice], int]:
+		return await self.draft_purchase_invoice_repository.search_draft_invoices(
+			command
+		)
+
+
+@dataclass
 class DraftPurchaseInvoiceUseCaseFactory:
 	draft_purchase_invoice_repository: DraftPurchaseInvoiceRepository
 
@@ -216,3 +231,6 @@ class DraftPurchaseInvoiceUseCaseFactory:
 		)
 		self.validate_draft_purchase_invoice = ValidateDraftPurchaseInvoiceUseCase()
 		self.finalize_draft_purchase_invoice = FinalizeDraftPurchaseInvoiceUseCase()
+		self.search_draft_purchase_invoices = SearchDraftPurchaseInvoicesUseCase(
+			self.draft_purchase_invoice_repository
+		)
