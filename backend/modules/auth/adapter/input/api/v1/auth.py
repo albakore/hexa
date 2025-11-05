@@ -73,3 +73,8 @@ async def password_reset(
 		request.id.hex, request.initial_password, request.new_password
 	)
 	return AuthPasswordResetResponse()
+
+
+@auth_router.post("/error_intencionado")
+async def error_intencionado():
+	raise ValueError("Error intencionado")

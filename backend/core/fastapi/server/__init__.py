@@ -29,6 +29,7 @@ from core.fastapi.dependencies.permission import (
 	system_permission,
 	sync_permissions_to_db,
 )
+from shared.interfaces.service_locator import service_locator
 
 
 def custom_generate_unique_id(route: APIRoute):
@@ -91,19 +92,30 @@ def init_listeners(app_: FastAPI) -> None:
 	# Exception handler
 	@app_.exception_handler(CustomException)
 	async def custom_exception_handler(request: Request, exc: CustomException):
-	
 		return JSONResponse(
 			status_code=exc.code,
 			content={"error_code": exc.error_code, "message": exc.message},
 		)
 
-
 	# General Exception handler
 	@app_.exception_handler(Exception)
 	async def general_exception_handler(request: Request, exc: Exception):
+		task_service = service_locator.get_service("celery_app")
+
+		notificacion = {
+			"sender": "slack",
+			"notification": {"body": f"Este es un error | {exc}"},
+		}
+
+		task_service.send_task(
+			"notification.send_notification_tasks",
+			args=[notificacion],
+			# countdown=30,
+		)
+
 		return JSONResponse(
 			status_code=500,
-			content={ "message": exc},
+			content={"message": exc.args},
 		)
 
 
