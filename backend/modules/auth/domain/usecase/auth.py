@@ -1,15 +1,28 @@
-from abc import ABC, abstractmethod
-from modules.user.domain.entity import User
+from dataclasses import dataclass
 
+from modules.auth.domain.command import RegisterUserDTO
+from modules.auth.domain.exception import RegisteredUserException
+from shared.interfaces.service_protocols import UserServiceProtocol
 
-class AuthUseCase(ABC):
-	@abstractmethod
-	async def login(self, email: str, password: str): ...
+class UseCase: ...
 
-	@abstractmethod
-	async def register(self, registration_data) -> User | None | Exception: ...
+@dataclass
+class RegisterUser(UseCase):
+	user_service : UserServiceProtocol
 
-	@abstractmethod
-	async def password_reset(
-		self, user_uuid: str, initial_password: str, new_password: str
-	) -> bool | Exception: ...
+	async def __call__(self, registration_data: RegisterUserDTO):
+
+		user = await self.user_service.get_user_by_email_or_nickname(
+			email=registration_data.email, nickname=registration_data.nickname or ""
+		)
+		if user:
+			raise RegisteredUserException
+		user_created = await self.user_service.create_user(registration_data)
+		return user_created
+
+@dataclass
+class AuthUseCaseFactory:
+	user_service : UserServiceProtocol
+
+	def __post_init__(self):
+		self.register_user = RegisterUser(self.user_service)

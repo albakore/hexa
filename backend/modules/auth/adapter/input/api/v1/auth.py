@@ -1,6 +1,7 @@
 from dependency_injector.wiring import Provide, inject
-from fastapi import APIRouter, Depends, Form, Response
+from fastapi import APIRouter, Depends, Form
 
+from modules.auth.application.service.auth import AuthService
 from modules.auth.container import AuthContainer
 from modules.auth.adapter.input.api.v1.request import (
 	AuthLoginRequest,
@@ -13,7 +14,6 @@ from modules.auth.adapter.input.api.v1.response import (
 	AuthPasswordResetResponse,
 	RefreshTokenResponse,
 )
-from modules.auth.domain.usecase.auth import AuthUseCase
 from modules.auth.domain.usecase.jwt import JwtUseCase
 
 
@@ -47,7 +47,7 @@ async def verify_token(
 @inject
 async def login(
 	request: AuthLoginRequest = Form(),
-	usecase: AuthUseCase = Depends(Provide[AuthContainer.service]),
+	usecase: AuthService = Depends(Provide[AuthContainer.service]),
 ):
 	data = await usecase.login(request.nickname, request.password)
 	return data
@@ -57,7 +57,7 @@ async def login(
 @inject
 async def register(
 	request: AuthRegisterRequest = Form(),
-	usecase: AuthUseCase = Depends(Provide[AuthContainer.service]),
+	usecase: AuthService = Depends(Provide[AuthContainer.service]),
 ):
 	data = await usecase.register(registration_data=request)
 	return data
@@ -67,7 +67,7 @@ async def register(
 @inject
 async def password_reset(
 	request: AuthPasswordResetRequest = Form(),
-	usecase: AuthUseCase = Depends(Provide[AuthContainer.service]),
+	usecase: AuthService = Depends(Provide[AuthContainer.service]),
 ):
 	await usecase.password_reset(
 		request.id.hex, request.initial_password, request.new_password

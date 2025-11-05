@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 
 
-class CreateUserCommand(BaseModel):
+class RegisterUserDTO(BaseModel):
     email: str = Field(..., description="Email")
     nickname: str | None = Field(default=None, description="Nickname")
     name : str | None  = Field(default=None, description="Name")

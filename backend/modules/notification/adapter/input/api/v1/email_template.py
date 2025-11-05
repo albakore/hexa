@@ -129,3 +129,18 @@ async def delete_email_template(
 ):
 	await email_templates_service.delete_email_template(email_template_id)
 	return {"detail": "Email template deleted successfully"}
+
+
+# @email_templates_router.post("/send")
+# @inject
+# async def send_email_template(
+# 	template: str = Body(..., media_type="plain/text"),
+# 	email_templates_service: EmailTemplateService = Depends(
+# 		Provide[NotificationContainer.email_template_service]
+# 	),
+# ):
+# 	await email_templates_service.send_email_template(
+# 		receiver_email=["ivanche.alejo@gmail.com"],
+# 		subject="Test Email",
+# 		body=template
+# 	)

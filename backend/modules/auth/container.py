@@ -30,6 +30,8 @@ class AuthContainer(DeclarativeContainer):
 		auth_repository=repository_adapter,
 		user_service=service_locator.get_dependency("user_service"),
 		role_service=service_locator.get_dependency("rbac.role_service"),
+		email_template_service=service_locator.get_dependency("email_template_service"),
+		notification_service=service_locator.get_dependency("notification_service"),
 	)
 
 	jwt_service = Factory(

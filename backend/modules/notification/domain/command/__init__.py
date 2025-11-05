@@ -1,3 +1,4 @@
+from typing import List
 import uuid
 from pydantic import BaseModel
 
@@ -14,3 +15,7 @@ class EditEmailTemplateCommand(BaseModel):
     description: str | None = None
     template_html: bytes | None = None
     module: str | None = None
+
+class SendNotificationCommand(BaseModel):
+    notification: dict
+    sender: str

@@ -1,10 +1,12 @@
 from fastapi import Body
 from pydantic import BaseModel, Field
 
-from modules.notification.domain.command import CreateNotificationCommand
+from modules.notification.domain.command import CreateNotificationCommand, SendNotificationCommand
 
 
 class CreateNotificationRequest(CreateNotificationCommand): ...
+
+class SendNotificationRequest(SendNotificationCommand): ...
 
 
 class CreateEmailTemplateRequest(BaseModel):
