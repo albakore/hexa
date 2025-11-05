@@ -1,10 +1,10 @@
-from re import T
-from fastapi import APIRouter
+from typing import Dict
+
 from dependency_injector.containers import DeclarativeContainer
+from fastapi import APIRouter
 
 from modules.invoicing.container import InvoicingContainer
 from shared.interfaces.module_registry import ModuleInterface
-from typing import Dict
 
 
 class InvoicingModule(ModuleInterface):

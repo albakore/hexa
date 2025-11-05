@@ -40,7 +40,11 @@ dev = [
     "ruff>=0.11.10",
 ]
 
+[tool.ruff]
+src = ["."]
 
+[tool.ruff.lint.isort]
+known-first-party = ["backend"]
 # Global options:
 
 # [tool.mypy]
