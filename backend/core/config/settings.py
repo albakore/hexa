@@ -36,6 +36,9 @@ class Settings(BaseSettings):
 	AWS_ACCESS_REGION: str
 	AWS_ACCESS_BUCKET_NAME: str
 
+	WEBHOOK_SLACK_NOTIFY_MLA : str
+	WEBHOOK_SLACK_API_TOKEN_MLA : str
+
 	RABBITMQ_URL: str = "amqp://hexa:hexa@localhost:5672/"
 
 	OPENAPI_EXPORT_DIR: str = "docs/openapi.json"

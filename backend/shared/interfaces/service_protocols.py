@@ -8,8 +8,7 @@ entre módulos.
 Cada Protocol debe mantenerse sincronizado con su servicio correspondiente.
 """
 
-from typing import Protocol, Optional, List, Self, Sequence, Any
-from datetime import date
+from typing import Protocol, Optional, List, Self, Sequence, Any, TypedDict
 from uuid import UUID
 
 
@@ -70,7 +69,7 @@ class UserServiceProtocol(Protocol):
 		"""
 		...
 
-	async def create_user(self, *, command: Any) -> Optional[Any]:
+	async def create_user(self, command: Any) -> Optional[Any]:
 		"""Crea un nuevo usuario"""
 		...
 
@@ -697,6 +696,11 @@ class YiqiERPTasksProtocol(Protocol):
 		...
 
 
+# ============================================================================
+# NOTIFICATION MODULE
+# ============================================================================
+
+
 class NotificationsTasksProtocol(Protocol):
 	"""
 	API pública de tasks de Celery del módulo Notifications.
@@ -721,3 +725,38 @@ class NotificationsTasksProtocol(Protocol):
 			str: Mensaje de confirmación
 		"""
 		...
+
+class NotificationCommandType(TypedDict):
+	notification: dict[str,Any]
+	sender: str
+
+class NotificationServiceProtocol(Protocol):
+	def __call__(self) -> Self: ...
+
+	async def get_all_notifications(self) -> list[Any]: ...
+	
+	async def get_notification_by_id(self, id: int) -> Any: ...
+	
+	async def create_notification(self, command : Any) -> Any | None: ...
+	async def delete_notification(self, id: int) -> Any | None: ...
+
+	async def send_notification(self, command: NotificationCommandType) -> None: ...
+
+class EmailTemplateServiceProtocol(Protocol):
+
+	def __call__(self) -> Self: ...
+
+	async def get_all_email_templates(self) -> list[Any]: ...
+	
+	async def get_email_template_by_id(self, id: int) -> Any: ...
+	
+	async def get_email_template_by_name(self, name: str) -> Any: ...
+	
+	async def get_email_template_by_module(self, module: str)-> Any: ...
+	
+	async def save_email_template(self, template: Any)-> Any: ...
+
+	async def edit_email_template(self, id: int, command: Any) -> Any: ...
+	
+	async def delete_email_template(self, id: int) -> None: ...
+	

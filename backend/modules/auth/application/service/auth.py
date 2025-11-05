@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from fastapi.encoders import jsonable_encoder
 from modules.auth.application.dto import (
 	AuthPasswordResetResponseDTO,
@@ -9,8 +10,9 @@ from modules.auth.application.exception import (
 	LoginRequiresPasswordResetException,
 	LoginUsernamePasswordException,
 )
+from modules.auth.domain.command import RegisterUserDTO
 from modules.auth.domain.repository.auth import AuthRepository
-from modules.auth.domain.usecase.auth import AuthUseCase
+from modules.auth.domain.usecase.auth import AuthUseCaseFactory
 from modules.module.application.dto import ModuleViewDTO
 from modules.user.application.dto import LoginResponseDTO
 from modules.user.application.dto.user import UserLoginResponseDTO
@@ -25,19 +27,24 @@ from core.helpers.password import PasswordHelper
 from core.helpers.token import TokenHelper
 
 # Protocols compartidos desde shared/
-from shared.interfaces.service_protocols import UserServiceProtocol, RoleServiceProtocol
+from shared.interfaces.service_protocols import EmailTemplateServiceProtocol, NotificationCommandType, NotificationServiceProtocol, UserServiceProtocol, RoleServiceProtocol
 
+@dataclass
+class AuthService:
+	auth_repository: AuthRepository
+	user_service: UserServiceProtocol
+	role_service: RoleServiceProtocol
+	email_template_service: EmailTemplateServiceProtocol
+	notification_service: NotificationServiceProtocol
 
-class AuthService(AuthUseCase):
-	def __init__(
-		self,
-		auth_repository: AuthRepository,
-		user_service: UserServiceProtocol,
-		role_service: RoleServiceProtocol,
-	):
-		self.auth_repository = auth_repository
-		self.user_service = user_service()
-		self.role_service = role_service()
+	def __post_init__(self):
+		self.user_service = self.user_service()
+		self.role_service = self.role_service()
+		self.email_template_service = self.email_template_service()
+		self.notification_service = self.notification_service()
+		self.usecase = AuthUseCaseFactory(
+			self.user_service
+		)
 
 	async def login(
 		self, email_or_nickname: str, password: str
@@ -89,18 +96,29 @@ class AuthService(AuthUseCase):
 		await self.auth_repository.create_user_session(response)
 		return response
 
-	@Transactional()
-	async def register(self, registration_data: AuthRegisterRequestDTO):
-		user = await self.user_service.get_user_by_email_or_nickname(
-			email=registration_data.email, nickname=registration_data.nickname or ""
-		)
-
-		if user:
-			raise UserRegisteredException
-
-		new_user = User.model_validate(registration_data)
-		user_created = await self.user_service.save_user(new_user)
-		return user_created
+	async def register(self, registration_data: RegisterUserDTO):
+		new_user = await self.usecase.register_user(registration_data)
+		template = await self.email_template_service.get_email_template_by_name("email_registration")
+		
+		if not new_user:
+			raise UserNotFoundException
+		template_decoded = self._prepare_template(
+			template,{
+			"#PROVIDER_NAME#":  new_user.nickname or new_user.name,
+			"#NAME#":  new_user.name,
+			"#USERNAME#":  new_user.nickname or new_user.email,
+			"#PASSWORD#":  new_user.initial_password,
+		})
+		data : NotificationCommandType ={
+			"sender": "email",
+			"notification": {
+				"to":[new_user.email],
+				"body":template_decoded,
+				"subject":"User Registration"
+			}
+		}
+		await self.notification_service.send_notification(data)
+		return new_user
 
 	@Transactional()
 	async def password_reset(
@@ -124,3 +142,13 @@ class AuthService(AuthUseCase):
 
 		await self.user_service.set_user_password(user, hashed_password)
 		return True
+	
+	#TODO agregar un recovery_password que notifique al usuario los pasos a seguir para reestablecerla
+	#template email_recoverypassword
+
+	def _prepare_template(self, template: bytes, data: dict) -> str:
+		template_decoded = template.decode()
+		for key, value in data.items():
+			template_decoded = template_decoded.replace(key,value)
+		return template_decoded
+	

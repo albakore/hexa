@@ -4,6 +4,7 @@ from modules.notification.domain.command import EditEmailTemplateCommand
 from modules.notification.domain.entity.email_template import EmailTemplate
 from modules.notification.domain.exception import EmailTemplateNotFoundException
 from modules.notification.domain.repository.email_template import EmailTemplateRepository
+from modules.notification.domain.repository.sender_provider import SenderProviderPort
 from modules.notification.domain.usecase.email_template import EmailTemplateUseCaseFactory
 
 
@@ -11,9 +12,10 @@ from modules.notification.domain.usecase.email_template import EmailTemplateUseC
 class EmailTemplateService:
     
     email_template_repository : EmailTemplateRepository
+    email_template_sender: SenderProviderPort
 
     def __post_init__(self):
-        self.usecase = EmailTemplateUseCaseFactory(self.email_template_repository)
+        self.usecase = EmailTemplateUseCaseFactory(self.email_template_repository, self.email_template_sender)
 
     async def get_all_email_templates(self):
         email_templates = await self.usecase.get_all_email_templates()
@@ -46,4 +48,6 @@ class EmailTemplateService:
     
     async def delete_email_template(self, id: int):
         await self.usecase.delete_email_template(id)
-    
+
+    # async def send_email_template(self, receiver_email: list[str], subject: str, body: str):
+    #     await self.usecase.send_email_template(receiver_email, subject, body)

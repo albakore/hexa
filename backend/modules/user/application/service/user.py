@@ -24,7 +24,7 @@ class UserService:
 	) -> List[User] | Sequence[User]:
 		return await self.usecase.get_all_user_with_roles(role_id_list)
 
-	async def create_user(self, *, command: CreateUserCommand) -> User | None:
+	async def create_user(self, command: CreateUserCommand) -> User | None:
 		return await self.usecase.create_user(command)
 
 	async def asign_role_to_user(self, user_uuid: str, role_id: int) -> User:

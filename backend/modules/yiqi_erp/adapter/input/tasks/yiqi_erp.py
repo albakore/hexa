@@ -124,7 +124,6 @@ async def create_invoice_from_purchase_invoice_tasks(
 		yiqi_response = await yiqi_service.create_invoice(yiqi_invoice, schema_id)
 		purchase_invoice.fk_yiqi_invoice = yiqi_response.get("newId")
 		await purchase_invoice_service.save(purchase_invoice)
-		reset_session_context(context)
 		print(yiqi_response)
 
 		return yiqi_response

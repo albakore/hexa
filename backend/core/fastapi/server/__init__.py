@@ -91,9 +91,19 @@ def init_listeners(app_: FastAPI) -> None:
 	# Exception handler
 	@app_.exception_handler(CustomException)
 	async def custom_exception_handler(request: Request, exc: CustomException):
+	
 		return JSONResponse(
 			status_code=exc.code,
 			content={"error_code": exc.error_code, "message": exc.message},
+		)
+
+
+	# General Exception handler
+	@app_.exception_handler(Exception)
+	async def general_exception_handler(request: Request, exc: Exception):
+		return JSONResponse(
+			status_code=500,
+			content={ "message": exc},
 		)
 
 
