@@ -1,7 +1,7 @@
 services:
   db:
     container_name: postgres
-    image: postgres
+    image: postgres:17.6-bookworm
     environment:
       POSTGRES_USER: hexa
       POSTGRES_PASSWORD: hexa
