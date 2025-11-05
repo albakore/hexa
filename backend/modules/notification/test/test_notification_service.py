@@ -1,5 +1,5 @@
 """
-Tests para los servicios del módulo notifications.
+Tests para los servicios del módulo notification.
 
 Estos son tests unitarios que verifican la lógica del servicio usando mocks.
 """
@@ -8,7 +8,7 @@ import pytest
 from unittest.mock import AsyncMock
 
 # TODO: Importar servicio
-# from modules.notifications.application.service.your_service import YourService
+# from modules.notification.application.service.your_service import YourService
 
 
 @pytest.mark.unit

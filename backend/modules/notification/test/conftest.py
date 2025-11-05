@@ -1,5 +1,5 @@
 """
-Fixtures específicos para los tests del módulo notifications.
+Fixtures específicos para los tests del módulo notification.
 """
 
 from datetime import date
@@ -10,8 +10,8 @@ import pytest
 from faker import Faker
 
 # TODO: Importar entidades del módulo
-# from modules.notifications.domain.entity.your_entity import YourEntity
-# from modules.notifications.domain.repository.your_repository import YourRepository
+# from modules.notification.domain.entity.your_entity import YourEntity
+# from modules.notification.domain.repository.your_repository import YourRepository
 
 faker = Faker()
 
@@ -45,7 +45,7 @@ faker = Faker()
 # @pytest.fixture
 # def mock_your_repository() -> AsyncMock:
 #     """Mock del repositorio."""
-#     from modules.notifications.domain.repository.your_repository import YourRepository
+#     from modules.notification.domain.repository.your_repository import YourRepository
 #     return AsyncMock(spec=YourRepository)
 
 
@@ -57,5 +57,5 @@ faker = Faker()
 # @pytest.fixture
 # def your_service(mock_your_repository: AsyncMock):
 #     """Servicio con repositorio mockeado."""
-#     from modules.notifications.application.service.your_service import YourService
+#     from modules.notification.application.service.your_service import YourService
 #     return YourService(your_repository=mock_your_repository)

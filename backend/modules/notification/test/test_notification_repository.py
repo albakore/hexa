@@ -1,5 +1,5 @@
 """
-Tests para los repositorios del módulo notifications.
+Tests para los repositorios del módulo notification.
 
 Estos son tests de integración que verifican la interacción con la base de datos.
 """
@@ -7,8 +7,8 @@ Estos son tests de integración que verifican la interacción con la base de dat
 import pytest
 
 # TODO: Importar entidades y repositorios
-# from modules.notifications.domain.entity.your_entity import YourEntity
-# from modules.notifications.adapter.output.persistence.your_adapter import YourRepositoryAdapter
+# from modules.notification.domain.entity.your_entity import YourEntity
+# from modules.notification.adapter.output.persistence.your_adapter import YourRepositoryAdapter
 
 
 @pytest.mark.integration

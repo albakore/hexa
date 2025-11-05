@@ -1,5 +1,5 @@
 """
-Tests para los casos de uso del módulo notifications.
+Tests para los casos de uso del módulo notification.
 
 Estos son tests unitarios que verifican la lógica de negocio usando mocks.
 """
@@ -8,7 +8,7 @@ import pytest
 from unittest.mock import AsyncMock
 
 # TODO: Importar casos de uso
-# from modules.notifications.domain.usecase.your_usecase import YourUseCase
+# from modules.notification.domain.usecase.your_usecase import YourUseCase
 
 
 @pytest.mark.unit
