@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, List, Sequence
 
 from modules.invoicing.domain.entity import PurchaseInvoice
 from modules.invoicing.domain.repository.purchase_invoice import (
 	PurchaseInvoiceRepository,
 )
+from modules.invoicing.application.command import SearchPurchaseInvoiceCommand
 
 
 @dataclass
@@ -53,6 +54,18 @@ class SavePurchaseInvoice(UseCase):
 
 
 @dataclass
+class SearchPurchaseInvoicesUseCase(UseCase):
+	purchase_invoice_repository: PurchaseInvoiceRepository
+
+	async def __call__(
+		self, command: SearchPurchaseInvoiceCommand
+	) -> tuple[List[PurchaseInvoice] | Sequence[PurchaseInvoice], int]:
+		return await self.purchase_invoice_repository.search_purchase_invoices(
+			command
+		)
+
+
+@dataclass
 class InvoiceUseCaseFactory:
 	purchase_invoice_repository: PurchaseInvoiceRepository
 
@@ -67,5 +80,8 @@ class InvoiceUseCaseFactory:
 			self.purchase_invoice_repository
 		)
 		self.save_purchase_invoice = SavePurchaseInvoice(
+			self.purchase_invoice_repository
+		)
+		self.search_purchase_invoices = SearchPurchaseInvoicesUseCase(
 			self.purchase_invoice_repository
 		)

@@ -1,9 +1,12 @@
 from dataclasses import dataclass
-from typing import Callable
+from typing import Callable, List, Sequence
 
 from celery import Celery
 
-from modules.invoicing.application.command import CreatePurchaseInvoiceCommand
+from modules.invoicing.application.command import (
+	CreatePurchaseInvoiceCommand,
+	SearchPurchaseInvoiceCommand,
+)
 from modules.invoicing.application.dto import PurchaseInvoiceDTO
 from modules.invoicing.domain.entity.purchase_invoice import PurchaseInvoice
 from modules.invoicing.domain.repository.purchase_invoice import (
@@ -67,3 +70,8 @@ class PurchaseInvoiceService:
 			countdown=30,
 		)
 		return purchase_invoice
+
+	async def search_purchase_invoices(
+		self, command: SearchPurchaseInvoiceCommand
+	) -> tuple[List[PurchaseInvoice] | Sequence[PurchaseInvoice], int]:
+		return await self.usecase.search_purchase_invoices(command)

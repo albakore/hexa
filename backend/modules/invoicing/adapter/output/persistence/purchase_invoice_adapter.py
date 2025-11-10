@@ -1,10 +1,11 @@
 from dataclasses import dataclass
-from typing import Sequence
+from typing import List, Sequence
 from typing_extensions import override
 from modules.invoicing.domain.entity import PurchaseInvoice
 from modules.invoicing.domain.repository.purchase_invoice import (
 	PurchaseInvoiceRepository,
 )
+from modules.invoicing.application.command import SearchPurchaseInvoiceCommand
 
 
 @dataclass
@@ -36,3 +37,9 @@ class PurchaseInvoiceRepositoryAdapter(PurchaseInvoiceRepository):
 		self, purchase_invoice: PurchaseInvoice
 	) -> PurchaseInvoice:
 		return await self.repository.save_purchase_invoice(purchase_invoice)
+
+	@override
+	async def search_purchase_invoices(
+		self, command: SearchPurchaseInvoiceCommand
+	) -> tuple[List[PurchaseInvoice] | Sequence[PurchaseInvoice], int]:
+		return await self.repository.search_purchase_invoices(command)
