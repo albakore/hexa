@@ -91,7 +91,43 @@ def register_celery_tasks() -> int:
 
 				def make_sync_wrapper(async_func):
 					def sync_wrapper(*args, **kwargs):
-						return asyncio.run(async_func(*args, **kwargs))
+						# Verificar si ya hay un event loop corriendo
+						try:
+							asyncio.get_running_loop()
+							# Si llegamos aquí, hay un loop corriendo, lo cual no debería pasar en Celery
+							raise RuntimeError("Cannot run async task, event loop already running")
+						except RuntimeError:
+							# No hay loop corriendo, esto es lo esperado en Celery worker
+							pass
+
+						# Intentar obtener el loop actual
+						try:
+							loop = asyncio.get_event_loop()
+							# Si el loop está cerrado o viene del fork, crear uno nuevo
+							if loop.is_closed():
+								loop = asyncio.new_event_loop()
+								asyncio.set_event_loop(loop)
+						except RuntimeError:
+							# No existe loop, crear uno nuevo
+							loop = asyncio.new_event_loop()
+							asyncio.set_event_loop(loop)
+
+						# Ejecutar la función async
+						try:
+							return loop.run_until_complete(async_func(*args, **kwargs))
+						finally:
+							# Limpiar tareas pendientes pero NO cerrar el loop
+							# Esto permite reusar el loop en la siguiente tarea del mismo worker
+							try:
+								pending = asyncio.all_tasks(loop)
+								if pending:
+									for task in pending:
+										task.cancel()
+									# Ejecutar un tick del loop para procesar cancelaciones
+									if pending:
+										loop.run_until_complete(asyncio.sleep(0))
+							except Exception:
+								pass
 
 					sync_wrapper.__name__ = async_func.__name__
 					sync_wrapper.__doc__ = async_func.__doc__

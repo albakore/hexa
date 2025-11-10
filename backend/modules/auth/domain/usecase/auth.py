@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 from modules.auth.domain.command import RegisterUserDTO
 from modules.auth.domain.exception import RegisteredUserException
+from modules.auth.domain.repository.auth import AuthRepository
 from shared.interfaces.service_protocols import UserServiceProtocol
 
 class UseCase: ...
@@ -21,8 +22,19 @@ class RegisterUser(UseCase):
 		return user_created
 
 @dataclass
+class GetSessionUser(UseCase):
+	auth_repository : AuthRepository
+
+	async def __call__(self, user_uuid: str):
+
+		session = await self.auth_repository.get_user_session(user_uuid)
+		return session
+
+@dataclass
 class AuthUseCaseFactory:
 	user_service : UserServiceProtocol
+	auth_repository : AuthRepository
 
 	def __post_init__(self):
 		self.register_user = RegisterUser(self.user_service)
+		self.get_session_user = GetSessionUser(self.auth_repository)

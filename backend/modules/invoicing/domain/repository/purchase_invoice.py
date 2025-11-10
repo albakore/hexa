@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Sequence, TypedDict
+from typing import List, Sequence, TypedDict
 
 from modules.invoicing.domain.entity import PurchaseInvoice
+from modules.invoicing.application.command import SearchPurchaseInvoiceCommand
 
 
 class PurchaseInvoiceRepository(ABC):
@@ -25,3 +26,9 @@ class PurchaseInvoiceRepository(ABC):
 	async def save_purchase_invoice(
 		self, purchase_invoice: PurchaseInvoice
 	) -> PurchaseInvoice: ...
+
+	@abstractmethod
+	async def search_purchase_invoices(
+		self, command: SearchPurchaseInvoiceCommand
+	) -> tuple[List[PurchaseInvoice] | Sequence[PurchaseInvoice], int]: ...
+	# Devuelve (lista_resultados, total_encontrado)

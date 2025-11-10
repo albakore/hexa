@@ -195,7 +195,7 @@ class FinalizeDraftPurchaseInvoiceUseCase:
 		self, draft_purchase_invoice: DraftPurchaseInvoice
 	) -> DraftPurchaseInvoice:
 		# Mark as finalized
-		draft_purchase_invoice.state = "Finalized"
+		draft_purchase_invoice.state = "FINALIZED"
 		return draft_purchase_invoice
 
 

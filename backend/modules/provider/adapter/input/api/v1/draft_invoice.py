@@ -1,24 +1,21 @@
-import uuid
 import json
 from typing import Optional
+
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, Query
+
 from modules.provider.adapter.input.api.v1.request import (
 	DraftPurchaseInvoiceCreateRequest,
-	DraftPurchaseInvoiceUpdateRequest,
 	DraftPurchaseInvoiceSearchRequest,
+	DraftPurchaseInvoiceUpdateRequest,
 )
 from modules.provider.adapter.input.api.v1.response import PaginatedResponse
-from modules.provider.domain.entity.draft_purchase_invoice import DraftPurchaseInvoice
 from modules.provider.application.service.draft_purchase_invoice import (
 	DraftPurchaseInvoiceService,
 )
 from modules.provider.container import ProviderContainer
-from modules.provider.domain.command import (
-	CreateDraftPurchaseInvoiceCommand,
-	UpdateDraftPurchaseInvoiceCommand,
-)
-
+from modules.provider.domain.command import UpdateDraftPurchaseInvoiceCommand
+from modules.provider.domain.entity.draft_purchase_invoice import DraftPurchaseInvoice
 
 draft_invoice_router = APIRouter()
 
@@ -144,6 +141,7 @@ async def create_draft_invoice(
 	),
 ):
 	draft_invoice = await service.create_draft_purchase_invoice(command)
+	draft_invoice.state = "DRAFT"
 	return await service.save_draft_purchase_invoice(draft_invoice)
 
 
