@@ -43,7 +43,8 @@ class AuthService:
 		self.email_template_service = self.email_template_service()
 		self.notification_service = self.notification_service()
 		self.usecase = AuthUseCaseFactory(
-			self.user_service
+			self.user_service,
+			self.auth_repository
 		)
 
 	async def login(
@@ -145,6 +146,14 @@ class AuthService:
 	
 	#TODO agregar un recovery_password que notifique al usuario los pasos a seguir para reestablecerla
 	#template email_recoverypassword
+
+	### TODO ofrecer un servicio que sea get_user_session -> LoginResponseDTO | AuthPasswordResetResponseDTO
+
+	async def get_user_session(
+		self, user_uuid: str
+	):
+		session = await self.usecase.get_session_user(user_uuid)
+		return session
 
 	def _prepare_template(self, template: bytes, data: dict) -> str:
 		template_decoded = template.decode()

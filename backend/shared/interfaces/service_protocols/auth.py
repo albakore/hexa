@@ -31,6 +31,12 @@ class AuthServiceProtocol(Protocol):
 		"""Resetea la contraseña de un usuario"""
 		...
 
+	async def get_user_session(
+		self, user_uuid: str
+	) -> Any:
+		"""Trae la sesión de un usuario"""
+		...
+
 
 class JwtServiceProtocol(Protocol):
 	"""API pública del módulo Auth para gestión de JWT tokens"""

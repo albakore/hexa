@@ -77,11 +77,11 @@ def make_middleware() -> list[Middleware]:
 			allow_methods=["*"],
 			allow_headers=["*"],
 		),
-		# Middleware(
-		# 	AuthenticationMiddleware,
-		# 	backend=AuthBackend(auth_repository=CoreContainer.system.auth.repository_adapter()),
-		# 	on_error=on_auth_error, #type: ignore
-		# ),
+		Middleware(
+			AuthenticationMiddleware,
+			backend=AuthBackend(user_service=service_locator.get_dependency("auth_service")),
+			on_error=on_auth_error, #type: ignore
+		),
 		Middleware(SQLAlchemyMiddleware),
 		# Middleware(ResponseLogMiddleware),
 	]

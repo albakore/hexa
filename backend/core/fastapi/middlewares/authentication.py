@@ -10,8 +10,8 @@ from starlette.middleware.authentication import (
 )
 from starlette.requests import HTTPConnection
 from starlette.authentication import BaseUser, AuthCredentials
-from modules.auth.domain.repository.auth import AuthRepository
 from core.config.settings import env
+from shared.interfaces.service_protocols.auth import AuthServiceProtocol
 
 
 class CurrentUser(BaseModel):
@@ -33,11 +33,11 @@ class User(BaseUser):
 	def __getattr__(self, item):
 		return getattr(self._user, item)
 
-@inject
+
 class AuthBackend(AuthenticationBackend):
 	
-	def __init__(self, auth_repository : AuthRepository):
-		self.auth_repository = auth_repository
+	def __init__(self, user_service : AuthServiceProtocol):
+		self.user_service = user_service()
 
 	async def authenticate(
 		self, conn: HTTPConnection
@@ -65,7 +65,7 @@ class AuthBackend(AuthenticationBackend):
 				algorithms=[env.JWT_ALGORITHM],
 			)
 			user_uuid = payload["id"]
-			session = await self.auth_repository.get_user_session(user_uuid)
+			session = await self.user_service.get_user_session(user_uuid)
 			user = CurrentUser(**payload)
 			if session:
 				user.permissions = session.permissions
