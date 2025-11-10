@@ -107,6 +107,22 @@ class YiqiApiRepository(YiqiRepository):
 		response = await self.client.get(url, params)
 		return response
 
+	async def get_country_list(self, id_schema: int = 316):
+		url = "/api/InstancesAPI/GetEntityUpdates2"
+		entity_name = "PAIS"
+		last_update = "01011900"
+		aditional_filters = []
+		attributes = ["PAIS_PAIS", "PAIS_CODIGO", "PAIS_DENOMINACION"]
+		params = {
+			"schemaId": id_schema,
+			"entityName": entity_name,
+			"lastUpdate": last_update,
+			"additionalFilters": aditional_filters.__repr__(),
+			"attributes": ",".join(attributes),
+		}
+		response = await self.client.get(url, params)
+		return response
+
 	async def get_invoices_list_of_provider(
 		self, id_provider: int, id_schema: int = 316
 	):
