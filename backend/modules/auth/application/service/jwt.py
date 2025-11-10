@@ -27,7 +27,7 @@ class JwtService(JwtUseCase):
 		self, auth_repository: AuthRepository, role_service: RoleServiceProtocol
 	):
 		self.auth_repository = auth_repository
-		self.role_service = role_service
+		self.role_service = role_service()
 		self.access_token_expiration_minutes = 15
 		self.refresh_token_expiration_days = 7
 
