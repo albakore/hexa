@@ -1,34 +1,36 @@
 import asyncio
-from contextlib import asynccontextmanager
+import importlib
 import json
 import os
-import importlib
+from contextlib import asynccontextmanager
+from pprint import pprint
 from typing import List
 
-from fastapi.routing import APIRoute
 from dependency_injector.wiring import Provide
 from fastapi import APIRouter, Depends, FastAPI, Request
-from pprint import pprint
 from fastapi.middleware import Middleware
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 from fastapi.responses import JSONResponse
+from fastapi.routing import APIRoute
 from rich import print
+
 import shared.interfaces.module_discovery
-from shared.interfaces.module_registry import ModuleRegistry
+from core.config.settings import env
 from core.exceptions.base import CustomException
 from core.fastapi.dependencies.logging import Logging
+from core.fastapi.dependencies.permission import (
+	sync_permissions_to_db,
+	system_permission,
+)
 from core.fastapi.middlewares import (
 	AuthBackend,
 	AuthenticationMiddleware,
+	PermissionValidationMiddleware,
 	ResponseLogMiddleware,
 	SQLAlchemyMiddleware,
 )
-from core.config.settings import env
-from core.fastapi.dependencies.permission import (
-	system_permission,
-	sync_permissions_to_db,
-)
+from shared.interfaces.module_registry import ModuleRegistry
 from shared.interfaces.service_locator import service_locator
 
 
@@ -55,7 +57,23 @@ def init_routes_pack(app_: FastAPI):
 		app_.include_router(route)
 
 
+# Instancia global del AuthBackend para acceder a las excepciones
+_auth_backend: AuthBackend | None = None
+
+
 def on_auth_error(request: Request, exc: Exception):
+	"""
+	Manejador de errores de autenticación.
+
+	Intenta obtener la excepción específica del AuthBackend si está disponible,
+	de lo contrario usa la excepción genérica proporcionada por Starlette.
+	"""
+	global _auth_backend
+
+	# Intentar obtener la excepción específica del backend
+	if _auth_backend and _auth_backend.last_exception:
+		exc = _auth_backend.last_exception
+
 	status_code, error_code, message = 401, None, str(exc)
 	if isinstance(exc, CustomException):
 		status_code = int(exc.code)
@@ -69,6 +87,13 @@ def on_auth_error(request: Request, exc: Exception):
 
 
 def make_middleware() -> list[Middleware]:
+	global _auth_backend
+
+	# Crear instancia única del AuthBackend
+	_auth_backend = AuthBackend(
+		user_service=service_locator.get_dependency("auth_service")  # type: ignore
+	)
+
 	middleware = [
 		Middleware(
 			CORSMiddleware,
@@ -79,9 +104,12 @@ def make_middleware() -> list[Middleware]:
 		),
 		Middleware(
 			AuthenticationMiddleware,
-			backend=AuthBackend(user_service=service_locator.get_dependency("auth_service")),
-			on_error=on_auth_error, #type: ignore
+			backend=_auth_backend,
+			on_error=on_auth_error,  # type: ignore
 		),
+		# NOTA: Ya no usamos PermissionValidationMiddleware como middleware
+		# Los permisos se validan con una dependency inyectada automáticamente por @require_permissions
+		# Middleware(PermissionValidationMiddleware),
 		Middleware(SQLAlchemyMiddleware),
 		# Middleware(ResponseLogMiddleware),
 	]

@@ -1,6 +1,7 @@
 import asyncio
 from celery import Celery
 import typer
+from typer import Option
 import uvicorn
 import sys
 from pathlib import Path
@@ -109,6 +110,66 @@ def test_celery():
 		print("✅ Task de notifications enviada")
 
 	print("\n📤 Se enviaron todas las tareas de prueba")
+
+
+@cmd.command("sync-db")
+def sync_database(
+	permissions: bool = Option(True, help="Sincronizar permisos"),
+	modules: bool = Option(True, help="Sincronizar módulos"),
+):
+	"""
+	Sincroniza permisos y módulos en la base de datos.
+
+	Este comando descubre todos los módulos y permisos definidos en el código
+	y los sincroniza con la base de datos.
+
+	Ejemplos:
+	  hexa sync-db                    # Sincroniza permisos y módulos
+	  hexa sync-db --no-permissions   # Solo sincroniza módulos
+	  hexa sync-db --no-modules       # Solo sincroniza permisos
+	"""
+	async def run_sync():
+		typer.echo("\n🔄 Iniciando sincronización con la base de datos...")
+		typer.echo("=" * 60)
+
+		# Descubrir módulos primero (necesario para registrar permisos)
+		from shared.interfaces.module_registry import ModuleRegistry
+		from shared.interfaces.service_locator import service_locator
+
+		ModuleRegistry().clear()
+		service_locator.clear()
+
+		typer.echo("\n📦 Descubriendo módulos...")
+		from shared.interfaces.module_discovery import discover_modules
+		discover_modules("modules", "module.py")
+		typer.echo("✅ Módulos descubiertos\n")
+
+		# Descubrir módulos setup (para MODULE_REGISTRY)
+		from core.config.modules import get_modules_setup
+		typer.echo("📦 Cargando configuraciones de módulos...")
+		get_modules_setup("modules")
+		typer.echo("✅ Configuraciones cargadas\n")
+
+		# Sincronizar permisos
+		if permissions:
+			typer.echo("🔐 Sincronizando permisos...")
+			typer.echo("-" * 60)
+			from core.fastapi.dependencies.permission import sync_permissions_to_db
+			await sync_permissions_to_db()
+			typer.echo("")
+
+		# Sincronizar módulos
+		if modules:
+			typer.echo("📚 Sincronizando módulos...")
+			typer.echo("-" * 60)
+			from core.config.modules import sync_modules_to_db
+			await sync_modules_to_db()
+			typer.echo("")
+
+		typer.echo("=" * 60)
+		typer.echo("✨ Sincronización completada exitosamente\n")
+
+	asyncio.run(run_sync())
 
 
 if __name__ == "__main__":

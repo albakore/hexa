@@ -2,22 +2,22 @@ from uuid import uuid4
 
 from starlette.types import ASGIApp, Receive, Scope, Send
 
-from core.db.session import set_session_context, reset_session_context, session
+from core.db.session import reset_session_context, session, set_session_context
 
 
 class SQLAlchemyMiddleware:
-    def __init__(self, app: ASGIApp) -> None:
-        self.app = app
+	def __init__(self, app: ASGIApp) -> None:
+		self.app = app
 
-    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        session_id = str(uuid4())
-        context = set_session_context(session_id=session_id)
-        print(f"Estas entrando al middleware de sqlalchemy: {context.var.get()}")
+	async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+		session_id = str(uuid4())
+		context = set_session_context(session_id=session_id)
+		print(f"Estas entrando al middleware de sqlalchemy: {context.var.get()}")
 
-        try:
-            await self.app(scope, receive, send)
-        except Exception as e:
-            raise e
-        finally:
-            await session.remove()
-            reset_session_context(context=context)
+		try:
+			await self.app(scope, receive, send)
+		except Exception as e:
+			raise e
+		finally:
+			await session.remove()
+			reset_session_context(context=context)
