@@ -38,8 +38,22 @@ class EngineType(Enum):
 
 
 engines = {
-    EngineType.WRITER: create_async_engine(env.DATABASE_URL, pool_recycle=3600),
-    EngineType.READER: create_async_engine(env.DATABASE_URL, pool_recycle=3600),
+    EngineType.WRITER: create_async_engine(
+        env.DATABASE_URL,
+        pool_recycle=3600,
+        pool_size=20,        # Aumentado de 5 a 20
+        max_overflow=20,     # Aumentado de 10 a 20
+        pool_timeout=60,     # Aumentado de 30 a 60 segundos
+        pool_pre_ping=True,  # Verificar conexiones antes de usar
+    ),
+    EngineType.READER: create_async_engine(
+        env.DATABASE_URL,
+        pool_recycle=3600,
+        pool_size=20,        # Aumentado de 5 a 20
+        max_overflow=20,     # Aumentado de 10 a 20
+        pool_timeout=60,     # Aumentado de 30 a 60 segundos
+        pool_pre_ping=True,  # Verificar conexiones antes de usar
+    ),
 }
 
 
