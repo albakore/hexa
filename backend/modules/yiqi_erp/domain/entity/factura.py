@@ -4,6 +4,7 @@ from pydantic import BaseModel
 
 from modules.yiqi_erp.domain.entity.entity_base import YiqiEntity
 
+
 class Factura(YiqiEntity):
 	__internal_name__ = "FACTURA"
 	__prefix__ = "FACT"

@@ -31,4 +31,5 @@ class PurchaseInvoiceRepository(ABC):
 	async def search_purchase_invoices(
 		self, command: SearchPurchaseInvoiceCommand
 	) -> tuple[List[PurchaseInvoice] | Sequence[PurchaseInvoice], int]: ...
+
 	# Devuelve (lista_resultados, total_encontrado)

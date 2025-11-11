@@ -60,9 +60,7 @@ class SearchPurchaseInvoicesUseCase(UseCase):
 	async def __call__(
 		self, command: SearchPurchaseInvoiceCommand
 	) -> tuple[List[PurchaseInvoice] | Sequence[PurchaseInvoice], int]:
-		return await self.purchase_invoice_repository.search_purchase_invoices(
-			command
-		)
+		return await self.purchase_invoice_repository.search_purchase_invoices(command)
 
 
 @dataclass

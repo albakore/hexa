@@ -2,11 +2,11 @@ from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, Body, Depends
 import minify_html
 
-from modules.notification.adapter.input.api.v1.request import (CreateEmailTemplateRequest)
-from modules.notification.application.service.email_template import (EmailTemplateService)
+from modules.notification.adapter.input.api.v1.request import CreateEmailTemplateRequest
+from modules.notification.application.service.email_template import EmailTemplateService
 from modules.notification.container import NotificationContainer
 from modules.notification.domain.command import EditEmailTemplateCommand
-from modules.notification.domain.entity.email_template import (EmailTemplate)
+from modules.notification.domain.entity.email_template import EmailTemplate
 
 
 email_templates_router = APIRouter()
@@ -76,7 +76,13 @@ async def save_email_template(
 		Provide[NotificationContainer.email_template_service]
 	),
 ):
-	minified = minify_html.minify(template, minify_css=True, minify_js=True, minify_doctype=True, remove_processing_instructions=True)
+	minified = minify_html.minify(
+		template,
+		minify_css=True,
+		minify_js=True,
+		minify_doctype=True,
+		remove_processing_instructions=True,
+	)
 	command = EmailTemplate(
 		id=None,
 		name=name,
@@ -103,8 +109,14 @@ async def edit_email_template(
 ):
 	tmp_template = None
 	if template:
-		#TODO: trasladar el minify a la capa de servicio
-		minified = minify_html.minify(template, minify_css=True, minify_js=True, minify_doctype=True, remove_processing_instructions=True)
+		# TODO: trasladar el minify a la capa de servicio
+		minified = minify_html.minify(
+			template,
+			minify_css=True,
+			minify_js=True,
+			minify_doctype=True,
+			remove_processing_instructions=True,
+		)
 		tmp_template = minified.encode("utf-8")
 	command = EditEmailTemplateCommand(
 		name=name,

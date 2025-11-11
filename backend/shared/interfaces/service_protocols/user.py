@@ -73,4 +73,3 @@ class UserServiceProtocol(Protocol):
 	) -> List[Any] | Sequence[Any]:
 		"""Obtiene todos los usuarios con roles específicos"""
 		...
-		

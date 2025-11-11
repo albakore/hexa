@@ -8,14 +8,17 @@ class SlackSender(SenderProviderPort):
 		self.webhook_url = webhook_url
 
 	async def send(self, notification: dict) -> None:
-		if isinstance(notification['body'], dict):
-			payload = notification['body']
-		if isinstance(notification['body'], str):
+		if isinstance(notification["body"], dict):
+			payload = notification["body"]
+		if isinstance(notification["body"], str):
 			payload = {
 				"blocks": [
 					{
 						"type": "section",
-						"text": {"type": "mrkdwn", "text": f"""{notification['body']}"""},
+						"text": {
+							"type": "mrkdwn",
+							"text": f"""{notification["body"]}""",
+						},
 					},
 				]
 			}

@@ -5,14 +5,14 @@ from modules.rbac.domain.entity.role import (
 from modules.rbac.domain.entity.permission import (
 	GroupPermissionLink,
 	GroupPermission,
-	Permission
+	Permission,
 )
 
 
 __all__ = [
-	'RoleGroupPermissionLink',
-	'Role',
-	'GroupPermissionLink',
-	'GroupPermission',
-	'Permission',
+	"RoleGroupPermissionLink",
+	"Role",
+	"GroupPermissionLink",
+	"GroupPermission",
+	"Permission",
 ]

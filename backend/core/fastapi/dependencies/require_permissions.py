@@ -4,6 +4,7 @@ Sistema de validación de permisos usando Security de FastAPI.
 Este módulo proporciona una función que se puede usar con Security()
 para validar permisos en endpoints de FastAPI.
 """
+
 from typing import List
 from fastapi import Request, HTTPException, Security
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -43,9 +44,10 @@ def require_permissions(*permissions: str):
 		):
 			return {"created": True}
 	"""
+
 	async def permission_checker(
 		request: Request,
-		credentials: HTTPAuthorizationCredentials = Security(security_scheme)
+		credentials: HTTPAuthorizationCredentials = Security(security_scheme),
 	) -> None:
 		"""
 		Valida que el usuario autenticado tenga todos los permisos requeridos.
@@ -98,7 +100,7 @@ def require_permissions(*permissions: str):
 					"message": f"Missing required permissions: {', '.join(missing)}",
 					"required_permissions": list(permissions),
 					"missing_permissions": missing,
-				}
+				},
 			)
 
 		print(f"✅ [PermissionChecker] Access granted")

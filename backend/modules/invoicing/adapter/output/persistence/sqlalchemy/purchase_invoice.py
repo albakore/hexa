@@ -58,28 +58,40 @@ class PurchaseInvoiceSQLAlchemyRepository(PurchaseInvoiceRepository):
 		field_attr = getattr(PurchaseInvoice, filter_criteria.field, None)
 
 		if field_attr is None:
-			raise ValueError(f"Campo '{filter_criteria.field}' no existe en PurchaseInvoice")
+			raise ValueError(
+				f"Campo '{filter_criteria.field}' no existe en PurchaseInvoice"
+			)
 
 		operator = filter_criteria.operator
 		value = filter_criteria.value
 		value2 = filter_criteria.value2
 
 		# Lista de campos de fecha en el modelo
-		date_fields = {'service_month', 'issue_date', 'receipt_date', 'period_from_date', 'period_until_date'}
+		date_fields = {
+			"service_month",
+			"issue_date",
+			"receipt_date",
+			"period_from_date",
+			"period_until_date",
+		}
 
 		# Convertir valores a date si el campo es de tipo fecha
 		if filter_criteria.field in date_fields:
 			if value is not None and isinstance(value, str):
 				try:
-					value = datetime.strptime(value, '%Y-%m-%d').date()
+					value = datetime.strptime(value, "%Y-%m-%d").date()
 				except ValueError:
-					raise ValueError(f"El valor '{value}' no es una fecha válida (formato esperado: YYYY-MM-DD)")
+					raise ValueError(
+						f"El valor '{value}' no es una fecha válida (formato esperado: YYYY-MM-DD)"
+					)
 
 			if value2 is not None and isinstance(value2, str):
 				try:
-					value2 = datetime.strptime(value2, '%Y-%m-%d').date()
+					value2 = datetime.strptime(value2, "%Y-%m-%d").date()
 				except ValueError:
-					raise ValueError(f"El valor '{value2}' no es una fecha válida (formato esperado: YYYY-MM-DD)")
+					raise ValueError(
+						f"El valor '{value2}' no es una fecha válida (formato esperado: YYYY-MM-DD)"
+					)
 
 		if operator == FilterOperator.EQUALS:
 			return field_attr == value

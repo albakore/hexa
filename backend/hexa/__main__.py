@@ -128,6 +128,7 @@ def sync_database(
 	  hexa sync-db --no-permissions   # Solo sincroniza módulos
 	  hexa sync-db --no-modules       # Solo sincroniza permisos
 	"""
+
 	async def run_sync():
 		typer.echo("\n🔄 Iniciando sincronización con la base de datos...")
 		typer.echo("=" * 60)
@@ -141,11 +142,13 @@ def sync_database(
 
 		typer.echo("\n📦 Descubriendo módulos...")
 		from shared.interfaces.module_discovery import discover_modules
+
 		discover_modules("modules", "module.py")
 		typer.echo("✅ Módulos descubiertos\n")
 
 		# Descubrir módulos setup (para MODULE_REGISTRY)
 		from core.config.modules import get_modules_setup
+
 		typer.echo("📦 Cargando configuraciones de módulos...")
 		get_modules_setup("modules")
 		typer.echo("✅ Configuraciones cargadas\n")
@@ -155,6 +158,7 @@ def sync_database(
 			typer.echo("🔐 Sincronizando permisos...")
 			typer.echo("-" * 60)
 			from core.fastapi.dependencies.permission import sync_permissions_to_db
+
 			await sync_permissions_to_db()
 			typer.echo("")
 
@@ -163,6 +167,7 @@ def sync_database(
 			typer.echo("📚 Sincronizando módulos...")
 			typer.echo("-" * 60)
 			from core.config.modules import sync_modules_to_db
+
 			await sync_modules_to_db()
 			typer.echo("")
 

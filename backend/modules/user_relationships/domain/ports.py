@@ -1,4 +1,3 @@
-
 from typing import Protocol
 
 from sqlmodel import SQLModel

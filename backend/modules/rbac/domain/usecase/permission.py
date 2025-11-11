@@ -48,7 +48,9 @@ class GetAllPermissionsFromRoleUseCase:
 	permission_repository: PermissionRepository
 
 	async def __call__(self, role: Role) -> List[str]:
-		permissions = await self.permission_repository.get_all_permissions_from_role(role)
+		permissions = await self.permission_repository.get_all_permissions_from_role(
+			role
+		)
 		return [permission.token for permission in permissions]
 
 
@@ -85,13 +87,19 @@ class AppendPermissionsToGroupUseCase:
 	permission_repository: PermissionRepository
 
 	@Transactional()
-	async def __call__(self, permissions: List[Permission], id_group: int) -> GroupPermission:
-		group = await self.permission_repository.get_group_by_id(id_group, with_permissions=True)
+	async def __call__(
+		self, permissions: List[Permission], id_group: int
+	) -> GroupPermission:
+		group = await self.permission_repository.get_group_by_id(
+			id_group, with_permissions=True
+		)
 		if not group:
 			raise GroupNotFoundException
 
 		permission_ids = [p.id for p in permissions]
-		permissions_from_db = await self.permission_repository.get_permissions_by_ids(permission_ids)
+		permissions_from_db = await self.permission_repository.get_permissions_by_ids(
+			permission_ids
+		)
 
 		for permission in permissions_from_db:
 			if permission not in group.permissions:
@@ -108,9 +116,13 @@ class PermissionUseCaseFactory:
 		self.get_permission_by_id = GetPermissionByIdUseCase(self.permission_repository)
 		self.delete_permission = DeletePermissionUseCase(self.permission_repository)
 		self.save_permission = SavePermissionUseCase(self.permission_repository)
-		self.get_all_permissions_from_role = GetAllPermissionsFromRoleUseCase(self.permission_repository)
+		self.get_all_permissions_from_role = GetAllPermissionsFromRoleUseCase(
+			self.permission_repository
+		)
 		self.modify_permission = ModifyPermissionUseCase()
 		self.create_permission = CreatePermissionUseCase()
 		self.find_permissions = FindPermissionsUseCase(self.permission_repository)
 		self.create_group = CreateGroupUseCase()
-		self.append_permissions_to_group = AppendPermissionsToGroupUseCase(self.permission_repository)
+		self.append_permissions_to_group = AppendPermissionsToGroupUseCase(
+			self.permission_repository
+		)

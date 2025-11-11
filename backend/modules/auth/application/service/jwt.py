@@ -63,9 +63,13 @@ class JwtService(JwtUseCase):
 		if session.user.fk_role:
 			role = await self.role_service.get_role_by_id(session.user.fk_role)
 			if role:
-				permissions_of_role = await self.role_service.get_permissions_from_role(role)
+				permissions_of_role = await self.role_service.get_permissions_from_role(
+					role
+				)
 				permissions = [permission.token for permission in permissions_of_role]
-				modules_of_role = await self.role_service.get_modules_from_role_entity(role)
+				modules_of_role = await self.role_service.get_modules_from_role_entity(
+					role
+				)
 				modules = [
 					ModuleViewDTO.model_validate(module.model_dump())
 					for module in modules_of_role

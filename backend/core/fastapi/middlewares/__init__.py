@@ -4,9 +4,9 @@ from .sqlalchemy import SQLAlchemyMiddleware
 from .permissions import PermissionValidationMiddleware
 
 __all__ = [
-    "AuthenticationMiddleware",
-    "AuthBackend",
-    "SQLAlchemyMiddleware",
-    "ResponseLogMiddleware",
-    "PermissionValidationMiddleware",
+	"AuthenticationMiddleware",
+	"AuthBackend",
+	"SQLAlchemyMiddleware",
+	"ResponseLogMiddleware",
+	"PermissionValidationMiddleware",
 ]

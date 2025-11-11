@@ -1,5 +1,8 @@
 from typing import List
-from modules.rbac.application.exception import GroupNotFoundException, RoleNotFoundException
+from modules.rbac.application.exception import (
+	GroupNotFoundException,
+	RoleNotFoundException,
+)
 from modules.rbac.domain.command import CreateGroupCommand, CreatePermissionCommand
 from modules.rbac.domain.entity import Permission, Role
 from modules.rbac.domain.entity import GroupPermission
@@ -14,9 +17,7 @@ class PermissionService:
 	permission_repository: PermissionRepository
 
 	def __post_init__(self):
-		self.permission_usecase = PermissionUseCaseFactory(
-			self.permission_repository
-		)
+		self.permission_usecase = PermissionUseCaseFactory(self.permission_repository)
 
 	async def get_all_permissions(self) -> List[Permission]:
 		return await self.permission_usecase.get_all_permissions()
@@ -53,13 +54,15 @@ class PermissionService:
 	async def append_permissions_to_group(
 		self, permissions: List[Permission], id_group: int
 	) -> GroupPermission:
-		return await self.permission_usecase.append_permissions_to_group(permissions, id_group)
+		return await self.permission_usecase.append_permissions_to_group(
+			permissions, id_group
+		)
 
-	#FIXME: Esto no deberia llamar a permission_repository
+	# FIXME: Esto no deberia llamar a permission_repository
 	async def get_all_groups(self) -> List[GroupPermission]:
 		return await self.permission_usecase.permission_repository.get_all_groups()
 
-	#FIXME: Esto no deberia llamar a permission_repository
+	# FIXME: Esto no deberia llamar a permission_repository
 	async def get_group_by_id(
 		self, id_group: int, with_permissions: bool = False, with_roles: bool = False
 	) -> GroupPermission:
@@ -69,19 +72,23 @@ class PermissionService:
 		if not group:
 			raise GroupNotFoundException
 		return group
-	
-	#FIXME: Esto no deberia llamar a permission_repository
+
+	# FIXME: Esto no deberia llamar a permission_repository
 	@Transactional()
 	async def save_group(self, group: GroupPermission) -> GroupPermission:
 		return await self.permission_usecase.permission_repository.save_group(group)
 
-	#FIXME: Esto no deberia llamar a permission_repository
+	# FIXME: Esto no deberia llamar a permission_repository
 	@Transactional()
 	async def delete_group(self, group: GroupPermission) -> None:
-		group = await self.permission_usecase.permission_repository.get_group_by_id(group.id)
+		group = await self.permission_usecase.permission_repository.get_group_by_id(
+			group.id
+		)
 		if not group:
 			raise GroupNotFoundException
 		return await self.permission_usecase.permission_repository.delete_group(group)
 
-	async def extract_token_from_permissions(self, permissions: List[Permission]) -> List[str]:
+	async def extract_token_from_permissions(
+		self, permissions: List[Permission]
+	) -> List[str]:
 		return [permission.token for permission in permissions]

@@ -1,4 +1,3 @@
-
 from dataclasses import dataclass
 from typing import List, Sequence
 
@@ -11,7 +10,6 @@ from modules.finance.domain.repository.currency import CurrencyRepository
 
 @dataclass
 class CurrencySQLAlchemyRepository(CurrencyRepository):
-
 	async def get_currency_list(self) -> List[Currency] | Sequence[Currency]:
 		stmt = select(Currency)
 		async with session_factory() as session:
@@ -39,4 +37,3 @@ class CurrencySQLAlchemyRepository(CurrencyRepository):
 			currency = result.scalars().one_or_none()
 
 		return currency
-

@@ -15,7 +15,14 @@ class EmailSender(SenderProviderPort):
 	Maintains a single connection that is reused across multiple sends.
 	"""
 
-	def __init__(self, server: str, port: int, email_login: str, password_login: str, mail_sender: str):
+	def __init__(
+		self,
+		server: str,
+		port: int,
+		email_login: str,
+		password_login: str,
+		mail_sender: str,
+	):
 		self.email_login = email_login
 		self.password_login = password_login
 		self.server_name = server
@@ -34,7 +41,9 @@ class EmailSender(SenderProviderPort):
 			self._server.ehlo()
 
 			status, response = self._server.login(self.email_login, self.password_login)
-			logger.info(f"SMTP Login successful: {status} - {response.decode() if isinstance(response, bytes) else response}")
+			logger.info(
+				f"SMTP Login successful: {status} - {response.decode() if isinstance(response, bytes) else response}"
+			)
 			self._is_connected = True
 		except SMTPException as e:
 			logger.error(f"Failed to connect to SMTP server: {e}")
@@ -81,10 +90,10 @@ class EmailSender(SenderProviderPort):
 		"""
 		# Create email message
 		msg = MIMEMultipart()
-		msg['From'] = self.mail_sender
-		msg['To'] = ', '.join(notification['to'])
-		msg['Subject'] = notification['subject']
-		msg.attach(MIMEText(notification['body'], 'html'))
+		msg["From"] = self.mail_sender
+		msg["To"] = ", ".join(notification["to"])
+		msg["Subject"] = notification["subject"]
+		msg.attach(MIMEText(notification["body"], "html"))
 
 		# Send the email with retry logic
 		max_retries = 2
@@ -97,12 +106,16 @@ class EmailSender(SenderProviderPort):
 				if not self._server:
 					raise SMTPException("SMTP server connection not established")
 
-				self._server.sendmail(self.mail_sender, notification['to'], msg.as_string())
+				self._server.sendmail(
+					self.mail_sender, notification["to"], msg.as_string()
+				)
 				logger.info(f"Email sent successfully to {notification['to']}")
 				break
 			except (SMTPException, OSError, ConnectionError) as e:
 				# OSError and ConnectionError catch network-level issues
-				logger.warning(f"Failed to send email (attempt {attempt + 1}/{max_retries}): {e}")
+				logger.warning(
+					f"Failed to send email (attempt {attempt + 1}/{max_retries}): {e}"
+				)
 				# Mark connection as dead
 				self._is_connected = False
 

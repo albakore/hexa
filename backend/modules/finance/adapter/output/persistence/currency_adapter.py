@@ -6,7 +6,7 @@ from modules.finance.domain.repository.currency import CurrencyRepository
 
 @dataclass
 class CurrencyRepositoryAdapter(CurrencyRepository):
-	currency_repository : CurrencyRepository
+	currency_repository: CurrencyRepository
 
 	async def get_currency_list(self) -> List[Currency] | Sequence[Currency]:
 		return await self.currency_repository.get_currency_list()
@@ -22,4 +22,3 @@ class CurrencyRepositoryAdapter(CurrencyRepository):
 
 	async def get_currency_by_code(self, currency_code: str) -> Currency | None:
 		return await self.currency_repository.get_currency_by_code(currency_code)
-

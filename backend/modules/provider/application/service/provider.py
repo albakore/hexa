@@ -35,9 +35,9 @@ class ProviderService:
 	async def save_provider(self, provider: Provider):
 		return await self.provider_usecase.save_provider(provider)
 
-	async def delete_provider(self, id_provider : int):
+	async def delete_provider(self, id_provider: int):
 		provider = await self.provider_usecase.get_provider_by_id(id_provider)
-		if not provider :
+		if not provider:
 			raise ProviderNotFoundException
 		return await self.provider_usecase.delete_provider(provider)
 

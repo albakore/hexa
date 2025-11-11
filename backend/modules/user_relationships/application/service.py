@@ -8,6 +8,7 @@ from modules.user_relationships.domain.ports import EntityResolver
 from modules.user_relationships.domain.repository import UserRelationshipRepository
 from modules.user_relationships.domain.usecase import UserRelationshipUseCaseFactory
 
+
 @dataclass
 class UserRelationshipService:
 	resolver: EntityResolver
@@ -35,4 +36,6 @@ class UserRelationshipService:
 	async def delete_association_user_with_entity(
 		self, user_uuid: uuid.UUID, id_entity: int, entity_type: str
 	):
-		return await self.usecase.delete_association_user_with_entity(user_uuid, id_entity, entity_type)
+		return await self.usecase.delete_association_user_with_entity(
+			user_uuid, id_entity, entity_type
+		)

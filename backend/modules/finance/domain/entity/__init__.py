@@ -1,5 +1,3 @@
 from modules.finance.domain.entity.currency import Currency
 
-__all__ = [
-	'Currency'
-]
+__all__ = ["Currency"]

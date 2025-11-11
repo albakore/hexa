@@ -5,10 +5,10 @@ faker = Faker()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-class PasswordHelper:
 
+class PasswordHelper:
 	@staticmethod
-	def verify_password(plain_password : str, hashed_password: str):
+	def verify_password(plain_password: str, hashed_password: str):
 		return pwd_context.verify(plain_password, hashed_password)
 
 	@staticmethod
@@ -22,6 +22,6 @@ class PasswordHelper:
 			special_chars=False,
 			digits=True,
 			upper_case=False,
-			lower_case=False
+			lower_case=False,
 		)
 		return password

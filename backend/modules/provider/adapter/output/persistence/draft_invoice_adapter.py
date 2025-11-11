@@ -42,4 +42,6 @@ class DraftPurchaseInvoiceAdapter(DraftPurchaseInvoiceRepository):
 	async def search_draft_invoices(
 		self, command: SearchDraftPurchaseInvoiceCommand
 	) -> tuple[List[DraftPurchaseInvoice] | Sequence[DraftPurchaseInvoice], int]:
-		return await self.draft_purchase_invoice_repository.search_draft_invoices(command)
+		return await self.draft_purchase_invoice_repository.search_draft_invoices(
+			command
+		)

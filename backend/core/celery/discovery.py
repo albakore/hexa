@@ -95,7 +95,9 @@ def register_celery_tasks() -> int:
 						try:
 							asyncio.get_running_loop()
 							# Si llegamos aquí, hay un loop corriendo, lo cual no debería pasar en Celery
-							raise RuntimeError("Cannot run async task, event loop already running")
+							raise RuntimeError(
+								"Cannot run async task, event loop already running"
+							)
 						except RuntimeError:
 							# No hay loop corriendo, esto es lo esperado en Celery worker
 							pass

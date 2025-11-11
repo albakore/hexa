@@ -7,4 +7,6 @@ class EmailTemplate(SQLModel, table=True):
 	name: str | None = Field(default=None)
 	description: str | None = Field(default=None)
 	template_html: bytes | None = Field(default=None, sa_column=Column(LargeBinary))
-	module: str | None = Field(default=None)  # módulo al que pertenece (usuarios, notificaciones, etc).
+	module: str | None = Field(
+		default=None
+	)  # módulo al que pertenece (usuarios, notificaciones, etc).

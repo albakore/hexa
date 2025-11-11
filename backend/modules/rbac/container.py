@@ -29,7 +29,9 @@ class RBACContainer(DeclarativeContainer):
 		RoleService,
 		role_repository=repository_adapter,
 		permission_repository=repository_adapter,
-		module_repository=service_locator.get_dependency("app_module.repository_adapter"),
+		module_repository=service_locator.get_dependency(
+			"app_module.repository_adapter"
+		),
 	)
 
 	permission_service = Factory(
