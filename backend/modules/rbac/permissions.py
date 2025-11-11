@@ -1,15 +1,7 @@
 from core.fastapi.dependencies.permission import PermissionGroup
 
 
-class UserTokenPermission(PermissionGroup):
-	group = "user"
-
-	read = "Lee usuarios"
-	write = "Crea usuarios"
-	delete = "Elimina usuarios"
-
-
-class RoleTokenPermission(PermissionGroup):
+class RolePermission(PermissionGroup):
 	group = "role"
 
 	read = "Lee roles"
@@ -17,7 +9,7 @@ class RoleTokenPermission(PermissionGroup):
 	delete = "Elimina roles"
 
 
-class GroupTokenPermission(PermissionGroup):
+class GroupPermission(PermissionGroup):
 	group = "group"
 
 	read = "Lee grupos de permisos"
@@ -25,7 +17,7 @@ class GroupTokenPermission(PermissionGroup):
 	delete = "Elimina grupos de permisos"
 
 
-class PermissionTokenPermission(PermissionGroup):
+class PermissionPermission(PermissionGroup):
 	group = "permission"
 
 	read = "Lee permisos"
