@@ -95,8 +95,8 @@ known-first-party = ["backend"]
 where = ["."]
 exclude = ["docker*", "migrations*", "docs*"]
 
-# [tool.uv]
-# package = true
+[tool.uv]
+package = true
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

@@ -1,6 +1,7 @@
-from enum import Enum
-from pydantic_settings import BaseSettings, SettingsConfigDict
 import os
+from enum import Enum
+
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Environment(Enum):
@@ -54,14 +55,23 @@ class Settings(BaseSettings):
 
 class LocalSettings(Settings):
 	ENV: str = "local"
+	model_config = SettingsConfigDict(
+		env_file=".env.local", env_file_encoding="utf-8", extra="ignore"
+	)
 
 
 class DevelopmentSettings(Settings):
 	ENV: str = "development"
+	model_config = SettingsConfigDict(
+		env_file=".env.development", env_file_encoding="utf-8", extra="ignore"
+	)
 
 
 class ProductionSettings(Settings):
 	ENV: str = "production"
+	model_config = SettingsConfigDict(
+		env_file=".env", env_file_encoding="utf-8", extra="ignore"
+	)
 
 
 def get_config(env_type: str | None) -> Settings:
