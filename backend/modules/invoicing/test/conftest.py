@@ -3,7 +3,6 @@ Fixtures específicos para los tests del módulo invoicing.
 """
 
 from datetime import date
-from typing import AsyncGenerator
 from unittest.mock import AsyncMock
 
 import pytest

@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from typing import List, Sequence
-import uuid
 
 from modules.user.domain.entity.user import User
 

@@ -1,8 +1,5 @@
 from dataclasses import dataclass
 import uuid
-from sqlmodel import Session, select
-from typing import List
-from uuid import UUID
 
 from modules.user_relationships.domain.ports import EntityResolver
 from modules.user_relationships.domain.repository import UserRelationshipRepository

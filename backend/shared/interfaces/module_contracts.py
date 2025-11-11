@@ -4,7 +4,6 @@ Esto permite desacoplar módulos sin necesidad de imports directos
 """
 
 from typing import Protocol, Any, Optional, Sequence
-from datetime import datetime
 from uuid import UUID
 
 

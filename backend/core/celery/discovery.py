@@ -10,7 +10,6 @@ Soporta tasks asíncronas usando asyncio.
 import asyncio
 import inspect
 from celery import Celery
-from core.config.settings import env
 from core.celery import celery_app
 
 

@@ -103,7 +103,7 @@ def require_permissions(*permissions: str):
 				},
 			)
 
-		print(f"✅ [PermissionChecker] Access granted")
+		print("✅ [PermissionChecker] Access granted")
 
 	return permission_checker
 

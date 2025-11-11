@@ -1,4 +1,3 @@
-from typing import BinaryIO
 import pytest
 from modules.file_storage.container import FileStorageContainer
 from faker import Faker

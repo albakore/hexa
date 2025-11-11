@@ -24,10 +24,8 @@ from modules.rbac.adapter.input.api.v1.response import (
 	RoleAddModulesResponse,
 	RoleAddPermissionResponse,
 	RoleResponse,
-	PermissionListResponse,
 )
 from modules.rbac.application.exception import (
-	PermissionNotFoundException,
 	RoleNotFoundException,
 )
 from modules.rbac.application.service.role import RoleService

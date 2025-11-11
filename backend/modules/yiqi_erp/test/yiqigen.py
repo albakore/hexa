@@ -1,7 +1,5 @@
 import json
-import pprint
 from typing import get_type_hints
-from typing_extensions import get_annotations
 import rich as r
 from modules.yiqi_erp.domain.entity.factura_compra import FacturaDeCompra
 

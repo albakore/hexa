@@ -1,7 +1,6 @@
 from datetime import date
 import uuid
 from sqlmodel import SQLModel, Field
-from typing import List
 
 
 class PurchaseInvoice(SQLModel, table=True):

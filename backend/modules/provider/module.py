@@ -1,4 +1,3 @@
-from re import T
 from typing import Dict
 from fastapi import APIRouter
 from dependency_injector.containers import DeclarativeContainer

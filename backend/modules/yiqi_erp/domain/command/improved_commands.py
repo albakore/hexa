@@ -16,7 +16,7 @@ from decimal import Decimal
 from io import BytesIO
 from typing import Annotated, Optional, Any
 
-from fastapi import File, UploadFile
+from fastapi import UploadFile
 from pydantic import (
 	BaseModel,
 	ConfigDict,

@@ -1,4 +1,3 @@
-from typing_extensions import final
 from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
 from dependency_injector.providers import Factory, Singleton
 

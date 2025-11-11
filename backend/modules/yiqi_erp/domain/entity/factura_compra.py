@@ -1,5 +1,5 @@
 from typing import Optional
-from datetime import date, datetime
+from datetime import date
 from pydantic import Field
 
 from modules.yiqi_erp.domain.entity.entity_base import YiqiEntity

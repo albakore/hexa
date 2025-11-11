@@ -13,7 +13,6 @@ from shared.interfaces.service_protocols import (
 )
 from modules.provider.application.dto import DraftPurchaseInvoiceDTO
 from modules.provider.application.exception import (
-	DraftPurchaseInvoiceCurrencyNotFoundException,
 	DraftPurchaseInvoiceDetailFileInvalidException,
 	DraftPurchaseInvoiceNotFoundException,
 	DraftPurchaseInvoiceReceiptFileInvalidException,

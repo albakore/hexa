@@ -1,7 +1,5 @@
-from email.policy import default
-from typing import Optional
 from dependency_injector.wiring import Provide, inject
-from fastapi import APIRouter, Depends, Form, Query, Response
+from fastapi import APIRouter, Depends
 
 
 from modules.yiqi_erp.adapter.input.api.v1.request import YiqiUploadFileRequest

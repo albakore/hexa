@@ -1,7 +1,6 @@
 from typing import List
 from modules.rbac.application.exception import (
 	GroupNotFoundException,
-	RoleNotFoundException,
 )
 from modules.rbac.domain.command import CreateGroupCommand, CreatePermissionCommand
 from modules.rbac.domain.entity import Permission, Role

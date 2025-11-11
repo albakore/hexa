@@ -2,11 +2,7 @@
 Fixtures específicos para los tests del módulo rbac.
 """
 
-from datetime import date
-from typing import AsyncGenerator
-from unittest.mock import AsyncMock
 
-import pytest
 from faker import Faker
 
 # TODO: Importar entidades del módulo

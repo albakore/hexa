@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 from typing import List, Sequence
 
 from modules.user.domain.command import CreateUserCommand

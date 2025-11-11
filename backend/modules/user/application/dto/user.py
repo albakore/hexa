@@ -3,7 +3,6 @@ import uuid
 from pydantic import BaseModel, Field
 
 from modules.module.application.dto import ModuleViewDTO
-from modules.rbac.domain.entity import Role
 
 
 class GetUserListResponseDTO(BaseModel):

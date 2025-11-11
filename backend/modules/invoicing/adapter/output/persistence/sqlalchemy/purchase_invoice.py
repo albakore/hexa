@@ -1,6 +1,6 @@
 from typing import List, Sequence
-from datetime import date, datetime
-from sqlmodel import select, and_, or_, col, func
+from datetime import datetime
+from sqlmodel import select, and_, col, func
 from sqlalchemy import cast, String
 
 from core.db import session_factory, session as global_session
@@ -111,15 +111,15 @@ class PurchaseInvoiceSQLAlchemyRepository(PurchaseInvoiceRepository):
 			return ~cast(field_attr, String).contains(str(value))
 		elif operator == FilterOperator.BETWEEN:
 			if value2 is None:
-				raise ValueError(f"Operador 'between' requiere value2")
+				raise ValueError("Operador 'between' requiere value2")
 			return field_attr.between(value, value2)
 		elif operator == FilterOperator.IN:
 			if not isinstance(value, list):
-				raise ValueError(f"Operador 'in' requiere una lista de valores")
+				raise ValueError("Operador 'in' requiere una lista de valores")
 			return col(field_attr).in_(value)
 		elif operator == FilterOperator.NOT_IN:
 			if not isinstance(value, list):
-				raise ValueError(f"Operador 'not_in' requiere una lista de valores")
+				raise ValueError("Operador 'not_in' requiere una lista de valores")
 			return col(field_attr).not_in(value)
 		elif operator == FilterOperator.IS_NULL:
 			return field_attr.is_(None)

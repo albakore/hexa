@@ -5,7 +5,6 @@ Estos son tests unitarios que verifican la lógica del servicio usando mocks.
 """
 
 import pytest
-from unittest.mock import AsyncMock
 
 # TODO: Importar servicio
 # from modules.provider.application.service.your_service import YourService

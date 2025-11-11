@@ -1,4 +1,4 @@
-from dependency_injector.providers import Container, Factory, Singleton, Provider
+from dependency_injector.providers import Factory, Singleton
 from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
 
 from shared.interfaces.service_locator import service_locator

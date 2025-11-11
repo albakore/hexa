@@ -1,6 +1,5 @@
-from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Callable, Sequence
+from typing import Sequence
 
 from modules.user.domain.entity import User
 from modules.user.domain.repository.user import UserRepository

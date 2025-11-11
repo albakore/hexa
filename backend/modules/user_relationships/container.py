@@ -1,4 +1,4 @@
-from dependency_injector.providers import Container, Factory, Singleton
+from dependency_injector.providers import Factory, Singleton
 from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
 
 from modules.user_relationships.application.service import UserRelationshipService

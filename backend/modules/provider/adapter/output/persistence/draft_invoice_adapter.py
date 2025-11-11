@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import List, Sequence
 from modules.provider.domain.entity.draft_purchase_invoice import DraftPurchaseInvoice
 from modules.provider.domain.repository.draft_purchase_invoice import (

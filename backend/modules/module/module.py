@@ -1,4 +1,3 @@
-from re import T
 from fastapi import APIRouter
 from dependency_injector.containers import DeclarativeContainer
 

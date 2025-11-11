@@ -1,5 +1,4 @@
-from ast import List
-from typing import Any, Sequence, Type, cast
+from typing import Any, Sequence, Type
 from uuid import UUID
 
 from sqlalchemy.orm import DeclarativeMeta
@@ -11,7 +10,6 @@ from modules.user_relationships.adapter.output.persistence.exception import (
 from core.db import session_factory, Transactional, session
 
 from sqlmodel import delete, col, select, SQLModel
-from pydantic import BaseModel
 
 
 class UserRelationshipSQLAlchemyRepository(UserRelationshipRepository):

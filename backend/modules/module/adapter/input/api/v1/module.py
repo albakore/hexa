@@ -1,20 +1,13 @@
-from typing import Annotated
-import uuid
 from dependency_injector.wiring import Provide, inject
 from fastapi import (
 	APIRouter,
-	Cookie,
 	Depends,
 	Query,
-	WebSocket,
-	WebSocketException,
-	status,
 )
 
 from modules.module.application.service.module import AppModuleService
 
 from modules.module.container import AppModuleContainer
-from core.fastapi.dependencies import PermissionDependency
 # from core.fastapi.dependencies.module_permission.module import ModuleTokenPermission
 
 module_router = APIRouter()

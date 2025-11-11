@@ -1,7 +1,6 @@
 from enum import Enum
 from pydantic_settings import BaseSettings, SettingsConfigDict
 import os
-import typer
 
 
 class Environment(Enum):

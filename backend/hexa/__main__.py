@@ -1,5 +1,4 @@
 import asyncio
-from celery import Celery
 import typer
 from typer import Option
 import uvicorn
@@ -8,7 +7,7 @@ from pathlib import Path
 import importlib.util
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
-from core.db.session import session, session_factory
+from core.db.session import session_factory
 from core.config.settings import env
 from sqlalchemy import text
 

@@ -5,7 +5,6 @@ Estos son tests de integración que verifican la interacción con la base de dat
 """
 
 import pytest
-from sqlalchemy import select
 
 from modules.invoicing.domain.entity.purchase_invoice import PurchaseInvoice
 from modules.invoicing.adapter.output.persistence.purchase_invoice_adapter import (

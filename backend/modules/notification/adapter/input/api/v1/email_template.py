@@ -2,7 +2,6 @@ from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, Body, Depends
 import minify_html
 
-from modules.notification.adapter.input.api.v1.request import CreateEmailTemplateRequest
 from modules.notification.application.service.email_template import EmailTemplateService
 from modules.notification.container import NotificationContainer
 from modules.notification.domain.command import EditEmailTemplateCommand

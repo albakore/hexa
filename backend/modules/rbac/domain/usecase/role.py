@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import List, Sequence
 from modules.module.domain.entity.module import Module

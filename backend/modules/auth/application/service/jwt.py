@@ -1,7 +1,5 @@
-from datetime import datetime, timedelta
 
 from fastapi.encoders import jsonable_encoder
-import rich
 from modules.auth.application.dto import RefreshTokenResponseDTO
 from modules.auth.application.exception import (
 	AuthSessionExpiredException,
@@ -10,7 +8,6 @@ from modules.auth.application.exception import (
 from modules.auth.domain.repository.auth import AuthRepository
 from modules.auth.domain.usecase.jwt import JwtUseCase
 from modules.module.application.dto import ModuleViewDTO
-from modules.user.application.dto import LoginResponseDTO
 from modules.user.application.dto.user import UserLoginResponseDTO
 from core.helpers.token import (
 	TokenHelper,

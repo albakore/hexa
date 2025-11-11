@@ -11,9 +11,7 @@ Ejemplo:
 """
 
 import sys
-import os
 from pathlib import Path
-from typing import List
 
 
 def create_conftest(module_name: str, module_path: Path) -> str:
@@ -389,9 +387,9 @@ def generate_tests_for_module(module_name: str):
 		print(f"✅ Creado: {filepath.relative_to(backend_path)}")
 
 	print(f"\n🎉 Estructura de tests generada para el módulo '{module_name}'")
-	print(f"\n📝 Próximos pasos:")
+	print("\n📝 Próximos pasos:")
 	print(f"   1. Editar {test_path.relative_to(backend_path)}/conftest.py")
-	print(f"   2. Implementar los tests marcados con TODO")
+	print("   2. Implementar los tests marcados con TODO")
 	print(f"   3. Ejecutar: ./run_tests.sh module {module_name}")
 
 
@@ -400,7 +398,7 @@ def main():
 		print("❌ Error: Debes especificar el nombre del módulo")
 		print(f"\nUso: python {sys.argv[0]} <module_name>")
 		print(f"\nEjemplo: python {sys.argv[0]} provider")
-		print(f"\nMódulos disponibles:")
+		print("\nMódulos disponibles:")
 
 		backend_path = Path(__file__).parent
 		modules_path = backend_path / "modules"

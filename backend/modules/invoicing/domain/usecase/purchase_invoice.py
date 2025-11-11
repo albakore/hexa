@@ -1,6 +1,6 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from dataclasses import dataclass
-from typing import Any, List, Sequence
+from typing import List, Sequence
 
 from modules.invoicing.domain.entity import PurchaseInvoice
 from modules.invoicing.domain.repository.purchase_invoice import (

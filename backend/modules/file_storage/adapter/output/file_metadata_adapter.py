@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-from typing import BinaryIO
 from uuid import UUID
 
 from modules.file_storage.domain.command import CreateFileMetadataCommand

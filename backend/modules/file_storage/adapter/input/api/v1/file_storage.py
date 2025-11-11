@@ -1,13 +1,9 @@
 from io import BytesIO
-from re import A
-from typing import Annotated
 import uuid
 from dependency_injector.wiring import Provide, inject
-from fastapi import APIRouter, Depends, Form, Query, Response, UploadFile
-from fastapi.params import File
-from fastapi.responses import FileResponse, StreamingResponse
+from fastapi import APIRouter, Depends, UploadFile
+from fastapi.responses import StreamingResponse
 
-from modules.file_storage.application.dto import FileStorageDTO
 from modules.file_storage.container import FileStorageContainer
 
 # from modules.file_storage.adapter.input.api.v1.request import ProviderCreateRequest, ProviderUpdateRequest

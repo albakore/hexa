@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 
 from modules.user.application.dto import LoginResponseDTO
-from modules.user.application.dto.user import UserLoginResponseDTO
 
 
 class AuthRepository(ABC):

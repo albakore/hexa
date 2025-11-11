@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import BinaryIO
 
 from modules.file_storage.domain.repository.file_storage import FileStorageRepository

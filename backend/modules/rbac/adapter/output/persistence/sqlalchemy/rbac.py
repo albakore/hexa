@@ -13,8 +13,6 @@ from modules.rbac.domain.entity import (
 from modules.rbac.domain.entity.role import RolePermissionLink
 from modules.rbac.domain.repository import (
 	RBACRepository,
-	RoleRepository,
-	PermissionRepository,
 )
 from core.db import session_factory, session as global_session
 

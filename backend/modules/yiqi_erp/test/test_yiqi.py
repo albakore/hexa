@@ -1,5 +1,5 @@
 import pytest
-from modules.yiqi_erp.container import YiqiApiRepository, YiqiContainer
+from modules.yiqi_erp.container import YiqiContainer
 
 
 @pytest.mark.asyncio

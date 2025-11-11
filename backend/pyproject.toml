@@ -40,8 +40,15 @@ dev = [
     "ruff>=0.11.10",
 ]
 
+
 [tool.ruff]
 src = ["."]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["F403", "E501"]
+
+unfixable = ["F403"]
 
 [tool.ruff.format]
 # Like Black, use double quotes for strings.
@@ -96,12 +103,10 @@ asyncio_mode = "auto"
 addopts = [
     #"-n 0",                  # Desactiva ejecución paralela
     #"--max-asyncio-tasks=1",  # Solo 1 tarea asíncrona a la vez
-    "--verbose",              # Opcional: muestra más detalles
-    "--tb=short"             # Opcional: formato de tracebacks
+    "--verbose",  # Opcional: muestra más detalles
+    "--tb=short", # Opcional: formato de tracebacks
 ]
-pythonpath = [
-  "."
-]
+pythonpath = ["."]
 
 [project.scripts]
 hexa = "hexa.__main__:cmd"

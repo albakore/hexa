@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from typing import Sequence
-from core.db import Transactional
 from modules.provider.application.exception import ProviderNotFoundException
 from modules.provider.domain.command import CreateProviderCommand
 from modules.provider.domain.entity.provider import Provider

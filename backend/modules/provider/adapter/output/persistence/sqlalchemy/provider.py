@@ -1,6 +1,5 @@
 from typing import Sequence
-from sqlmodel import or_, select
-from sqlalchemy.orm import selectinload
+from sqlmodel import select
 
 from modules.provider.domain.entity.provider import Provider
 from modules.provider.domain.repository.provider import ProviderRepository

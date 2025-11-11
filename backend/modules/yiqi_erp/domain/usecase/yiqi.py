@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 
-from fastapi import UploadFile
 import httpx
 
 from modules.yiqi_erp.application.exception import (

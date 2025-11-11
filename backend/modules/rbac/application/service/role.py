@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Sequence
+from typing import List
 
 from modules.module.domain.entity.module import Module
 from modules.module.domain.repository.module import AppModuleRepository

@@ -1,5 +1,3 @@
-from sqlmodel import SQLModel
-from sqlalchemy import Engine
 
 from modules.user.domain.entity import *
 from modules.user_relationships.domain.entity import *

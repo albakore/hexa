@@ -1,4 +1,3 @@
-from typing import BinaryIO
 import uuid
 import pytest
 from modules.file_storage.container import FileStorageContainer

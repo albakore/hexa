@@ -1,4 +1,4 @@
-from typing import Dict, Type
+from typing import Type
 from sqlmodel import SQLModel
 
 from modules.user_relationships.domain.ports import EntityResolver

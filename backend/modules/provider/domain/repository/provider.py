@@ -1,5 +1,4 @@
 from typing import Sequence
-from modules.provider.domain.command import CreateProviderCommand
 from modules.provider.domain.entity.provider import Provider
 from abc import ABC, abstractmethod
 
