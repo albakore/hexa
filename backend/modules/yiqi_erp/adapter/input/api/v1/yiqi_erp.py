@@ -38,6 +38,15 @@ async def get_services_list(
 	return await service.get_services_list(id_schema)
 
 
+@yiqi_erp_router.get("/provider")
+@inject
+async def get_providers_list(
+	id_schema: int = Depends(Provide[YiqiContainer.config.YIQI_SCHEMA]),
+	service: YiqiService = Depends(Provide[YiqiContainer.service]),
+):
+	return await service.get_provider_by_id(int(id_provider), id_schema)
+
+
 @yiqi_erp_router.get("/provider/{id_provider}")
 @inject
 async def get_provider_by_id(

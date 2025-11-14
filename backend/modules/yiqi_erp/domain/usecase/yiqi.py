@@ -34,6 +34,20 @@ class GetProviderByIdUseCase:
 
 
 @dataclass
+class GetProviderListUseCase:
+	yiqi_repository: YiqiRepository
+
+	async def __call__(self, id_schema: int):
+		provider = await self.yiqi_repository.get_providers_list(id_schema)
+		if provider.is_success:
+			return provider.json()
+		if provider.is_client_error:
+			raise YiqiEntityNotFoundException
+
+		raise YiqiServiceException
+
+
+@dataclass
 class GetServicesListUseCase:
 	yiqi_repository: YiqiRepository
 
@@ -93,6 +107,7 @@ class YiqiUseCaseFactory:
 	def __post_init__(self):
 		self.create_invoice = CreateInvoiceUseCase(self.yiqi_repository)
 		self.get_provider_by_id = GetProviderByIdUseCase(self.yiqi_repository)
+		self.get_providers_list = GetProviderListUseCase(self.yiqi_repository)
 		self.get_services_list = GetServicesListUseCase(self.yiqi_repository)
 		self.get_currency_list = GetCurrencyListUseCase(self.yiqi_repository)
 		self.get_currency_by_code = GetCurrencyByCodeUseCase(self.yiqi_repository)

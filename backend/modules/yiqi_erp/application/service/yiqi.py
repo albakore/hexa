@@ -20,6 +20,9 @@ class YiqiService:
 	async def get_provider_by_id(self, id_provider: int, id_schema: int):
 		return await self.usecase.get_provider_by_id(id_provider, id_schema)
 
+	async def get_providers_list(self, id_schema: int):
+		return await self.usecase.get_providers_list(id_schema)
+
 	async def get_services_list(self, id_schema: int):
 		return await self.usecase.get_services_list(id_schema)
 
