@@ -1,17 +1,9 @@
+import uuid
 from dataclasses import dataclass
 from typing import List, Sequence
-import uuid
 
 from core.db.transactional import Transactional
 from modules.provider.application.service.air_waybill import AirWaybillService
-from modules.provider.application.service.purchase_invoice_service import (
-	PurchaseInvoiceServiceTypeService,
-)
-from shared.interfaces.service_protocols import (
-	CurrencyServiceProtocol,
-	FileStorageServiceProtocol,
-	PurchaseInvoiceServiceProtocol,
-)
 from modules.provider.application.dto import DraftPurchaseInvoiceDTO
 from modules.provider.application.exception import (
 	AirWaybillNotFoundException,
@@ -20,6 +12,9 @@ from modules.provider.application.exception import (
 	DraftPurchaseInvoiceNotFoundException,
 	DraftPurchaseInvoiceReceiptFileInvalidException,
 	DraftPurchaseInvoiceServiceNotFoundException,
+)
+from modules.provider.application.service.purchase_invoice_service import (
+	PurchaseInvoiceServiceTypeService,
 )
 from modules.provider.domain.command import (
 	CreateDraftPurchaseInvoiceCommand,
@@ -31,6 +26,11 @@ from modules.provider.domain.repository.draft_purchase_invoice import (
 )
 from modules.provider.domain.usecase.draft_purchase_invoice import (
 	DraftPurchaseInvoiceUseCaseFactory,
+)
+from shared.interfaces.service_protocols import (
+	CurrencyServiceProtocol,
+	FileStorageServiceProtocol,
+	PurchaseInvoiceServiceProtocol,
 )
 
 
@@ -198,11 +198,10 @@ class DraftPurchaseInvoiceService:
 
 		# Marcar como "Finalized"
 		finalized_draft = (
-			await self.draft_purchase_invoice_usecase.finalize_draft_purchase_invoice(
+			self.draft_purchase_invoice_usecase.finalize_draft_purchase_invoice(
 				draft_invoice
 			)
 		)
-
 		# Crear PurchaseInvoice desde el draft
 		new_purchase_invoice = {
 			"fk_provider": finalized_draft.fk_provider,
