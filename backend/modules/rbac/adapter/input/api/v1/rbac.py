@@ -1,9 +1,8 @@
 from typing import Annotated, List
+
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 
-
-from modules.rbac.container import RBACContainer
 from modules.rbac.adapter.input.api.v1.request import (
 	AddGroupToRoleRequest,
 	AddModuleToRoleRequest,
@@ -14,6 +13,7 @@ from modules.rbac.adapter.input.api.v1.request import (
 	CreateRoleRequest,
 	DeleteGroupRequest,
 	RemoveGroupToRoleRequest,
+	RemoveModulesToRoleRequest,
 	RemovePermissionToRoleRequest,
 	UpdateRoleRequest,
 )
@@ -28,16 +28,16 @@ from modules.rbac.adapter.input.api.v1.response import (
 from modules.rbac.application.exception import (
 	RoleNotFoundException,
 )
+from modules.rbac.application.service.permission import PermissionService
 from modules.rbac.application.service.role import RoleService
+from modules.rbac.container import RBACContainer
 from modules.rbac.domain.command import (
 	CreateGroupCommand,
 	CreatePermissionCommand,
 	CreateRoleCommand,
 	UpdateRoleCommand,
 )
-from modules.rbac.application.service.permission import PermissionService
 from modules.rbac.domain.entity import GroupPermission
-
 
 rbac_router = APIRouter()
 
@@ -153,10 +153,10 @@ async def add_modules_to_role(
 @inject
 async def remove_modules_to_role(
 	id_role: int,
-	modules: RemoveGroupToRoleRequest,
+	modules_list: RemoveModulesToRoleRequest,
 	role_usecase: RoleUseCaseDependency,
 ):
-	return await role_usecase.remove_modules_to_role(modules, id_role)
+	return await role_usecase.remove_modules_to_role(modules_list, id_role)
 
 
 @rbac_router.delete("/role/{id_role}")

@@ -1,20 +1,23 @@
-from sqlalchemy.orm import selectinload
-from sqlmodel import and_, or_, select, col, delete
 from typing import List, Sequence
+
+from sqlalchemy.orm import selectinload
+from sqlmodel import and_, col, delete, or_, select
+
+from core.db import session as global_session
+from core.db import session_factory
 from modules.module.domain.entity.module import Module, ModuleRoleLink
 from modules.rbac.application.exception import RoleNotFoundException
-from modules.rbac.domain.entity.permission import Permission
 from modules.rbac.domain.entity import (
 	GroupPermission,
 	GroupPermissionLink,
 	Role,
 	RoleGroupPermissionLink,
 )
+from modules.rbac.domain.entity.permission import Permission
 from modules.rbac.domain.entity.role import RolePermissionLink
 from modules.rbac.domain.repository import (
 	RBACRepository,
 )
-from core.db import session_factory, session as global_session
 
 
 class RBACSQLAlchemyRepository(RBACRepository):

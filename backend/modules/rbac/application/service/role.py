@@ -5,8 +5,7 @@ from modules.module.domain.entity.module import Module
 from modules.module.domain.repository.module import AppModuleRepository
 from modules.rbac.application.exception import RoleNotFoundException
 from modules.rbac.domain.command import CreateRoleCommand, UpdateRoleCommand
-from modules.rbac.domain.entity import Permission
-from modules.rbac.domain.entity import GroupPermission, Role
+from modules.rbac.domain.entity import GroupPermission, Permission, Role
 from modules.rbac.domain.repository import RoleRepository
 from modules.rbac.domain.repository.permission import PermissionRepository
 from modules.rbac.domain.usecase.role import RoleUseCaseFactory
@@ -100,7 +99,7 @@ class RoleService:
 	) -> int:
 		return await self.role_usecase.remove_group_permissions_to_role(groups, id_role)
 
-	async def remove_modules_to_role(self, modules: List[Module], id_role: int) -> Role:
+	async def remove_modules_to_role(self, modules: List[int], id_role: int) -> int:
 		return await self.role_usecase.remove_modules_to_role(modules, id_role)
 
 	async def get_all_roles_from_modules(

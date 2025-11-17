@@ -1,4 +1,5 @@
 from typing import List
+
 from pydantic import BaseModel, Field
 
 from modules.module.domain.entity.module import Module
@@ -41,4 +42,4 @@ RemovePermissionToRoleRequest = List[Permission]
 
 RemoveGroupToRoleRequest = List[GroupPermission]
 
-RemoveModulesToRoleRequest = List[Module]
+RemoveModulesToRoleRequest = List[int]
