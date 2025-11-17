@@ -1,7 +1,6 @@
-from dependency_injector.providers import Configuration, Container, Factory, Singleton
+from dependency_injector.providers import Factory, Singleton
 from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
 
-from core.config.settings import env
 from .adapter.output.persistence.currency_adapter import CurrencyRepositoryAdapter
 from .adapter.output.persistence.sqlalchemy.currency import CurrencySQLAlchemyRepository
 from .application.service.currency import CurrencyService

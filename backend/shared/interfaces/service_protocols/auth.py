@@ -31,9 +31,7 @@ class AuthServiceProtocol(Protocol):
 		"""Resetea la contraseña de un usuario"""
 		...
 
-	async def get_user_session(
-		self, user_uuid: str
-	) -> Any:
+	async def get_user_session(self, user_uuid: str) -> Any:
 		"""Trae la sesión de un usuario"""
 		...
 

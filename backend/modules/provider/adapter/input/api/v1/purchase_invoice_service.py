@@ -1,5 +1,4 @@
 from typing import List
-import uuid
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, Query
 

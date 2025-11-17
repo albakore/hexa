@@ -1,8 +1,8 @@
 from typing import Optional
-from datetime import date, datetime, time
-from pydantic import BaseModel
+from datetime import date, time
 
 from modules.yiqi_erp.domain.entity.entity_base import YiqiEntity
+
 
 class Factura(YiqiEntity):
 	__internal_name__ = "FACTURA"

@@ -1,5 +1,6 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+**/__pycache__
 *.py[cod]
 *$py.class
 
@@ -129,6 +130,8 @@ celerybeat.pid
 
 # Environments
 .env
+.env.local
+.env.development
 .venv
 env/
 venv/
@@ -199,3 +202,6 @@ docker/data/dump.rdb
 
 # Para no estar pusheando la documentacion a cada rato
 docs/openapi.json
+
+#Migraciones
+migrations/versions/*.py

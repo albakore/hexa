@@ -1,5 +1,4 @@
 from modules.yiqi_erp.domain.entity.factura_compra import FacturaDeCompra
-import rich as r
 
 factura = FacturaDeCompra()
 

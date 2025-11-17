@@ -10,6 +10,9 @@ class YiqiRepository(ABC):
 	async def get_provider_by_id(self, id_provider: int, id_schema: int): ...
 
 	@abstractmethod
+	async def get_providers_list(self, id_schema: int): ...
+
+	@abstractmethod
 	async def get_contact_by_id(self, id_contact: int, id_schema: int): ...
 
 	@abstractmethod

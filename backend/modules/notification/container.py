@@ -36,9 +36,7 @@ class NotificationContainer(DeclarativeContainer):
 	)
 
 	slack_sender = Singleton(
-		SlackSender,
-		config.WEBHOOK_SLACK_NOTIFY_MLA,
-		config.WEBHOOK_SLACK_API_TOKEN_MLA
+		SlackSender, config.WEBHOOK_SLACK_NOTIFY_MLA, config.WEBHOOK_SLACK_API_TOKEN_MLA
 	)
 
 	repository = Singleton(PostgresNotificationRepository)
@@ -56,7 +54,7 @@ class NotificationContainer(DeclarativeContainer):
 		email_template_repository=email_template_adapter,
 		email_template_sender=email_sender,
 	)
-	
+
 	service = Factory(
 		NotificationService,
 		notification_repository=repository_adapter,
@@ -64,5 +62,5 @@ class NotificationContainer(DeclarativeContainer):
 			"email": email_sender,
 			"slack": slack_sender,
 		},
-		email_template_service=email_template_service
+		email_template_service=email_template_service,
 	)

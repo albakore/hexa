@@ -1,10 +1,11 @@
 from .logging import Logging
 from .permission import (
-    PermissionDependency,
-
+	PermissionDependency,
 )
+from .require_permissions import require_permissions
 
 __all__ = [
-    "Logging",
-    "PermissionDependency",
+	"Logging",
+	"PermissionDependency",
+	"require_permissions",
 ]

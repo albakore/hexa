@@ -1,4 +1,4 @@
-from dependency_injector.providers import Container, Factory, Singleton, Provider
+from dependency_injector.providers import Factory, Singleton
 from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
 
 from modules.provider.adapter.output.persistence.air_waybill_adapter import (

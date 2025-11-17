@@ -1,7 +1,8 @@
-from dataclasses import dataclass
 import urllib.parse
+from dataclasses import dataclass
 
 from fastapi import UploadFile
+
 from modules.yiqi_erp.adapter.output.api.http_client import YiqiHttpClient
 from modules.yiqi_erp.domain.command import (
 	CreateYiqiInvoiceCommand,
@@ -30,25 +31,22 @@ class YiqiApiRepository(YiqiRepository):
 
 	async def get_services_list(self, id_schema: int = 316):
 		url = "/api/InstancesAPI/GetEntityUpdates2"
-		entity_name = "PORTAL_SERVICIO"
+		entity_name = "SERVICIOS"
 		last_update = "01011900"
 		aditional_filters = [
-			{
-				"columnName": "PORT_ACTIVO_EN_PORTAL",
-				"TipoDato": 2,
-				"operator": 3,
-				"operating": "1",
-			}
+			# {
+			# 	"columnName": "PORT_ACTIVO_EN_PORTAL",
+			# 	"TipoDato": 2,
+			# 	"operator": 3,
+			# 	"operating": "1",
+			# }
 		]
 
 		attributes = [
 			# "SERV_ID",
-			"PORT_NOMBRE_DEL_SERVICIO",
-			"PORT_DESCRIPCION_INGLES",
-			"PORT_ACTIVO_EN_PORTAL",
-			"PORT_CAMPO_AWB",
-			"PORT_CAMPO_ITEMS",
-			"PORT_CAMPO_KG",
+			"SERV_SERVICIO",
+			"SERV_MARCA_DE_GASTOS",
+			"SERV_ACTIVO_PRO",
 		]
 
 		params = {
@@ -283,4 +281,27 @@ class YiqiApiRepository(YiqiRepository):
 		}
 		files = {"FileName": (file.filename, file.file, file.content_type)}
 		response = await self.client.post(url, data=data, files=files)
+		return response
+
+	async def get_providers_list(self, id_schema: int = 316):
+		url = "/api/InstancesAPI/GetEntityUpdates2"
+		entity_name = "CLIENTE"
+		last_update = "01011900"
+		aditional_filters = []
+		attributes = [
+			"CLIE_NOMBRE",
+			"CLIE_RAZON_SOCIAL",
+			"CLIE_CUIT",
+			"CLIE_MONEDA",
+			"CLIE_REGION",
+			"CLIE_IDIOMA",
+		]
+		params = {
+			"schemaId": id_schema,
+			"entityName": entity_name,
+			"lastUpdate": last_update,
+			"additionalFilters": aditional_filters.__repr__(),
+			"attributes": ",".join(attributes),
+		}
+		response = await self.client.get(url, params)
 		return response

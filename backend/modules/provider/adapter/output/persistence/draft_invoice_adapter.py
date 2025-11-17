@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import List, Sequence
 from modules.provider.domain.entity.draft_purchase_invoice import DraftPurchaseInvoice
 from modules.provider.domain.repository.draft_purchase_invoice import (
@@ -42,4 +41,6 @@ class DraftPurchaseInvoiceAdapter(DraftPurchaseInvoiceRepository):
 	async def search_draft_invoices(
 		self, command: SearchDraftPurchaseInvoiceCommand
 	) -> tuple[List[DraftPurchaseInvoice] | Sequence[DraftPurchaseInvoice], int]:
-		return await self.draft_purchase_invoice_repository.search_draft_invoices(command)
+		return await self.draft_purchase_invoice_repository.search_draft_invoices(
+			command
+		)

@@ -1,6 +1,6 @@
 import uuid
 from dependency_injector.wiring import Provide, inject
-from fastapi import APIRouter, Depends, Form, Header, Query, Response
+from fastapi import APIRouter, Depends, Header
 
 from modules.user_relationships.application.service import UserRelationshipService
 from modules.user_relationships.container import UserRelationshipContainer

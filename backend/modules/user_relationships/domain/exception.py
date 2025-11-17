@@ -6,10 +6,12 @@ class EntityRelationShipNotFoundException(CustomException):
 	error_code = "ENTITY_RELATIONSHIP__NOT_FOUND_ERROR"
 	message = "Entity relationship not found"
 
+
 class DuplicateAssociationException(CustomException):
 	code = 400
 	error_code = "DUPLICATE_ASSOCIATION__ERROR"
 	message = "Entity already associated"
+
 
 class EntityInstanceNotDeletedException(CustomException):
 	code = 404

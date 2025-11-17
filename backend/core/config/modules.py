@@ -1,7 +1,6 @@
 import importlib
 import importlib.util
 from fastapi import APIRouter
-import rich as r
 from pathlib import Path
 
 from sqlmodel import select

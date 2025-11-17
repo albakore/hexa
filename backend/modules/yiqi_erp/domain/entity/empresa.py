@@ -1,7 +1,8 @@
 from typing import Optional
-from datetime import date, datetime, time
+from datetime import date
 
 from modules.yiqi_erp.domain.entity.entity_base import YiqiEntity
+
 
 class Empresa(YiqiEntity):
 	__internal_name__ = "CLIENTE"
@@ -143,6 +144,7 @@ class Empresa(YiqiEntity):
 	DIFERENCIA_SALDOS: Optional[float] = None
 	ESTA_CODIGO: Optional[int] = None
 	DESC_ESTADO: Optional[str] = None
+
 
 class PortalServicio(YiqiEntity):
 	__internal_name__ = "PORTAL_SERVICIO"

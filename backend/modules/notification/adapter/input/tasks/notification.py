@@ -9,9 +9,8 @@ import uuid
 from core.db.session import reset_session_context, set_session_context
 from modules.notification.container import NotificationContainer
 
-async def send_notification_tasks(notification_content: dict
-		
-):
+
+async def send_notification_tasks(notification_content: dict):
 	"""
 	Task para enviar notificación.
 

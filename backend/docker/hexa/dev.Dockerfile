@@ -13,7 +13,7 @@ ENV UV_COMPILE_BYTECODE=1
 ENV UV_LINK_MODE=copy
 
 # Install system dependencies
-RUN apk add --no-cache g++ unixodbc-dev postgresql-dev
+RUN apk add g++ unixodbc-dev postgresql-dev
 
 # Install the project's dependencies using the lockfile and settings
 RUN --mount=type=cache,target=/root/.cache/uv \

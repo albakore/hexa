@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 import threading
-from typing import Dict, Any, Optional, TypeVar, TypedDict
+from typing import Dict, Any, Optional, TypeVar
 from dependency_injector.containers import DeclarativeContainer
-from dependency_injector.providers import Object
 
 T = TypeVar("T")
 

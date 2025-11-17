@@ -1,13 +1,14 @@
 from dataclasses import dataclass
+
 from fastapi.encoders import jsonable_encoder
-from modules.auth.application.dto import (
-	AuthPasswordResetResponseDTO,
-	AuthRegisterRequestDTO,
-)
+
+from core.db.transactional import Transactional
+from core.helpers.password import PasswordHelper
+from core.helpers.token import TokenHelper
+from modules.auth.application.dto import AuthPasswordResetResponseDTO
 from modules.auth.application.exception import (
 	AuthInitialPasswordResetError,
 	AuthPasswordResetError,
-	LoginRequiresPasswordResetException,
 	LoginUsernamePasswordException,
 )
 from modules.auth.domain.command import RegisterUserDTO
@@ -19,15 +20,17 @@ from modules.user.application.dto.user import UserLoginResponseDTO
 from modules.user.application.exception.user import (
 	UserInactiveException,
 	UserNotFoundException,
-	UserRegisteredException,
 )
-from modules.user.domain.entity.user import User
-from core.db.transactional import Transactional
-from core.helpers.password import PasswordHelper
-from core.helpers.token import TokenHelper
 
 # Protocols compartidos desde shared/
-from shared.interfaces.service_protocols import EmailTemplateServiceProtocol, NotificationCommandType, NotificationServiceProtocol, UserServiceProtocol, RoleServiceProtocol
+from shared.interfaces.service_protocols import (
+	EmailTemplateServiceProtocol,
+	NotificationCommandType,
+	NotificationServiceProtocol,
+	RoleServiceProtocol,
+	UserServiceProtocol,
+)
+
 
 @dataclass
 class AuthService:
@@ -42,10 +45,7 @@ class AuthService:
 		self.role_service = self.role_service()
 		self.email_template_service = self.email_template_service()
 		self.notification_service = self.notification_service()
-		self.usecase = AuthUseCaseFactory(
-			self.user_service,
-			self.auth_repository
-		)
+		self.usecase = AuthUseCaseFactory(self.user_service, self.auth_repository)
 
 	async def login(
 		self, email_or_nickname: str, password: str
@@ -99,26 +99,34 @@ class AuthService:
 
 	async def register(self, registration_data: RegisterUserDTO):
 		new_user = await self.usecase.register_user(registration_data)
-		template = await self.email_template_service.get_email_template_by_name("email_registration")
-		
 		if not new_user:
 			raise UserNotFoundException
-		template_decoded = self._prepare_template(
-			template,{
-			"#PROVIDER_NAME#":  new_user.nickname or new_user.name,
-			"#NAME#":  new_user.name,
-			"#USERNAME#":  new_user.nickname or new_user.email,
-			"#PASSWORD#":  new_user.initial_password,
-		})
-		data : NotificationCommandType ={
-			"sender": "email",
-			"notification": {
-				"to":[new_user.email],
-				"body":template_decoded,
-				"subject":"User Registration"
+		template = await self.email_template_service.get_email_template_by_name(
+			"email_registration"
+		)
+
+		if template:
+			template_decoded = self._prepare_template(
+				template.template_html,
+				{
+					"#PROVIDER_NAME#": new_user.nickname or new_user.name,
+					"#NAME#": new_user.name,
+					"#USERNAME#": new_user.nickname or new_user.email,
+					"#PASSWORD#": new_user.initial_password,
+				},
+			)
+			data: NotificationCommandType = {
+				"sender": "email",
+				"notification": {
+					"to": [new_user.email],
+					"body": template_decoded,
+					"subject": "User Registration",
+				},
 			}
-		}
-		await self.notification_service.send_notification(data)
+			await self.notification_service.send_notification(data)
+			print(
+				"❌ No se pudo enviar el mail de registracion porque no se encontro el template"
+			)
 		return new_user
 
 	@Transactional()
@@ -143,21 +151,18 @@ class AuthService:
 
 		await self.user_service.set_user_password(user, hashed_password)
 		return True
-	
-	#TODO agregar un recovery_password que notifique al usuario los pasos a seguir para reestablecerla
-	#template email_recoverypassword
+
+	# TODO agregar un recovery_password que notifique al usuario los pasos a seguir para reestablecerla
+	# template email_recoverypassword
 
 	### TODO ofrecer un servicio que sea get_user_session -> LoginResponseDTO | AuthPasswordResetResponseDTO
 
-	async def get_user_session(
-		self, user_uuid: str
-	):
+	async def get_user_session(self, user_uuid: str):
 		session = await self.usecase.get_session_user(user_uuid)
 		return session
 
 	def _prepare_template(self, template: bytes, data: dict) -> str:
 		template_decoded = template.decode()
 		for key, value in data.items():
-			template_decoded = template_decoded.replace(key,value)
+			template_decoded = template_decoded.replace(key, value)
 		return template_decoded
-	

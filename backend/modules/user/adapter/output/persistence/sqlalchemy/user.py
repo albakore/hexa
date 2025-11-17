@@ -1,5 +1,4 @@
 from typing import List, Sequence
-from uuid import UUID
 import uuid
 from modules.user.domain.entity import User
 from modules.user.domain.repository.user import UserRepository

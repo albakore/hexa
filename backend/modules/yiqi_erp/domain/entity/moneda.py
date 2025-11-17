@@ -1,8 +1,8 @@
 from typing import Optional
-from datetime import date, datetime, time
-from pydantic import BaseModel
+from datetime import date
 
 from modules.yiqi_erp.domain.entity.entity_base import YiqiEntity
+
 
 class Moneda(YiqiEntity):
 	__internal_name__ = "MONEDA"
@@ -21,5 +21,3 @@ class Moneda(YiqiEntity):
 	AUDI_FECHA_MODIF: Optional[date]
 	ESTA_CODIGO: Optional[int]
 	DESC_ESTADO: Optional[str]
-
-

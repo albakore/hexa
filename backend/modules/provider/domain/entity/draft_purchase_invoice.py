@@ -1,6 +1,6 @@
-from datetime import date, datetime
+from datetime import date
 import uuid
-from sqlmodel import SQLModel, Relationship, Field
+from sqlmodel import SQLModel, Field
 
 
 class DraftPurchaseInvoice(SQLModel, table=True):

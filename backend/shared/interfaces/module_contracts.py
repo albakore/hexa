@@ -4,13 +4,13 @@ Esto permite desacoplar módulos sin necesidad de imports directos
 """
 
 from typing import Protocol, Any, Optional, Sequence
-from datetime import datetime
 from uuid import UUID
 
 
 # ============================================================================
 # User Module Contracts
 # ============================================================================
+
 
 class UserRepositoryProtocol(Protocol):
 	"""Contrato para repositorio de usuarios"""
@@ -36,6 +36,7 @@ class UserRepositoryProtocol(Protocol):
 # RBAC Module Contracts
 # ============================================================================
 
+
 class RBACRepositoryProtocol(Protocol):
 	"""Contrato para repositorio de RBAC"""
 
@@ -55,6 +56,7 @@ class RBACRepositoryProtocol(Protocol):
 # ============================================================================
 # Module (AppModule) Contracts
 # ============================================================================
+
 
 class AppModuleRepositoryProtocol(Protocol):
 	"""Contrato para repositorio de módulos de aplicación"""
@@ -76,6 +78,7 @@ class AppModuleRepositoryProtocol(Protocol):
 # Yiqi ERP Module Contracts
 # ============================================================================
 
+
 class YiqiServiceProtocol(Protocol):
 	"""Contrato para servicio de Yiqi ERP"""
 
@@ -95,6 +98,7 @@ class YiqiServiceProtocol(Protocol):
 # ============================================================================
 # File Storage Module Contracts
 # ============================================================================
+
 
 class FileStorageServiceProtocol(Protocol):
 	"""Contrato para servicio de almacenamiento de archivos"""
@@ -119,6 +123,7 @@ class FileStorageServiceProtocol(Protocol):
 # ============================================================================
 # Finance Module Contracts
 # ============================================================================
+
 
 class CurrencyServiceProtocol(Protocol):
 	"""Contrato para servicio de monedas"""

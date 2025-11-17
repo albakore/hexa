@@ -9,7 +9,6 @@ from modules.file_storage.domain.command import (
 	SaveFileCommand,
 )
 from modules.file_storage.domain.entity import FileMetadata
-from modules.file_storage.domain.exception import FileMetadataNotFoundException
 from modules.file_storage.domain.repository.file_metadata import FileMetadataRepository
 from modules.file_storage.domain.repository.file_storage import FileStorageRepository
 from modules.file_storage.domain.usecase.file_metadata import FileMetadataUseCaseFactory

@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import BinaryIO
 import uuid
 
 from modules.file_storage.domain.command import CreateFileMetadataCommand

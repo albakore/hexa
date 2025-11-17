@@ -1,15 +1,15 @@
-from ast import List
-from typing import Any, Sequence, Type, cast
+from typing import Any, Sequence, Type
 from uuid import UUID
 
 from sqlalchemy.orm import DeclarativeMeta
 from modules.user_relationships.domain.entity import UserRelationshipLink
 from modules.user_relationships.domain.repository import UserRelationshipRepository
-from modules.user_relationships.adapter.output.persistence.exception import OutputPortException
+from modules.user_relationships.adapter.output.persistence.exception import (
+	OutputPortException,
+)
 from core.db import session_factory, Transactional, session
 
 from sqlmodel import delete, col, select, SQLModel
-from pydantic import BaseModel
 
 
 class UserRelationshipSQLAlchemyRepository(UserRelationshipRepository):
@@ -24,11 +24,15 @@ class UserRelationshipSQLAlchemyRepository(UserRelationshipRepository):
 		await session.commit()
 
 	@Transactional()
-	async def unlink_user_entity(self, fk_user: UUID, fk_entity: int, entity_type: str) -> bool:
-		stmt = delete(UserRelationshipLink)\
-			.where(col(UserRelationshipLink.fk_user) == fk_user)\
-			.where(col(UserRelationshipLink.fk_entity) == fk_entity)\
+	async def unlink_user_entity(
+		self, fk_user: UUID, fk_entity: int, entity_type: str
+	) -> bool:
+		stmt = (
+			delete(UserRelationshipLink)
+			.where(col(UserRelationshipLink.fk_user) == fk_user)
+			.where(col(UserRelationshipLink.fk_entity) == fk_entity)
 			.where(col(UserRelationshipLink.entity_name) == entity_type)
+		)
 
 		result = await session.execute(stmt)
 		return bool(result.rowcount)
@@ -38,10 +42,7 @@ class UserRelationshipSQLAlchemyRepository(UserRelationshipRepository):
 	) -> list[Any] | Sequence[SQLModel]:
 		stmt = (
 			select(entity)
-			.join(
-				UserRelationshipLink,
-				UserRelationshipLink.fk_entity == entity.id
-			)
+			.join(UserRelationshipLink, UserRelationshipLink.fk_entity == entity.id)
 			.where(
 				(UserRelationshipLink.fk_user == user_id)
 				& (UserRelationshipLink.entity_name == entity_name)
@@ -50,12 +51,13 @@ class UserRelationshipSQLAlchemyRepository(UserRelationshipRepository):
 		result = await session.execute(stmt)
 		return result.scalars().all()
 
-	async def get_entity_instance_by_id(self, id: int, entity: type) -> Type[Any] | None:
-		if not isinstance(entity,DeclarativeMeta):
+	async def get_entity_instance_by_id(
+		self, id: int, entity: type
+	) -> Type[Any] | None:
+		if not isinstance(entity, DeclarativeMeta):
 			raise OutputPortException
-		
-		async with session_factory() as session:
-			entity_record = await session.get(entity,int(id))
-		
-		return entity_record
 
+		async with session_factory() as session:
+			entity_record = await session.get(entity, int(id))
+
+		return entity_record
