@@ -83,6 +83,31 @@ class UpdatePurchaseInvoiceServiceCommand(CreatePurchaseInvoiceServiceCommand):
 
 
 ###
+### AIR_WAYBILL SERVICE
+###
+class CreateAirWaybillCommand(BaseModel):
+	fk_provider: int | None = Field(default=None, description="ID de proveedor")
+	fk_draft_invoice: int | None = Field(
+		default=None, description="ID de la factura de compra"
+	)
+	awb_code: str | None = Field(default=None, description="Código de la guía aérea")
+	origin: str | None = Field(default=None, description="Origen de la guía aérea")
+	destination: str | None = Field(
+		default=None, description="Destino de la guía aérea"
+	)
+	kg: float | None = Field(default=None, description="Peso en kg")
+
+
+class UpdateAirWaybillCommand(BaseModel):
+	awb_code: str | None = Field(default=None, description="Código de la guía aérea")
+	origin: str | None = Field(default=None, description="Origen de la guía aérea")
+	destination: str | None = Field(
+		default=None, description="Destino de la guía aérea"
+	)
+	kg: float | None = Field(default=None, description="Peso en kg")
+
+
+###
 ### DYNAMIC SEARCH
 ###
 class FilterOperator(str, Enum):

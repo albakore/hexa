@@ -30,6 +30,11 @@ class YiqiRepository(ABC):
 	async def get_country_list(self, id_schema: int): ...
 
 	@abstractmethod
+	async def get_country_by_name(
+		self, country_name: str, id_schema: int
+	) -> dict | None: ...
+
+	@abstractmethod
 	async def get_invoices_list_of_provider(self, id_provider: int, id_schema: int): ...
 
 	@abstractmethod

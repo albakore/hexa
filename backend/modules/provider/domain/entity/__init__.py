@@ -4,6 +4,7 @@ from modules.provider.domain.entity.purchase_invoice_service import (
 	ProviderInvoiceServiceLink,
 	PurchaseInvoiceService,
 )
+from modules.provider.domain.entity.air_waybill import AirWaybill
 
 __all__ = [
 	"Provider",
@@ -11,4 +12,5 @@ __all__ = [
 	"DraftPurchaseInvoice",
 	"ProviderInvoiceServiceLink",
 	"PurchaseInvoiceService",
+	"AirWaybill",
 ]

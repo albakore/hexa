@@ -75,6 +75,33 @@ class GetCurrencyByCodeUseCase:
 
 
 @dataclass
+class GetCountryListUseCase:
+	yiqi_repository: YiqiRepository
+
+	async def __call__(self, id_schema: int):
+		response: httpx.Response = await self.yiqi_repository.get_country_list(
+			id_schema
+		)
+		if response.is_success:
+			return response.json()
+		raise YiqiServiceException
+
+
+@dataclass
+class GetCountryByNameUseCase:
+	yiqi_repository: YiqiRepository
+
+	async def __call__(self, country_name: str, id_schema: int) -> dict | None:
+		try:
+			country = await self.yiqi_repository.get_country_by_name(
+				country_name, id_schema
+			)
+			return country
+		except Exception:
+			raise YiqiServiceException
+
+
+@dataclass
 class UploadFileUseCase:
 	yiqi_repository: YiqiRepository
 
@@ -97,4 +124,6 @@ class YiqiUseCaseFactory:
 		self.get_services_list = GetServicesListUseCase(self.yiqi_repository)
 		self.get_currency_list = GetCurrencyListUseCase(self.yiqi_repository)
 		self.get_currency_by_code = GetCurrencyByCodeUseCase(self.yiqi_repository)
+		self.get_country_list = GetCountryListUseCase(self.yiqi_repository)
+		self.get_country_by_name = GetCountryByNameUseCase(self.yiqi_repository)
 		self.upload_file = UploadFileUseCase(self.yiqi_repository)

@@ -31,6 +31,25 @@ async def get_currency_by_code(
 	return await service.get_currency_by_code(currency_code, id_schema)
 
 
+@yiqi_erp_router.get("/country_list")
+@inject
+async def get_country_list(
+	id_schema: int = Depends(Provide[YiqiContainer.config.YIQI_SCHEMA]),
+	service: YiqiService = Depends(Provide[YiqiContainer.service]),
+):
+	return await service.get_country_list(id_schema)
+
+
+@yiqi_erp_router.get("/country_list/{country_name}")
+@inject
+async def get_country_by_name(
+	country_name: str,
+	id_schema: int = Depends(Provide[YiqiContainer.config.YIQI_SCHEMA]),
+	service: YiqiService = Depends(Provide[YiqiContainer.service]),
+):
+	return await service.get_country_by_name(country_name, id_schema)
+
+
 @yiqi_erp_router.get("/services_list")
 @inject
 async def get_services_list(

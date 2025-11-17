@@ -9,6 +9,7 @@ from modules.yiqi_erp.domain.command import (
 	YiqiInvoiceAttach,
 )
 from modules.yiqi_erp.domain.repository.yiqi import YiqiRepository
+from modules.yiqi_erp.adapter.output.api.exception import RequestException
 
 
 @dataclass
@@ -112,7 +113,7 @@ class YiqiApiRepository(YiqiRepository):
 		entity_name = "PAIS"
 		last_update = "01011900"
 		aditional_filters = []
-		attributes = ["PAIS_PAIS", "PAIS_CODIGO", "PAIS_DENOMINACION"]
+		attributes = ["PAIS_PAIS", "PAIS_CODIGO"]
 		params = {
 			"schemaId": id_schema,
 			"entityName": entity_name,
@@ -122,6 +123,46 @@ class YiqiApiRepository(YiqiRepository):
 		}
 		response = await self.client.get(url, params)
 		return response
+
+	async def get_country_by_name(
+		self, country_name: str, id_schema: int = 316
+	) -> dict | None:
+		url = "/api/InstancesAPI/GetEntityUpdates2"
+		entity_name = "PAIS"
+		last_update = "01011900"
+
+		aditional_filters = [
+			{
+				"columnName": "PAIS_PAIS",
+				"TipoDato": 2,
+				"operator": 1,
+				"operating": str(country_name),
+			}
+		]
+
+		attributes = ["PAIS_PAIS", "PAIS_CODIGO"]
+		params = {
+			"schemaId": id_schema,
+			"entityName": entity_name,
+			"lastUpdate": last_update,
+			"additionalFilters": aditional_filters.__repr__(),
+			"attributes": ",".join(attributes),
+		}
+		response = await self.client.get(url, params)
+		# Consulto si la respuesta esta ok
+		if response.is_success:
+			# Paso la respuesta diccionario
+			data_list = response.json()
+			# Como se que esto me devuelve una lista, trato de respetar
+			# y devolver una sola instancia
+			if len(data_list) > 0:
+				instance = data_list[0]
+				return instance
+			# En caso de que no haya nada, va a devolver a una lista vacia
+			# asi que devuelvo none porque, volviendo, necesito respetar el metodo heredado
+			return None
+		# Y si hubo un error o no es 200 o is_success, que devuelva un error
+		raise RequestException(code=response.status_code, message=response.text)
 
 	async def get_invoices_list_of_provider(
 		self, id_provider: int, id_schema: int = 316

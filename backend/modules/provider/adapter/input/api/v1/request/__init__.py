@@ -3,10 +3,12 @@ from modules.provider.domain.command import (
 	CreateDraftPurchaseInvoiceCommand,
 	CreateProviderCommand,
 	CreatePurchaseInvoiceServiceCommand,
+	UpdateAirWaybillCommand,
 	UpdateDraftPurchaseInvoiceCommand,
 	UpdateProviderCommand,
 	UpdatePurchaseInvoiceServiceCommand,
 	SearchDraftPurchaseInvoiceCommand,
+	CreateAirWaybillCommand,
 )
 
 
@@ -29,3 +31,9 @@ class PurchaseInvoiceServiceCreateRequest(CreatePurchaseInvoiceServiceCommand): 
 
 
 class PurchaseInvoiceServiceUpdateRequest(UpdatePurchaseInvoiceServiceCommand): ...
+
+
+class AirWaybillCreateRequest(CreateAirWaybillCommand): ...
+
+
+class AirWaybillUpdateRequest(UpdateAirWaybillCommand): ...

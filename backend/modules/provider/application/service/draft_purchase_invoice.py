@@ -3,6 +3,7 @@ from typing import List, Sequence
 import uuid
 
 from core.db.transactional import Transactional
+from modules.provider.application.service.air_waybill import AirWaybillService
 from modules.provider.application.service.purchase_invoice_service import (
 	PurchaseInvoiceServiceTypeService,
 )
@@ -13,6 +14,7 @@ from shared.interfaces.service_protocols import (
 )
 from modules.provider.application.dto import DraftPurchaseInvoiceDTO
 from modules.provider.application.exception import (
+	AirWaybillNotFoundException,
 	DraftPurchaseInvoiceCurrencyNotFoundException,
 	DraftPurchaseInvoiceDetailFileInvalidException,
 	DraftPurchaseInvoiceNotFoundException,
@@ -39,6 +41,7 @@ class DraftPurchaseInvoiceService:
 	purchase_invoice_service: PurchaseInvoiceServiceProtocol
 	file_storage_service: FileStorageServiceProtocol
 	currency_service: CurrencyServiceProtocol | None
+	air_waybill_service: AirWaybillService
 
 	def __post_init__(self):
 		self.draft_purchase_invoice_usecase = DraftPurchaseInvoiceUseCaseFactory(
@@ -98,6 +101,7 @@ class DraftPurchaseInvoiceService:
 			draft_purchase_invoice
 		)
 
+	@Transactional()
 	async def delete_draft_purchase_invoice(self, id_draft_purchase_invoice: int):
 		draft_purchase_invoice = (
 			await self.draft_purchase_invoice_usecase.get_draft_purchase_invoice_by_id(
@@ -106,6 +110,22 @@ class DraftPurchaseInvoiceService:
 		)
 		if not draft_purchase_invoice:
 			raise DraftPurchaseInvoiceNotFoundException
+
+		# Obtener todas las guías aéreas asociadas a la draft invoice
+		air_waybills = await self.air_waybill_service.get_all_air_waybills(
+			id_draft_purchase_invoice
+		)
+
+		if not air_waybills:
+			raise AirWaybillNotFoundException
+
+		# Eliminar todas las guías aéreas previamente encontradas
+		for air_waybill in air_waybills:
+			aw_id = air_waybill.id
+			if not aw_id:
+				raise AirWaybillNotFoundException
+			await self.air_waybill_service.delete_air_waybill(aw_id)
+
 		return await self.draft_purchase_invoice_usecase.delete_draft_purchase_invoice(
 			draft_purchase_invoice
 		)
@@ -211,6 +231,19 @@ class DraftPurchaseInvoiceService:
 		# Vincular factura con draft
 		finalized_draft.fk_invoice = purchase_invoice_created.id
 		await self.save_draft_purchase_invoice(finalized_draft)
+
+		# Asociar guías aéreas a la purchase invoice
+		air_waybills = await self.air_waybill_service.get_all_air_waybills(
+			id_draft_purchase_invoice
+		)
+
+		if not air_waybills:
+			raise AirWaybillNotFoundException
+
+		for air_waybill in air_waybills:
+			air_waybill.fk_purchase_invoice = purchase_invoice.id
+			air_waybill.fk_draft_invoice = None
+			await self.air_waybill_service.save_air_waybill(air_waybill)
 
 		return purchase_invoice_created
 
