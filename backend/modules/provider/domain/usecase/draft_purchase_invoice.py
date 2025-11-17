@@ -191,7 +191,7 @@ class FinalizeDraftPurchaseInvoiceUseCase:
 	Finaliza la draft invoice
 	"""
 
-	async def __call__(
+	def __call__(
 		self, draft_purchase_invoice: DraftPurchaseInvoice
 	) -> DraftPurchaseInvoice:
 		# Mark as finalized
