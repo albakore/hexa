@@ -1,11 +1,9 @@
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 
-
 from modules.yiqi_erp.adapter.input.api.v1.request import YiqiUploadFileRequest
 from modules.yiqi_erp.application.service.yiqi import YiqiService
 from modules.yiqi_erp.container import YiqiContainer
-
 
 yiqi_erp_router = APIRouter()
 
@@ -44,7 +42,7 @@ async def get_providers_list(
 	id_schema: int = Depends(Provide[YiqiContainer.config.YIQI_SCHEMA]),
 	service: YiqiService = Depends(Provide[YiqiContainer.service]),
 ):
-	return await service.get_provider_by_id(int(id_provider), id_schema)
+	return await service.get_providers_list(id_schema)
 
 
 @yiqi_erp_router.get("/provider/{id_provider}")
