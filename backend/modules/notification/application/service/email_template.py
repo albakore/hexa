@@ -8,7 +8,7 @@ from modules.notification.domain.repository.email_template import (
 	EmailTemplateRepository,
 )
 from modules.notification.domain.repository.sender_provider import SenderProviderPort
-from modules.notification.domain.usecase.email_template import (
+from modules.notification.application.usecase.email_template import (
 	EmailTemplateUseCaseFactory,
 )
 

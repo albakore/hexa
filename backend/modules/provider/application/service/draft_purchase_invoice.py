@@ -21,7 +21,7 @@ from modules.provider.domain.entity.draft_purchase_invoice import DraftPurchaseI
 from modules.provider.domain.repository.draft_purchase_invoice import (
 	DraftPurchaseInvoiceRepository,
 )
-from modules.provider.domain.usecase.draft_purchase_invoice import (
+from modules.provider.application.usecase.draft_purchase_invoice import (
 	DraftPurchaseInvoiceUseCaseFactory,
 )
 from shared.interfaces.service_protocols import (

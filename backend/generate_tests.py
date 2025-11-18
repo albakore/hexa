@@ -213,7 +213,7 @@ import pytest
 from unittest.mock import AsyncMock
 
 # TODO: Importar casos de uso
-# from modules.{module_name}.domain.usecase.your_usecase import YourUseCase
+# from modules.{module_name}.application.usecase.your_usecase import YourUseCase
 
 
 @pytest.mark.unit

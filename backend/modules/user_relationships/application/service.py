@@ -3,7 +3,7 @@ import uuid
 
 from modules.user_relationships.domain.ports import EntityResolver
 from modules.user_relationships.domain.repository import UserRelationshipRepository
-from modules.user_relationships.domain.usecase import UserRelationshipUseCaseFactory
+from modules.user_relationships.application.usecase import UserRelationshipUseCaseFactory
 
 
 @dataclass

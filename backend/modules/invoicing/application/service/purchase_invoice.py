@@ -12,7 +12,7 @@ from modules.invoicing.domain.entity.purchase_invoice import PurchaseInvoice
 from modules.invoicing.domain.repository.purchase_invoice import (
 	PurchaseInvoiceRepository,
 )
-from modules.invoicing.domain.usecase.purchase_invoice import InvoiceUseCaseFactory
+from modules.invoicing.application.usecase.purchase_invoice import InvoiceUseCaseFactory
 
 
 @dataclass

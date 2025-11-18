@@ -7,7 +7,7 @@ Estos son tests unitarios que verifican la lógica de negocio usando mocks.
 import pytest
 
 # TODO: Importar casos de uso
-# from modules.finance.domain.usecase.your_usecase import YourUseCase
+# from modules.finance.application.usecase.your_usecase import YourUseCase
 
 
 @pytest.mark.unit

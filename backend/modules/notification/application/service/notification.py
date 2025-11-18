@@ -13,7 +13,7 @@ from modules.notification.domain.command import (
 from modules.notification.domain.exception import EmailTemplateNotFoundException
 from modules.notification.domain.repository.notification import NotificationRepository
 from modules.notification.domain.repository.sender_provider import SenderProviderPort
-from modules.notification.domain.usecase.notification import NotificationUseCaseFactory
+from modules.notification.application.usecase.notification import NotificationUseCaseFactory
 
 
 @dataclass

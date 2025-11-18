@@ -3,7 +3,7 @@ from typing import List, Sequence
 from modules.user.domain.command import CreateUserCommand
 from modules.user.domain.entity.user import User
 from modules.user.domain.repository.user import UserRepository
-from modules.user.domain.usecase.user import UserUseCaseFactory
+from modules.user.application.usecase.user import UserUseCaseFactory
 
 
 class UserService:

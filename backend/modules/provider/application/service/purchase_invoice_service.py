@@ -14,7 +14,7 @@ from modules.provider.domain.exception import (
 from modules.provider.domain.repository.purchase_invoice_service import (
 	PurchaseInvoiceServiceRepository,
 )
-from modules.provider.domain.usecase.purchase_invoice_service import (
+from modules.provider.application.usecase.purchase_invoice_service import (
 	PurchaseInvoiceServiceUseCaseFactory,
 )
 

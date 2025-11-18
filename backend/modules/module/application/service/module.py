@@ -1,7 +1,7 @@
 from typing import List, Sequence
 from modules.module.domain.entity.module import Module
 from modules.module.domain.repository.module import AppModuleRepository
-from modules.module.domain.usecase.module import ModuleUseCaseFactory
+from modules.module.application.usecase.module import ModuleUseCaseFactory
 
 
 class AppModuleService:
