@@ -1,4 +1,3 @@
-from pydantic import BaseModel
 from modules.finance.domain.command.currency import (
 	CreateCurrencyCommand,
 	UpdateCurrencyCommand,

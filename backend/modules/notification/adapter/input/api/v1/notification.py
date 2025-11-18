@@ -1,13 +1,13 @@
-from dependency_injector.wiring import inject, Provide
+from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 
 from modules.notification.adapter.input.api.v1.request import (
 	CreateNotificationRequest,
+	SendEmailNotificationRequest,
 	SendNotificationRequest,
 )
 from modules.notification.application.service.notification import NotificationService
 from modules.notification.container import NotificationContainer
-
 
 notifications_router = APIRouter()
 
@@ -44,4 +44,16 @@ async def send_notification(
 	),
 ):
 	await notifications_service.send_notification(notification)
+	return {"status": "OK"}
+
+
+@notifications_router.post("/send_email")
+@inject
+async def send_email_notification(
+	notification: SendEmailNotificationRequest,
+	notifications_service: NotificationService = Depends(
+		Provide[NotificationContainer.service]
+	),
+):
+	await notifications_service.send_email_notification(notification)
 	return {"status": "OK"}

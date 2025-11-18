@@ -19,8 +19,6 @@ class ResponseLogMiddleware:
 		if scope["type"] != "http":
 			return await self.app(scope, receive, send)
 
-		response_info = ResponseInfo()
-
 		async def _logging_send(message: Message) -> None:
 			# TODO: Hacer un procedimiento de log
 			# if message.get("type") == "http.response.start":

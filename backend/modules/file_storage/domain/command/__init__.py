@@ -1,4 +1,4 @@
-from typing import Any, BinaryIO, Optional
+from typing import Any, Optional
 import uuid
 from pydantic import BaseModel, field_validator
 

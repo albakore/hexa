@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Form</title>
+    <style>
+        body, table, td, a {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            line-height: 100%;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 580px;
+            width: 100%;
+            margin: auto;
+        }
+
+        .buttonform {
+            background-color: #5bc928;
+            border-radius: 8px;
+            padding: 10px 15px;
+            display: inline-block;
+        }
+
+        .footer {
+            text-align: center;
+            color: gray;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+    </style>
+</head>
+
+<body>
+    <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <td align="center">
+                <table class="container" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td align="center" style="background-color: rgb(66, 66, 66); ">
+                            <img src="cid:image1" alt="MailAmericas header" style="width: 100%; display: block;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 20px;">
+                            <h2 style="margin: 0; font-size: 24px;">Hello, {{nickname or name}}!</h2>
+                            <p>{{name}}, you have been registered to our portal so you can track and create your
+                                invoices.</p>
+                            <p>To get started, simply click on the link below:</p>
+                            <a class="buttonform" style="color: white;text-decoration: none;" href="#LINK_FORM#">Go to portal</a>
+                            <p>Your login details:</p>
+                            <ul>
+                                <li>
+                                    Username: {{nickname or email}}
+                                </li>
+                                <li>
+                                    Password:  {{initial_password}}
+                                </li>
+                            </ul>
+                            <p>If you have any questions or need assistance with using the portal, please feel free to reach
+                                out to us at <a href="mailto:providersportal@mailamericas.com">providersportal@mailamericas.com</a></p>
+                            <p>Best regards,</p>
+                            <p>The MailAmericas Team</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" style="background-color: rgb(66, 66, 66);">
+                            <img src="cid:image2" alt="MailAmericas footer" style="width: 100%; display: block;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="footer">
+                            MailAmericas | Guemes 676 | Vicente López | 1638
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

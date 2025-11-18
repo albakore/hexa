@@ -1,5 +1,5 @@
-from typing import List
 import uuid
+
 from pydantic import BaseModel
 
 
@@ -22,3 +22,14 @@ class EditEmailTemplateCommand(BaseModel):
 class SendNotificationCommand(BaseModel):
 	notification: dict
 	sender: str
+
+
+class EmailBasicInformationDTO(BaseModel):
+	to: list[str]
+	subject: str
+
+
+class SendEmailNotificationCommand(BaseModel):
+	template_name: str
+	notification: EmailBasicInformationDTO
+	data_injection: dict
