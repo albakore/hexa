@@ -11,9 +11,9 @@ from modules.auth.application.exception import (
 	AuthPasswordResetError,
 	LoginUsernamePasswordException,
 )
+from modules.auth.application.usecase.auth import AuthUseCaseFactory
 from modules.auth.domain.command import RegisterUserDTO
 from modules.auth.domain.repository.auth import AuthRepository
-from modules.auth.application.usecase.auth import AuthUseCaseFactory
 from modules.module.application.dto import ModuleViewDTO
 from modules.user.application.dto import LoginResponseDTO
 from modules.user.application.dto.user import UserLoginResponseDTO

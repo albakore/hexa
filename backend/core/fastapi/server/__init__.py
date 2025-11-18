@@ -179,9 +179,13 @@ def create_app() -> FastAPI:
 
 	# Descubrir módulos DESPUÉS de registrar servicios base
 	print("🔍 Discovering and registering modules...")
-	from shared.interfaces.module_discovery import discover_modules
+	from shared.interfaces.module_discovery import discover_modules, discover_permissions
 
 	discover_modules("modules", "module.py")
+
+	# Descubrir permisos para registro en PERMISSIONS_REGISTRY
+	print("🔍 Discovering permissions...")
+	discover_permissions("modules")
 
 	# Registrar tasks de Celery DESPUÉS de descubrir módulos
 	print("📝 Registering Celery tasks...")

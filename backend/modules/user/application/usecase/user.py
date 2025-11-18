@@ -57,6 +57,7 @@ class CreateUserUseCase:
 	@Transactional()
 	async def __call__(self, command: CreateUserCommand) -> User | None:
 		user = User.model_validate(command)
+		user.is_active = False
 		new_user = await self.user_repository.save(user=user)
 		return new_user
 

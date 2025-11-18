@@ -152,6 +152,14 @@ def sync_database(
 		get_modules_setup("modules")
 		typer.echo("✅ Configuraciones cargadas\n")
 
+		# Descubrir y cargar permisos desde archivos permissions.py
+		if permissions:
+			typer.echo("🔍 Descubriendo archivos de permisos...")
+			from shared.interfaces.module_discovery import discover_permissions
+
+			discover_permissions("modules")
+			typer.echo("")
+
 		# Sincronizar permisos
 		if permissions:
 			typer.echo("🔐 Sincronizando permisos...")
