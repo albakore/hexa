@@ -1,4 +1,5 @@
 from typing import List, Sequence
+
 from modules.user.domain.command import CreateUserCommand
 from modules.user.domain.entity.user import User
 from modules.user.domain.repository.user import UserRepository
@@ -10,7 +11,9 @@ class UserService:
 		self.repository = repository
 		self.usecase = UserUseCaseFactory(repository)
 
-	async def get_user_list(self, limit: int, page: int) -> list[User]:
+	async def get_user_list(
+		self, limit: int | None = None, page: int = 0
+	) -> list[User] | Sequence[User]:
 		return await self.usecase.get_user_list(limit, page)
 
 	async def get_user_by_id(self, user_id: int) -> User | None:

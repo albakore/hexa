@@ -1,9 +1,8 @@
 import uuid
 
 from dependency_injector.wiring import Provide, inject
-from fastapi import APIRouter, Depends, Query, Security
+from fastapi import APIRouter, Depends, Query
 
-from core.fastapi.dependencies import require_permissions
 from modules.user.adapter.input.api.v1.request import CreateUserRequest, RoleRequest
 from modules.user.application.service.user import UserService
 from modules.user.container import UserContainer
@@ -16,17 +15,17 @@ user_router = APIRouter()
 @user_router.get("")
 @inject
 async def get_user_list(
-	limit: int = Query(default=10, ge=1, le=50),
+	limit: int | None = Query(default=None, ge=None, le=1000),
 	page: int = Query(default=0),
 	user_service: UserService = Depends(Provide[UserContainer.service]),
-	_: None = Security(require_permissions("user:read")),
+	# _: None = Security(require_permissions("user:read")),
 ):
 	"""
 	Lista todos los usuarios con paginación.
 
 	Requiere el permiso: user:read
 	"""
-	return await user_service.get_user_list(int(limit), int(page))
+	return await user_service.get_user_list(limit, int(page))
 
 
 @user_router.get(

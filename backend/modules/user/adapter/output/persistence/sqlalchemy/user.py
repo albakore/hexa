@@ -1,19 +1,23 @@
-from typing import List, Sequence
 import uuid
+from typing import List, Sequence
+
+from sqlalchemy.orm import selectinload
+from sqlmodel import col, or_, select
+
+from core.db.session import session as global_session
+from core.db.session import session_factory
 from modules.user.domain.entity import User
 from modules.user.domain.repository.user import UserRepository
-from sqlmodel import col, or_, select
-from sqlalchemy.orm import selectinload
-from core.db.session import session as global_session, session_factory
 
 
 class UserSQLAlchemyRepository(UserRepository):
 	async def get_user_list(
-		self, limit: int = 12, page: int = 0
+		self, limit: int | None = None, page: int = 0
 	) -> List[User] | Sequence[User]:
 		query = select(User)
-		offset = page * limit
-		query = query.offset(offset).limit(limit)
+		if not limit and isinstance(limit, int):
+			offset = page * limit
+			query = query.offset(offset).limit(limit)
 
 		async with session_factory() as session:
 			result = await session.execute(query)

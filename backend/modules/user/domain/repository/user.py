@@ -7,7 +7,7 @@ from modules.user.domain.entity.user import User
 class UserRepository(ABC):
 	@abstractmethod
 	async def get_user_list(
-		self, limit: int, page: int
+		self, limit: int | None, page: int
 	) -> List[User] | Sequence[User]: ...
 
 	@abstractmethod
