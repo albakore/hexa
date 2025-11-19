@@ -1,6 +1,10 @@
 from dataclasses import dataclass
 
-from modules.yiqi_erp.domain.command import CreateYiqiInvoiceCommand, UploadFileCommand
+from modules.yiqi_erp.domain.command import (
+	CreateYiqiAirWaybillCommand,
+	CreateYiqiInvoiceCommand,
+	UploadFileCommand,
+)
 from modules.yiqi_erp.domain.repository.yiqi import YiqiRepository
 from modules.yiqi_erp.domain.usecase.yiqi import YiqiUseCaseFactory
 
@@ -16,6 +20,19 @@ class YiqiService:
 		self, command: CreateYiqiInvoiceCommand, id_schema: int
 	) -> dict:
 		return await self.usecase.create_invoice(command, id_schema)
+
+	async def create_air_waybill(
+		self, command: CreateYiqiAirWaybillCommand, id_schema: int
+	) -> dict:
+		return await self.usecase.create_air_waybill(command, id_schema)
+
+	async def create_multiple_air_waybills(
+		self, command: UploadFileCommand, id_schema: int
+	):
+		return await self.usecase.create_multiple_air_waybills(command, id_schema)
+
+	async def get_air_waybills_template(self, id_schema: int):
+		return await self.usecase.get_air_waybills_template(id_schema)
 
 	async def get_provider_by_id(self, id_provider: int, id_schema: int):
 		return await self.usecase.get_provider_by_id(id_provider, id_schema)

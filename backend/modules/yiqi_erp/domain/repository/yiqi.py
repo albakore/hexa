@@ -1,8 +1,12 @@
 from abc import ABC, abstractmethod
+from ast import Dict
 
 from fastapi import UploadFile
 
-from modules.yiqi_erp.domain.command import CreateYiqiInvoiceCommand
+from modules.yiqi_erp.domain.command import (
+	CreateYiqiAirWaybillCommand,
+	CreateYiqiInvoiceCommand,
+)
 
 
 class YiqiRepository(ABC):
@@ -49,6 +53,23 @@ class YiqiRepository(ABC):
 		id_child: bool | None = None,
 		id_entity: int = 660,
 	) -> dict: ...
+
+	@abstractmethod
+	async def create_air_waybill(
+		self,
+		command: CreateYiqiAirWaybillCommand,
+		id_schema: int,
+	) -> dict: ...
+
+	@abstractmethod
+	async def create_multiple_air_waybills(
+		self,
+		file: UploadFile,
+		id_schema: int,
+	) -> dict: ...
+
+	@abstractmethod
+	async def get_air_waybills_template(self, id_schema: int) -> UploadFile: ...
 
 	@abstractmethod
 	async def upload_file(self, file: UploadFile, id_schema: int): ...

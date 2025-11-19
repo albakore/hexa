@@ -1,7 +1,10 @@
 from dataclasses import dataclass
 from typing import Sequence
 
-from modules.provider.application.exception import AirWaybillNotFoundException
+from modules.provider.application.exception import (
+	AirWaybillHasBeenEmittedException,
+	AirWaybillNotFoundException,
+)
 from modules.provider.domain.command import (
 	CreateAirWaybillCommand,
 	UpdateAirWaybillCommand,
@@ -52,6 +55,8 @@ class AirWaybillService:
 		)
 		if not air_waybill:
 			raise AirWaybillNotFoundException
+		if air_waybill.fk_purchase_invoice:
+			raise AirWaybillHasBeenEmittedException
 		return await self.air_waybill_usecase.delete_air_waybill(air_waybill)
 
 	async def update_air_waybill(self, command: UpdateAirWaybillCommand):

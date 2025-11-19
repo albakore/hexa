@@ -1,12 +1,15 @@
 from dataclasses import dataclass
-
 import httpx
 
 from modules.yiqi_erp.application.exception import (
 	YiqiEntityNotFoundException,
 	YiqiServiceException,
 )
-from modules.yiqi_erp.domain.command import CreateYiqiInvoiceCommand, UploadFileCommand
+from modules.yiqi_erp.domain.command import (
+	CreateYiqiAirWaybillCommand,
+	CreateYiqiInvoiceCommand,
+	UploadFileCommand,
+)
 from modules.yiqi_erp.domain.repository.yiqi import YiqiRepository
 
 
@@ -17,6 +20,34 @@ class CreateInvoiceUseCase:
 	async def __call__(self, command: CreateYiqiInvoiceCommand, id_schema: int) -> dict:
 		invoice = await self.yiqi_repository.create_invoice(command, id_schema)
 		return invoice
+
+
+@dataclass
+class CreateAirWaybillUseCase:
+	yiqi_repository: YiqiRepository
+
+	async def __call__(
+		self, command: CreateYiqiAirWaybillCommand, id_schema: int
+	) -> dict:
+		air_waybill = await self.yiqi_repository.create_air_waybill(command, id_schema)
+		return air_waybill
+
+
+@dataclass
+class CreateMultipleAirWaybillsUseCase:
+	yiqi_repository: YiqiRepository
+
+	async def __call__(self, file: UploadFileCommand, id_schema: int):
+		return await self.yiqi_repository.create_multiple_air_waybills(file, id_schema)
+
+
+@dataclass
+class GetAirWaybillsTemplateUseCase:
+	yiqi_repository: YiqiRepository
+
+	async def __call__(self, id_schema: int):
+		template = await self.yiqi_repository.get_air_waybills_template(id_schema)
+		return template
 
 
 @dataclass
@@ -118,9 +149,9 @@ class GetCountryByNameUseCase:
 class UploadFileUseCase:
 	yiqi_repository: YiqiRepository
 
-	async def __call__(self, command: UploadFileCommand, id_schema: int):
+	async def __call__(self, file: UploadFileCommand, id_schema: int):
 		response: httpx.Response = await self.yiqi_repository.upload_file(
-			command, id_schema
+			file, id_schema
 		)
 		if response.is_success:
 			return True
@@ -133,6 +164,13 @@ class YiqiUseCaseFactory:
 
 	def __post_init__(self):
 		self.create_invoice = CreateInvoiceUseCase(self.yiqi_repository)
+		self.create_air_waybill = CreateAirWaybillUseCase(self.yiqi_repository)
+		self.create_multiple_air_waybills = CreateMultipleAirWaybillsUseCase(
+			self.yiqi_repository
+		)
+		self.get_air_waybills_template = GetAirWaybillsTemplateUseCase(
+			self.yiqi_repository
+		)
 		self.get_provider_by_id = GetProviderByIdUseCase(self.yiqi_repository)
 		self.get_providers_list = GetProviderListUseCase(self.yiqi_repository)
 		self.get_services_list = GetServicesListUseCase(self.yiqi_repository)

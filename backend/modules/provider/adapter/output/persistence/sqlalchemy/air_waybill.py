@@ -14,8 +14,7 @@ class AirWaybillSQLAlchemyRepository(AirWaybillRepository):
 		offset = page * limit
 		query = query.offset(offset).limit(limit)
 
-		async with session_factory() as session:
-			result = await session.execute(query)
+		result = await global_session.execute(query)
 
 		return result.scalars().all()
 
