@@ -11,8 +11,8 @@ from modules.file_storage.domain.command import (
 from modules.file_storage.domain.entity import FileMetadata
 from modules.file_storage.domain.repository.file_metadata import FileMetadataRepository
 from modules.file_storage.domain.repository.file_storage import FileStorageRepository
-from modules.file_storage.domain.usecase.file_metadata import FileMetadataUseCaseFactory
-from modules.file_storage.domain.usecase.file_storage import FileStorageUseCaseFactory
+from modules.file_storage.application.usecase.file_metadata import FileMetadataUseCaseFactory
+from modules.file_storage.application.usecase.file_storage import FileStorageUseCaseFactory
 
 
 @dataclass

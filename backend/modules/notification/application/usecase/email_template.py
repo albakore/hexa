@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 from typing import Sequence
-from core.db.transactional import Transactional
 
+from jinja2.environment import Template
+
+from core.db.transactional import Transactional
 from modules.notification.domain.entity.email_template import EmailTemplate
 from modules.notification.domain.exception import EmailTemplateNotFoundException
 from modules.notification.domain.repository.email_template import (
@@ -92,6 +94,13 @@ class SendEmailTemplate(UseCase):
 
 
 @dataclass
+class RenderEmailTemplate(UseCase):
+	async def __call__(self, email_template: str, payload: dict):
+		template: Template = Template(email_template)
+		return template.render(payload)
+
+
+@dataclass
 class EmailTemplateUseCaseFactory:
 	email_template_repository: EmailTemplateRepository
 	email_template_sender: SenderProviderPort
@@ -112,3 +121,4 @@ class EmailTemplateUseCaseFactory:
 		self.save_email_template = SaveEmailTemplate(self.email_template_repository)
 		self.delete_email_template = DeleteEmailTemplate(self.email_template_repository)
 		self.send_email_template = SendEmailTemplate(self.email_template_sender)
+		self.render_email_template = RenderEmailTemplate()

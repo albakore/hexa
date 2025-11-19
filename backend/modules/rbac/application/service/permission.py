@@ -6,7 +6,7 @@ from modules.rbac.domain.command import CreateGroupCommand, CreatePermissionComm
 from modules.rbac.domain.entity import Permission, Role
 from modules.rbac.domain.entity import GroupPermission
 from modules.rbac.domain.repository import PermissionRepository
-from modules.rbac.domain.usecase.permission import PermissionUseCaseFactory
+from modules.rbac.application.usecase.permission import PermissionUseCaseFactory
 from core.db import Transactional
 from dataclasses import dataclass
 

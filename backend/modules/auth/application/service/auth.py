@@ -11,9 +11,9 @@ from modules.auth.application.exception import (
 	AuthPasswordResetError,
 	LoginUsernamePasswordException,
 )
+from modules.auth.application.usecase.auth import AuthUseCaseFactory
 from modules.auth.domain.command import RegisterUserDTO
 from modules.auth.domain.repository.auth import AuthRepository
-from modules.auth.domain.usecase.auth import AuthUseCaseFactory
 from modules.module.application.dto import ModuleViewDTO
 from modules.user.application.dto import LoginResponseDTO
 from modules.user.application.dto.user import UserLoginResponseDTO
@@ -25,7 +25,6 @@ from modules.user.application.exception.user import (
 # Protocols compartidos desde shared/
 from shared.interfaces.service_protocols import (
 	EmailTemplateServiceProtocol,
-	NotificationCommandType,
 	NotificationServiceProtocol,
 	RoleServiceProtocol,
 	UserServiceProtocol,
@@ -99,34 +98,6 @@ class AuthService:
 
 	async def register(self, registration_data: RegisterUserDTO):
 		new_user = await self.usecase.register_user(registration_data)
-		if not new_user:
-			raise UserNotFoundException
-		template = await self.email_template_service.get_email_template_by_name(
-			"email_registration"
-		)
-
-		if template:
-			template_decoded = self._prepare_template(
-				template.template_html,
-				{
-					"#PROVIDER_NAME#": new_user.nickname or new_user.name,
-					"#NAME#": new_user.name,
-					"#USERNAME#": new_user.nickname or new_user.email,
-					"#PASSWORD#": new_user.initial_password,
-				},
-			)
-			data: NotificationCommandType = {
-				"sender": "email",
-				"notification": {
-					"to": [new_user.email],
-					"body": template_decoded,
-					"subject": "User Registration",
-				},
-			}
-			await self.notification_service.send_notification(data)
-			print(
-				"❌ No se pudo enviar el mail de registracion porque no se encontro el template"
-			)
 		return new_user
 
 	@Transactional()

@@ -6,7 +6,7 @@ from modules.yiqi_erp.domain.command import (
 	UploadFileCommand,
 )
 from modules.yiqi_erp.domain.repository.yiqi import YiqiRepository
-from modules.yiqi_erp.domain.usecase.yiqi import YiqiUseCaseFactory
+from modules.yiqi_erp.application.usecase.yiqi import YiqiUseCaseFactory
 
 
 @dataclass

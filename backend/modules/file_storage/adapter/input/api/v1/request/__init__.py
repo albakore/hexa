@@ -1,4 +1,3 @@
-from pydantic import BaseModel
 from modules.provider.domain.command import CreateProviderCommand, UpdateProviderCommand
 
 

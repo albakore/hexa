@@ -1,4 +1,5 @@
 from typing import List, Sequence
+
 from modules.user.domain.entity.user import User
 from modules.user.domain.repository.user import UserRepository
 
@@ -7,7 +8,9 @@ class UserRepositoryAdapter(UserRepository):
 	def __init__(self, repository: UserRepository):
 		self.repository = repository
 
-	async def get_user_list(self, limit: int, page: int) -> List[User] | Sequence[User]:
+	async def get_user_list(
+		self, limit: int | None = None, page: int = 0
+	) -> List[User] | Sequence[User]:
 		return await self.repository.get_user_list(limit, page)
 
 	async def get_user_by_id(

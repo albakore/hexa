@@ -8,7 +8,7 @@ import pytest
 from unittest.mock import AsyncMock
 
 from modules.invoicing.domain.entity.purchase_invoice import PurchaseInvoice
-from modules.invoicing.domain.usecase.purchase_invoice import (
+from modules.invoicing.application.usecase.purchase_invoice import (
 	GetPurchaseInvoiceList,
 	GetPurchaseInvoiceListByProvider,
 	GetPurchaseInvoiceById,

@@ -4,7 +4,7 @@ from modules.provider.application.exception import ProviderNotFoundException
 from modules.provider.domain.command import CreateProviderCommand
 from modules.provider.domain.entity.provider import Provider
 from modules.provider.domain.repository.provider import ProviderRepository
-from modules.provider.domain.usecase.provider import (
+from modules.provider.application.usecase.provider import (
 	ProviderUseCaseFactory,
 	UpdateProviderCommand,
 )

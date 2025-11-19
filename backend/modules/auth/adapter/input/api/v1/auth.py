@@ -14,7 +14,7 @@ from modules.auth.adapter.input.api.v1.response import (
 	AuthPasswordResetResponse,
 	RefreshTokenResponse,
 )
-from modules.auth.domain.usecase.jwt import JwtUseCase
+from modules.auth.application.usecase.jwt import JwtUseCase
 
 
 auth_router = APIRouter()

@@ -10,7 +10,7 @@ from modules.finance.domain.command.currency import (
 )
 from modules.finance.domain.entity.currency import Currency
 from modules.finance.domain.repository.currency import CurrencyRepository
-from modules.finance.domain.usecase.currency import CurrencyUseCaseFactory
+from modules.finance.application.usecase.currency import CurrencyUseCaseFactory
 
 
 @dataclass

@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+from modules.notification.application.exception import NullEmailTemplateHTMLException
 from modules.notification.domain.command import EditEmailTemplateCommand
 from modules.notification.domain.entity.email_template import EmailTemplate
 from modules.notification.domain.exception import EmailTemplateNotFoundException
@@ -7,7 +8,7 @@ from modules.notification.domain.repository.email_template import (
 	EmailTemplateRepository,
 )
 from modules.notification.domain.repository.sender_provider import SenderProviderPort
-from modules.notification.domain.usecase.email_template import (
+from modules.notification.application.usecase.email_template import (
 	EmailTemplateUseCaseFactory,
 )
 
@@ -55,6 +56,13 @@ class EmailTemplateService:
 
 	async def delete_email_template(self, id: int):
 		await self.usecase.delete_email_template(id)
+
+	async def render_email_template(self, email_template: EmailTemplate, payload: dict):
+		if not email_template.template_html:
+			raise NullEmailTemplateHTMLException
+		html_template = email_template.template_html.decode()
+		render = await self.usecase.render_email_template(html_template, payload)
+		return render
 
 	# async def send_email_template(self, receiver_email: list[str], subject: str, body: str):
 	#     await self.usecase.send_email_template(receiver_email, subject, body)

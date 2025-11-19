@@ -2,12 +2,15 @@ from dataclasses import dataclass
 from typing import List, Sequence
 
 from core.db import Transactional
+from modules.provider.application.dto import ProviderServiceWithRequirementsDTO
 from modules.provider.domain.command import (
 	CreatePurchaseInvoiceServiceCommand,
+	LinkPurchaseInvoiceServiceToProviderCommand,
 	UpdatePurchaseInvoiceServiceCommand,
 )
 from modules.provider.domain.entity.purchase_invoice_service import (
 	PurchaseInvoiceService,
+	ProviderInvoiceServiceLink,
 )
 from modules.provider.domain.exception import (
 	DraftPurchaseInvoiceServiceNotFoundException,
@@ -82,7 +85,7 @@ class DeletePurchaseInvoiceServicesUseCase:
 class GetServicesOfProviderUseCase:
 	purchase_invoice_repository: PurchaseInvoiceServiceRepository
 
-	async def __call__(self, id_provider: int):
+	async def __call__(self, id_provider: int) -> List[ProviderServiceWithRequirementsDTO]:
 		return await self.purchase_invoice_repository.get_services_of_provider(
 			id_provider
 		)
@@ -93,9 +96,13 @@ class AddServicesToProviderUseCase:
 	purchase_invoice_repository: PurchaseInvoiceServiceRepository
 
 	@Transactional()
-	async def __call__(self, id_provider: int, id_services_list: List[int]):
+	async def __call__(
+		self,
+		id_provider: int,
+		services: List[LinkPurchaseInvoiceServiceToProviderCommand],
+	):
 		return await self.purchase_invoice_repository.add_services_to_provider(
-			id_provider, id_services_list
+			id_provider, services
 		)
 
 
@@ -107,6 +114,18 @@ class RemoveServicesFromProviderUseCase:
 	async def __call__(self, id_provider: int, id_services_list: List[int]):
 		return await self.purchase_invoice_repository.remove_services_from_provider(
 			id_provider, id_services_list
+		)
+
+
+@dataclass
+class GetProviderServiceLinkUseCase:
+	purchase_invoice_repository: PurchaseInvoiceServiceRepository
+
+	async def __call__(
+		self, id_provider: int, id_service: int
+	) -> ProviderInvoiceServiceLink | None:
+		return await self.purchase_invoice_repository.get_provider_service_link(
+			id_provider, id_service
 		)
 
 
@@ -138,5 +157,8 @@ class PurchaseInvoiceServiceUseCaseFactory:
 			self.purchase_invoice_repository
 		)
 		self.remove_services_from_provider = RemoveServicesFromProviderUseCase(
+			self.purchase_invoice_repository
+		)
+		self.get_provider_service_link = GetProviderServiceLinkUseCase(
 			self.purchase_invoice_repository
 		)

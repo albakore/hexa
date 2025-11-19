@@ -1,13 +1,7 @@
-import asyncio
-import importlib
 import json
-import os
 from contextlib import asynccontextmanager
-from pprint import pprint
-from typing import List
 
-from dependency_injector.wiring import Provide
-from fastapi import APIRouter, Depends, FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware import Middleware
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
@@ -15,19 +9,13 @@ from fastapi.responses import JSONResponse
 from fastapi.routing import APIRoute
 from rich import print
 
-import shared.interfaces.module_discovery
 from core.config.settings import env
 from core.exceptions.base import CustomException
 from core.fastapi.dependencies.logging import Logging
-from core.fastapi.dependencies.permission import (
-	sync_permissions_to_db,
-	system_permission,
-)
+from core.fastapi.dependencies.permission import system_permission
 from core.fastapi.middlewares import (
 	AuthBackend,
 	AuthenticationMiddleware,
-	PermissionValidationMiddleware,
-	ResponseLogMiddleware,
 	SQLAlchemyMiddleware,
 )
 from shared.interfaces.module_registry import ModuleRegistry
@@ -191,9 +179,13 @@ def create_app() -> FastAPI:
 
 	# Descubrir módulos DESPUÉS de registrar servicios base
 	print("🔍 Discovering and registering modules...")
-	from shared.interfaces.module_discovery import discover_modules
+	from shared.interfaces.module_discovery import discover_modules, discover_permissions
 
 	discover_modules("modules", "module.py")
+
+	# Descubrir permisos para registro en PERMISSIONS_REGISTRY
+	print("🔍 Discovering permissions...")
+	discover_permissions("modules")
 
 	# Registrar tasks de Celery DESPUÉS de descubrir módulos
 	print("📝 Registering Celery tasks...")

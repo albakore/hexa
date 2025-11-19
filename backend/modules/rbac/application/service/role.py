@@ -8,7 +8,7 @@ from modules.rbac.domain.command import CreateRoleCommand, UpdateRoleCommand
 from modules.rbac.domain.entity import GroupPermission, Permission, Role
 from modules.rbac.domain.repository import RoleRepository
 from modules.rbac.domain.repository.permission import PermissionRepository
-from modules.rbac.domain.usecase.role import RoleUseCaseFactory
+from modules.rbac.application.usecase.role import RoleUseCaseFactory
 
 
 @dataclass

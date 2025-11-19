@@ -3,6 +3,7 @@ from pydantic import BaseModel, Field
 
 from modules.notification.domain.command import (
 	CreateNotificationCommand,
+	SendEmailNotificationCommand,
 	SendNotificationCommand,
 )
 
@@ -11,6 +12,9 @@ class CreateNotificationRequest(CreateNotificationCommand): ...
 
 
 class SendNotificationRequest(SendNotificationCommand): ...
+
+
+class SendEmailNotificationRequest(SendEmailNotificationCommand): ...
 
 
 class CreateEmailTemplateRequest(BaseModel):

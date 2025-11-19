@@ -81,6 +81,34 @@ def discover_modules(root_dir: str, module_filename: str):
 	print(f"📦 Total {module_count} modules installed")
 
 
+def discover_permissions(root_dir: str):
+	"""
+	Auto-descubre e importa archivos permissions.py de todos los módulos.
+
+	Esto asegura que las clases PermissionGroup se registren en PERMISSIONS_REGISTRY
+	antes de sincronizar permisos con la base de datos.
+	"""
+	modules_path = Path(root_dir)
+	permissions_count = 0
+
+	for module_dir in modules_path.iterdir():
+		if not eval_module_is_dir(module_dir):
+			continue
+
+		permissions_file = module_dir / "permissions.py"
+		if not module_exists(permissions_file):
+			continue
+
+		module_path = convert_path_to_pythonpath(permissions_file)
+		module = import_python_module(module_path)
+
+		if module:
+			permissions_count += 1
+			print(f"✅ Loaded permissions from '{module_dir.name}' module")
+
+	print(f"🔐 Total {permissions_count} permission files loaded")
+
+
 # Note: discover_modules() debe ser llamado explícitamente:
 # - En FastAPI: core/fastapi/server.py durante lifespan
 # - En Celery: hexa/__main__.py en el comando celery-apps

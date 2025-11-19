@@ -17,7 +17,7 @@ class UserServiceProtocol(Protocol):
 
 	def __call__(self) -> Self: ...
 
-	async def get_user_list(self, limit: int, page: int) -> List[Any]:
+	async def get_user_list(self, limit: int | None = None, page: int = 0) -> List[Any]:
 		"""Obtiene lista de usuarios paginada"""
 		...
 

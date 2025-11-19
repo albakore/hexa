@@ -1,8 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import List, Sequence
 
+from modules.provider.application.dto import ProviderServiceWithRequirementsDTO
 from modules.provider.domain.entity.purchase_invoice_service import (
 	PurchaseInvoiceService,
+	ProviderInvoiceServiceLink,
 )
 
 
@@ -28,14 +30,19 @@ class PurchaseInvoiceServiceRepository(ABC):
 	@abstractmethod
 	async def get_services_of_provider(
 		self, id_provider: int
-	) -> list[PurchaseInvoiceService] | Sequence[PurchaseInvoiceService]: ...
+	) -> List[ProviderServiceWithRequirementsDTO]: ...
 
 	@abstractmethod
 	async def add_services_to_provider(
-		self, id_provider: int, id_services_list: List[int]
+		self, id_provider: int, services: List
 	) -> None: ...
 
 	@abstractmethod
 	async def remove_services_from_provider(
 		self, id_provider: int, id_services_list: List[int]
 	) -> None: ...
+
+	@abstractmethod
+	async def get_provider_service_link(
+		self, id_provider: int, id_service: int
+	) -> ProviderInvoiceServiceLink | None: ...

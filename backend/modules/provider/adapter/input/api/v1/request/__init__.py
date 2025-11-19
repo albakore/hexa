@@ -1,8 +1,9 @@
-from pydantic import BaseModel
 from modules.provider.domain.command import (
 	CreateDraftPurchaseInvoiceCommand,
 	CreateProviderCommand,
 	CreatePurchaseInvoiceServiceCommand,
+	LinkPurchaseInvoiceServiceToProviderCommand,
+	SearchDraftPurchaseInvoiceCommand,
 	UpdateAirWaybillCommand,
 	UpdateDraftPurchaseInvoiceCommand,
 	UpdateProviderCommand,
@@ -28,6 +29,11 @@ class DraftPurchaseInvoiceSearchRequest(SearchDraftPurchaseInvoiceCommand): ...
 
 
 class PurchaseInvoiceServiceCreateRequest(CreatePurchaseInvoiceServiceCommand): ...
+
+
+class LinkPurchaseInvoiceServiceToProviderRequest(
+	LinkPurchaseInvoiceServiceToProviderCommand
+): ...
 
 
 class PurchaseInvoiceServiceUpdateRequest(UpdatePurchaseInvoiceServiceCommand): ...

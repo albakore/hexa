@@ -1,8 +1,9 @@
 from typing import List, Sequence
+
+from modules.user.application.usecase.user import UserUseCaseFactory
 from modules.user.domain.command import CreateUserCommand
 from modules.user.domain.entity.user import User
 from modules.user.domain.repository.user import UserRepository
-from modules.user.domain.usecase.user import UserUseCaseFactory
 
 
 class UserService:
@@ -10,7 +11,9 @@ class UserService:
 		self.repository = repository
 		self.usecase = UserUseCaseFactory(repository)
 
-	async def get_user_list(self, limit: int, page: int) -> list[User]:
+	async def get_user_list(
+		self, limit: int | None = None, page: int = 0
+	) -> list[User] | Sequence[User]:
 		return await self.usecase.get_user_list(limit, page)
 
 	async def get_user_by_id(self, user_id: int) -> User | None:
@@ -44,4 +47,5 @@ class UserService:
 
 	async def set_user_password(self, user: User, hashed_password: str) -> User:
 		"""Establece la contraseña de un usuario (usado por auth para reset)"""
+		user.is_active = True
 		return await self.repository.set_user_password(user, hashed_password)

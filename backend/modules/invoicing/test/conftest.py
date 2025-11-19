@@ -18,7 +18,7 @@ from modules.invoicing.adapter.output.persistence.purchase_invoice_adapter impor
 from modules.invoicing.application.service.purchase_invoice import (
 	PurchaseInvoiceService,
 )
-from modules.invoicing.domain.usecase.purchase_invoice import InvoiceUseCaseFactory
+from modules.invoicing.application.usecase.purchase_invoice import InvoiceUseCaseFactory
 
 faker = Faker()
 

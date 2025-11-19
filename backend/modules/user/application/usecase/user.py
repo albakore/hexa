@@ -1,19 +1,20 @@
+from dataclasses import dataclass
 from typing import List, Sequence
 
+from core.db import Transactional
 from modules.user.domain.command import CreateUserCommand
 from modules.user.domain.entity.user import User
-from dataclasses import dataclass
-from modules.user.domain.repository.user import UserRepository
-from core.db import Transactional
-
 from modules.user.domain.exception import UserNotFoundException
+from modules.user.domain.repository.user import UserRepository
 
 
 @dataclass
 class GetUserListUseCase:
 	user_repository: UserRepository
 
-	async def __call__(self, limit: int = 20, page: int = 0) -> list[User]:
+	async def __call__(
+		self, limit: int | None = None, page: int = 0
+	) -> list[User] | Sequence[User]:
 		return await self.user_repository.get_user_list(limit, page)
 
 
@@ -56,6 +57,7 @@ class CreateUserUseCase:
 	@Transactional()
 	async def __call__(self, command: CreateUserCommand) -> User | None:
 		user = User.model_validate(command)
+		user.is_active = False
 		new_user = await self.user_repository.save(user=user)
 		return new_user
 
