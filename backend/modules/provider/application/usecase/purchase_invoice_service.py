@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import List, Sequence
 
 from core.db import Transactional
+from modules.provider.application.dto import ProviderServiceWithRequirementsDTO
 from modules.provider.domain.command import (
 	CreatePurchaseInvoiceServiceCommand,
 	LinkPurchaseInvoiceServiceToProviderCommand,
@@ -84,7 +85,7 @@ class DeletePurchaseInvoiceServicesUseCase:
 class GetServicesOfProviderUseCase:
 	purchase_invoice_repository: PurchaseInvoiceServiceRepository
 
-	async def __call__(self, id_provider: int):
+	async def __call__(self, id_provider: int) -> List[ProviderServiceWithRequirementsDTO]:
 		return await self.purchase_invoice_repository.get_services_of_provider(
 			id_provider
 		)

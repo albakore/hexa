@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import List, Sequence
 
 from core.db import Transactional
+from modules.provider.application.dto import ProviderServiceWithRequirementsDTO
 from modules.provider.application.usecase.purchase_invoice_service import (
 	PurchaseInvoiceServiceUseCaseFactory,
 )
@@ -84,7 +85,9 @@ class PurchaseInvoiceServiceTypeService:
 			command
 		)
 
-	async def get_services_of_provider(self, id_provider: int):
+	async def get_services_of_provider(
+		self, id_provider: int
+	) -> List[ProviderServiceWithRequirementsDTO]:
 		return await self.purchase_invoice_service_usecase.get_services_of_provider(
 			id_provider
 		)

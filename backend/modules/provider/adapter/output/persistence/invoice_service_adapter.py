@@ -1,5 +1,6 @@
 from typing import List, Sequence
 
+from modules.provider.application.dto import ProviderServiceWithRequirementsDTO
 from modules.provider.domain.entity import PurchaseInvoiceService
 from modules.provider.domain.entity.purchase_invoice_service import (
 	ProviderInvoiceServiceLink,
@@ -43,7 +44,7 @@ class PurchaseInvoiceServiceRepositoryAdapter(PurchaseInvoiceServiceRepository):
 
 	async def get_services_of_provider(
 		self, id_provider: int
-	) -> list[PurchaseInvoiceService] | Sequence[PurchaseInvoiceService]:
+	) -> List[ProviderServiceWithRequirementsDTO]:
 		return await self.purchase_invoice_service_repository.get_services_of_provider(
 			id_provider
 		)

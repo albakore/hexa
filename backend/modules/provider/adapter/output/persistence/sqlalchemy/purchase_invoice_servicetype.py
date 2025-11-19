@@ -2,6 +2,7 @@ from typing import List, Sequence
 from sqlmodel import col, select, delete
 
 from core.db import session_factory, session as global_session
+from modules.provider.application.dto import ProviderServiceWithRequirementsDTO
 from modules.provider.domain.command import LinkPurchaseInvoiceServiceToProviderCommand
 from modules.provider.domain.entity import ProviderInvoiceServiceLink
 from modules.provider.domain.entity.purchase_invoice_service import (
@@ -46,19 +47,39 @@ class PurchaseInvoiceServiceSQLAlchemyRepository(PurchaseInvoiceServiceRepositor
 
 	async def get_services_of_provider(
 		self, id_provider: int
-	) -> List[PurchaseInvoiceService] | Sequence[PurchaseInvoiceService]:
-		query_id_list_services = select(ProviderInvoiceServiceLink.fk_service).where(
-			ProviderInvoiceServiceLink.fk_provider == int(id_provider)
-		)
-
-		query_services = select(PurchaseInvoiceService).where(
-			col(PurchaseInvoiceService.id).in_(query_id_list_services)
+	) -> List[ProviderServiceWithRequirementsDTO]:
+		# Hacer JOIN entre PurchaseInvoiceService y ProviderInvoiceServiceLink
+		query = (
+			select(PurchaseInvoiceService, ProviderInvoiceServiceLink)
+			.join(
+				ProviderInvoiceServiceLink,
+				PurchaseInvoiceService.id == ProviderInvoiceServiceLink.fk_service,
+			)
+			.where(col(ProviderInvoiceServiceLink.fk_provider) == int(id_provider))
 		)
 
 		async with session_factory() as session:
-			result = await session.execute(query_services)
+			result = await session.execute(query)
+			rows = result.all()
 
-		return result.scalars().all()
+		# Construir DTOs combinando datos del servicio y del link
+		services_with_requirements = []
+		for service, link in rows:
+			dto = ProviderServiceWithRequirementsDTO(
+				id=service.id,
+				name=service.name,
+				description=service.description,
+				group=service.group,
+				id_yiqi_service=service.id_yiqi_service,
+				require_awb=link.require_awb,
+				require_unit_price=link.require_unit_price,
+				require_kg=link.require_kg,
+				require_items=link.require_items,
+				require_detail_file=link.require_detail_file,
+			)
+			services_with_requirements.append(dto)
+
+		return services_with_requirements
 
 	async def add_services_to_provider(
 		self, id_provider: int, services: List[LinkPurchaseInvoiceServiceToProviderCommand]

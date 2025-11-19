@@ -4,6 +4,9 @@ from pydantic import BaseModel
 from sqlmodel import Field
 
 from modules.file_storage.domain.entity import FileMetadata
+from modules.provider.domain.entity.purchase_invoice_service import (
+	PurchaseInvoiceService,
+)
 
 
 class DraftPurchaseInvoiceDTO(BaseModel):
@@ -33,3 +36,21 @@ class DraftPurchaseInvoiceDTO(BaseModel):
 	details_file: FileMetadata | None = Field(
 		default=None, description="Archivo de detalle"
 	)
+
+
+class ProviderServiceWithRequirementsDTO(BaseModel):
+	"""DTO que combina los datos del servicio con los requerimientos de la tabla intermedia"""
+
+	# Datos del servicio
+	id: int | None = None
+	name: str
+	description: str | None = None
+	group: str | None = None
+	id_yiqi_service: int | None = None
+
+	# Requerimientos de la tabla intermedia (ProviderInvoiceServiceLink)
+	require_awb: bool | None = None
+	require_unit_price: bool | None = None
+	require_kg: bool | None = None
+	require_items: bool | None = None
+	require_detail_file: bool | None = None
