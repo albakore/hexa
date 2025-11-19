@@ -230,7 +230,14 @@ class YiqiApiRepository(YiqiRepository):
 		url = "/api/InstancesAPI/GetEntityUpdates2"
 		entity_name = "CLIENTE"
 		last_update = "01011900"
-		aditional_filters = []
+		aditional_filters = [
+			{
+				"columnName": "CLIE_ACTIVO_P",
+				"TipoDato": 2,
+				"operator": 1,
+				"operating": "S",
+			}
+		]
 		attributes = [
 			"CLIE_NOMBRE",
 			"CLIE_RAZON_SOCIAL",
@@ -238,6 +245,8 @@ class YiqiApiRepository(YiqiRepository):
 			"CLIE_MONEDA",
 			"CLIE_REGION",
 			"CLIE_IDIOMA",
+			"CLIE_ACTIVO_P",
+			"CLIE_ACTIVO",
 		]
 		params = {
 			"schemaId": id_schema,
