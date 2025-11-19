@@ -1,15 +1,17 @@
 import asyncio
-import typer
-from typer import Option
-import uvicorn
+import importlib.util
 import sys
 from pathlib import Path
-import importlib.util
+
+import typer
+import uvicorn
+from typer import Option
 
 sys.path.append(str(Path(__file__).resolve().parents[1]))
-from core.db.session import session_factory
-from core.config.settings import env
 from sqlalchemy import text
+
+from core.config.settings import env
+from core.db.session import session_factory
 
 # Configuración del CLI principal
 cmd = typer.Typer(rich_markup_mode="rich", help="Gestor del proyecto hexagonal")
@@ -171,6 +173,68 @@ def sync_database(
 
 		# Sincronizar módulos
 		if modules:
+			typer.echo("📚 Sincronizando módulos...")
+			typer.echo("-" * 60)
+			from core.config.modules import sync_modules_to_db
+
+			await sync_modules_to_db()
+			typer.echo("")
+
+		typer.echo("=" * 60)
+		typer.echo("✨ Sincronización completada exitosamente\n")
+
+	asyncio.run(run_sync())
+
+
+@cmd.command("sync-with-yiqi-db")
+def sync_with_yiqi_database(
+	currencies: bool = Option(True, help="Sincronizar divisas"),
+	services: bool = Option(True, help="Sincronizar servicios"),
+	providers: bool = Option(True, help="Sincronizar proveedores"),
+):
+	async def run_sync():
+		typer.echo("\n🔄 Iniciando sincronización de yiqi con la base de datos...")
+		typer.echo("=" * 60)
+
+		# Descubrir módulos primero (necesario para registrar permisos)
+		from shared.interfaces.module_registry import ModuleRegistry
+		from shared.interfaces.service_locator import service_locator
+
+		ModuleRegistry().clear()
+		service_locator.clear()
+
+		typer.echo("\n📦 Descubriendo módulos...")
+		from shared.interfaces.module_discovery import discover_modules
+
+		discover_modules("modules", "module.py")
+		typer.echo("✅ Módulos descubiertos\n")
+
+		# Descubrir módulos setup (para MODULE_REGISTRY)
+		from core.config.modules import get_modules_setup
+
+		typer.echo("📦 Cargando configuraciones de módulos...")
+		get_modules_setup("modules")
+		typer.echo("✅ Configuraciones cargadas\n")
+
+		# Descubrir y cargar permisos desde archivos permissions.py
+		if currencies:
+			typer.echo("🔍 Descubriendo archivos de permisos...")
+			from shared.interfaces.module_discovery import discover_permissions
+
+			discover_permissions("modules")
+			typer.echo("")
+
+		# Sincronizar permisos
+		if services:
+			typer.echo("🔐 Sincronizando permisos...")
+			typer.echo("-" * 60)
+			from core.fastapi.dependencies.permission import sync_permissions_to_db
+
+			await sync_permissions_to_db()
+			typer.echo("")
+
+		# Sincronizar módulos
+		if providers:
 			typer.echo("📚 Sincronizando módulos...")
 			typer.echo("-" * 60)
 			from core.config.modules import sync_modules_to_db
