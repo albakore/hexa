@@ -9,6 +9,7 @@ from modules.provider.application.exception import (
 	DraftPurchaseInvoiceNotFoundException,
 	DraftPurchaseInvoiceReceiptFileInvalidException,
 	DraftPurchaseInvoiceServiceNotFoundException,
+	ProviderServiceLinkNotFoundException,
 )
 from modules.provider.application.service.purchase_invoice_service import (
 	PurchaseInvoiceServiceTypeService,
@@ -146,14 +147,16 @@ class DraftPurchaseInvoiceService:
 		if not draft_invoice.fk_invoice_service:
 			raise DraftPurchaseInvoiceServiceNotFoundException
 
-		service = (
-			await self.draft_purchase_invoice_servicetype_service.get_services_by_id(
-				draft_invoice.fk_invoice_service
-			)
+		if not draft_invoice.fk_provider:
+			raise DraftPurchaseInvoiceServiceNotFoundException
+
+		# Obtener el link provider-service con la configuración de campos requeridos
+		service_link = await self.draft_purchase_invoice_servicetype_service.get_provider_service_link(
+			draft_invoice.fk_provider, draft_invoice.fk_invoice_service
 		)
 
-		if not service:
-			raise DraftPurchaseInvoiceServiceNotFoundException
+		if not service_link:
+			raise ProviderServiceLinkNotFoundException
 
 		# Validar archivos en storage (capa de aplicación)
 		if draft_invoice.id_receipt_file:
@@ -163,7 +166,7 @@ class DraftPurchaseInvoiceService:
 			if not receipt_file_metadata:
 				raise DraftPurchaseInvoiceReceiptFileInvalidException
 
-		if service.require_detail_file and draft_invoice.id_details_file:
+		if service_link.require_detail_file and draft_invoice.id_details_file:
 			detail_file_metadata = await self._get_metadata_or_none(
 				draft_invoice.id_details_file
 			)
@@ -172,7 +175,7 @@ class DraftPurchaseInvoiceService:
 
 		# Validar campos obligatorios (capa de dominio)
 		await self.draft_purchase_invoice_usecase.validate_draft_purchase_invoice(
-			draft_invoice, service
+			draft_invoice, service_link
 		)
 
 		# Marcar como "Finalized"

@@ -6,7 +6,7 @@ from modules.provider.domain.command import (
 	CreateDraftPurchaseInvoiceCommand,
 	SearchDraftPurchaseInvoiceCommand,
 )
-from modules.provider.domain.entity import PurchaseInvoiceService
+from modules.provider.domain.entity import ProviderInvoiceServiceLink
 from modules.provider.domain.entity.draft_purchase_invoice import DraftPurchaseInvoice
 from modules.provider.domain.exception import (
 	DraftPurchaseInvoiceAwbRequiredException,
@@ -99,7 +99,7 @@ class ValidateDraftPurchaseInvoiceUseCase:
 	async def __call__(
 		self,
 		draft_purchase_invoice: DraftPurchaseInvoice,
-		service: PurchaseInvoiceService,
+		service_link: ProviderInvoiceServiceLink,
 	):
 		"""
 		Validates a draft purchase invoice.
@@ -114,15 +114,15 @@ class ValidateDraftPurchaseInvoiceUseCase:
 		- Must have receipt date (receipt_date)
 		- Must have unit price (unit_price)
 
-		Dynamic validations based on service configuration:
-		- AWB (if service.require_awb is True)
-		- Kilograms (if service.require_kg is True)
-		- Items (if service.require_items is True)
-		- Detail file (if service.require_detail_file is True)
+		Dynamic validations based on service link configuration:
+		- AWB (if service_link.require_awb is True)
+		- Kilograms (if service_link.require_kg is True)
+		- Items (if service_link.require_items is True)
+		- Detail file (if service_link.require_detail_file is True)
 
 		Args:
 			draft_purchase_invoice: The draft to validate and finalize
-			service: The service type with dynamic requirements configuration
+			service_link: The provider-service link with dynamic requirements configuration
 
 		Raises:
 			DraftPurchaseInvoiceNumberNotFoundException: If invoice number is missing
@@ -167,21 +167,21 @@ class ValidateDraftPurchaseInvoiceUseCase:
 			raise DraftPurchaseInvoiceConceptTooShortException
 
 		# Validate service-specific required fields dynamically
-		# These validations depend on the service type configuration
-		if service.require_awb and not draft_purchase_invoice.awb:
+		# These validations depend on the provider-service link configuration
+		if service_link.require_awb and not draft_purchase_invoice.awb:
 			raise DraftPurchaseInvoiceAwbRequiredException
 
-		if service.require_kg and not draft_purchase_invoice.kg:
+		if service_link.require_kg and not draft_purchase_invoice.kg:
 			raise DraftPurchaseInvoiceKgRequiredException
 
-		if service.require_items and not draft_purchase_invoice.items:
+		if service_link.require_items and not draft_purchase_invoice.items:
 			raise DraftPurchaseInvoiceItemsRequiredException
 
-		if service.require_detail_file and not draft_purchase_invoice.id_details_file:
+		if service_link.require_detail_file and not draft_purchase_invoice.id_details_file:
 			raise DraftPurchaseInvoiceDetailFileRequiredException
 
 		# Note: unit_price is already validated above as a general required field
-		# service.require_unit_price is redundant but could be used for
+		# service_link.require_unit_price is redundant but could be used for
 		# additional business logic if needed
 
 

@@ -1,16 +1,17 @@
 from typing import List
+
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, Query
 
-from modules.provider.container import ProviderContainer
 from modules.provider.adapter.input.api.v1.request import (
+	LinkPurchaseInvoiceServiceToProviderRequest,
 	PurchaseInvoiceServiceCreateRequest,
 	PurchaseInvoiceServiceUpdateRequest,
 )
 from modules.provider.application.service.purchase_invoice_service import (
 	PurchaseInvoiceServiceTypeService,
 )
-
+from modules.provider.container import ProviderContainer
 
 purchase_invoice_service_router = APIRouter()
 
@@ -66,12 +67,12 @@ async def get_services_of_provider(
 @inject
 async def add_services_to_provider(
 	id_provider: int,
-	id_services_list: List[int],
+	services: List[LinkPurchaseInvoiceServiceToProviderRequest],
 	service: PurchaseInvoiceServiceTypeService = Depends(
 		Provide[ProviderContainer.invoice_servicetype_service]
 	),
 ):
-	return await service.add_services_to_provider(id_provider, id_services_list)
+	return await service.add_services_to_provider(id_provider, services)
 
 
 @purchase_invoice_service_router.delete("/remove-from/provider/{id_provider}")

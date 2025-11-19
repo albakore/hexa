@@ -1,7 +1,8 @@
-from datetime import date
 import uuid
+from datetime import date
 from enum import Enum
 from typing import Any, List
+
 from pydantic import BaseModel, Field
 
 
@@ -66,12 +67,16 @@ class CreatePurchaseInvoiceServiceCommand(BaseModel):
 	name: str
 	description: str | None = None
 	group: str | None = None
-	require_awb: bool | None = None
-	require_unit_price: bool | None = None
-	require_kg: bool | None = None
-	require_items: bool | None = None
-	require_detail_file: bool | None = None
 	id_yiqi_service: int | None = None
+
+
+class LinkPurchaseInvoiceServiceToProviderCommand(BaseModel):
+	id: int
+	require_awb: bool | None = Field(default=None)
+	require_unit_price: bool | None = Field(default=None)
+	require_kg: bool | None = Field(default=None)
+	require_items: bool | None = Field(default=None)
+	require_detail_file: bool | None = Field(default=None)
 
 
 class UpdateDraftPurchaseInvoiceCommand(CreateDraftPurchaseInvoiceCommand): ...

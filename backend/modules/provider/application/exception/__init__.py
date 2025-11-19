@@ -25,6 +25,12 @@ class DraftPurchaseInvoiceServiceNotFoundException(CustomException):
 	message = "Service not found in draft purchase invoice"
 
 
+class ProviderServiceLinkNotFoundException(CustomException):
+	code = 404
+	error_code = "PROVIDER_SERVICE_LINK__NOT_FOUND_ERROR"
+	message = "Service is not linked to this provider or link configuration not found"
+
+
 class DraftPurchaseInvoiceReceiptFileNotFoundException(CustomException):
 	code = 400
 	error_code = "DRAFT_PURCHASE_INVOICE_RECEIPT_FILE__NOT_FOUND_ERROR"

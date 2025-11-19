@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, List
-from sqlmodel import SQLModel, Relationship, Field
+
+from sqlmodel import Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
 	from modules.provider.domain.entity.provider import Provider
@@ -11,6 +12,12 @@ class ProviderInvoiceServiceLink(SQLModel, table=True):
 		primary_key=True, foreign_key="purchaseinvoiceservice.id"
 	)
 
+	require_awb: bool | None = Field(default=None)
+	require_unit_price: bool | None = Field(default=None)
+	require_kg: bool | None = Field(default=None)
+	require_items: bool | None = Field(default=None)
+	require_detail_file: bool | None = Field(default=None)
+
 
 class PurchaseInvoiceService(SQLModel, table=True):
 	id: int | None = Field(None, primary_key=True)
@@ -21,12 +28,6 @@ class PurchaseInvoiceService(SQLModel, table=True):
 	group: str | None = Field(
 		default=None, description="Grupo al que pertenece este servicio"
 	)
-
-	require_awb: bool | None = Field(default=None)
-	require_unit_price: bool | None = Field(default=None)
-	require_kg: bool | None = Field(default=None)
-	require_items: bool | None = Field(default=None)
-	require_detail_file: bool | None = Field(default=None)
 
 	providers: List["Provider"] = Relationship(
 		back_populates="services", link_model=ProviderInvoiceServiceLink

@@ -1,21 +1,24 @@
 from dataclasses import dataclass
 from typing import List, Sequence
+
 from core.db import Transactional
+from modules.provider.application.usecase.purchase_invoice_service import (
+	PurchaseInvoiceServiceUseCaseFactory,
+)
 from modules.provider.domain.command import (
 	CreatePurchaseInvoiceServiceCommand,
+	LinkPurchaseInvoiceServiceToProviderCommand,
 	UpdatePurchaseInvoiceServiceCommand,
 )
 from modules.provider.domain.entity.purchase_invoice_service import (
 	PurchaseInvoiceService,
+	ProviderInvoiceServiceLink,
 )
 from modules.provider.domain.exception import (
 	DraftPurchaseInvoiceServiceNotFoundException,
 )
 from modules.provider.domain.repository.purchase_invoice_service import (
 	PurchaseInvoiceServiceRepository,
-)
-from modules.provider.application.usecase.purchase_invoice_service import (
-	PurchaseInvoiceServiceUseCaseFactory,
 )
 
 
@@ -87,10 +90,12 @@ class PurchaseInvoiceServiceTypeService:
 		)
 
 	async def add_services_to_provider(
-		self, id_provider: int, id_services_list: List[int]
+		self,
+		id_provider: int,
+		services: List[LinkPurchaseInvoiceServiceToProviderCommand],
 	):
 		return await self.purchase_invoice_service_usecase.add_services_to_provider(
-			id_provider, id_services_list
+			id_provider, services
 		)
 
 	async def remove_services_from_provider(
@@ -100,4 +105,11 @@ class PurchaseInvoiceServiceTypeService:
 			await self.purchase_invoice_service_usecase.remove_services_from_provider(
 				id_provider, id_services_list
 			)
+		)
+
+	async def get_provider_service_link(
+		self, id_provider: int, id_service: int
+	) -> ProviderInvoiceServiceLink | None:
+		return await self.purchase_invoice_service_usecase.get_provider_service_link(
+			id_provider, id_service
 		)
