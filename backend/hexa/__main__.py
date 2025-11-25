@@ -7,6 +7,8 @@ import typer
 import uvicorn
 from typer import Option
 
+from shared.interfaces.service_protocols import YiqiServiceProtocol
+
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 from sqlalchemy import text
 
@@ -216,30 +218,174 @@ def sync_with_yiqi_database(
 		get_modules_setup("modules")
 		typer.echo("✅ Configuraciones cargadas\n")
 
-		# Descubrir y cargar permisos desde archivos permissions.py
+		yiqi_service: YiqiServiceProtocol = service_locator.get_service("yiqi_service")
+
+		# Sincronizar currencies
 		if currencies:
-			typer.echo("🔍 Descubriendo archivos de permisos...")
-			from shared.interfaces.module_discovery import discover_permissions
+			typer.echo("🔍 Obteniendo currencies de yiqi...")
+			from sqlmodel import select
 
-			discover_permissions("modules")
+			from modules.finance.domain.entity.currency import Currency
+
+			currencies_data = await yiqi_service.get_currency_list(
+				id_schema=env.YIQI_SCHEMA
+			)
+
+			async with session_factory() as session:
+				try:
+					created = 0
+					updated = 0
+					for currency_item in currencies_data:
+						id_yiqi = currency_item.get("id")
+
+						code = currency_item.get("MONE_NOMBRE", "")
+						country = currency_item.get("PAIS_PAIS")
+
+						if not code:
+							continue
+
+						# Buscar si ya existe la moneda
+						stmt = select(Currency).where(Currency.code == code)
+						result = await session.execute(stmt)
+						existing_currency = result.scalars().first()
+
+						if existing_currency:
+							# Actualizar si existe
+							existing_currency.name = code
+							existing_currency.country = country
+							session.add(existing_currency)
+							updated += 1
+						else:
+							# Crear nueva si no existe
+							new_currency = Currency(
+								name=code,
+								code=code,
+								country=country,
+							)
+							session.add(new_currency)
+							created += 1
+
+					await session.commit()
+					typer.echo(f"✅ Se sincronizaron {len(currencies_data)} currencies (Nuevas: {created}, Actualizadas: {updated})")
+				except Exception as e:
+					await session.rollback()
+					typer.echo(f"❌ Error sincronizando currencies: {e}")
+					raise
 			typer.echo("")
 
-		# Sincronizar permisos
+		# Sincronizar servicios
 		if services:
-			typer.echo("🔐 Sincronizando permisos...")
-			typer.echo("-" * 60)
-			from core.fastapi.dependencies.permission import sync_permissions_to_db
+			typer.echo("🔍 Obteniendo servicios de yiqi...")
+			from sqlmodel import select
 
-			await sync_permissions_to_db()
+			from modules.provider.domain.entity.purchase_invoice_service import (
+				PurchaseInvoiceService,
+			)
+
+			services_data = await yiqi_service.get_services_list(
+				id_schema=env.YIQI_SCHEMA
+			)
+
+			async with session_factory() as session:
+				try:
+					created = 0
+					updated = 0
+					for service_item in services_data:
+						id_yiqi = service_item.get("id")
+
+						name = service_item.get("SERV_SERVICIO", "")
+						group = service_item.get("SERV_MARCA_DE_GASTOS")
+						is_active = service_item.get("SERV_ACTIVO_PRO")
+
+						# Solo sincronizar servicios activos o sin estado definido (None)
+						# Filtrar solo los explícitamente inactivos ("N")
+						if is_active == "N" or not name:
+							continue
+
+						# Buscar si ya existe el servicio
+						stmt = select(PurchaseInvoiceService).where(
+							PurchaseInvoiceService.id_yiqi_service == id_yiqi
+						)
+						result = await session.execute(stmt)
+						existing_service = result.scalars().first()
+
+						if existing_service:
+							# Actualizar si existe
+							existing_service.name = name
+							existing_service.group = group
+							session.add(existing_service)
+							updated += 1
+						else:
+							# Crear nuevo si no existe
+							new_service = PurchaseInvoiceService(
+								name=name,
+								group=group,
+								id_yiqi_service=id_yiqi,
+							)
+							session.add(new_service)
+							created += 1
+
+					await session.commit()
+					typer.echo(f"✅ Se sincronizaron {len(services_data)} servicios (Nuevos: {created}, Actualizados: {updated})")
+				except Exception as e:
+					await session.rollback()
+					typer.echo(f"❌ Error sincronizando servicios: {e}")
+					raise
 			typer.echo("")
 
-		# Sincronizar módulos
+		# Sincronizar proveedores
 		if providers:
-			typer.echo("📚 Sincronizando módulos...")
-			typer.echo("-" * 60)
-			from core.config.modules import sync_modules_to_db
+			typer.echo("🔍 Obteniendo proveedores de yiqi...")
+			from sqlmodel import select
 
-			await sync_modules_to_db()
+			from modules.provider.domain.entity.provider import Provider
+
+			providers_data = await yiqi_service.get_providers_list(
+				id_schema=env.YIQI_SCHEMA
+			)
+
+			async with session_factory() as session:
+				try:
+					created = 0
+					updated = 0
+					for provider_item in providers_data:
+						id_yiqi = provider_item.get("id")
+
+						name = provider_item.get("CLIE_NOMBRE", "")
+						currency = provider_item.get("CLIE_MONEDA")
+						is_active_provider = provider_item.get("CLIE_ACTIVO_P") == "S"
+
+						# Solo sincronizar proveedores activos
+						if not is_active_provider or not name:
+							continue
+
+						# Buscar si ya existe el proveedor
+						stmt = select(Provider).where(Provider.id_yiqi_provider == id_yiqi)
+						result = await session.execute(stmt)
+						existing_provider = result.scalars().first()
+
+						if existing_provider:
+							# Actualizar si existe
+							existing_provider.name = name
+							existing_provider.currency = currency
+							session.add(existing_provider)
+							updated += 1
+						else:
+							# Crear nuevo si no existe
+							new_provider = Provider(
+								name=name,
+								currency=currency,
+								id_yiqi_provider=id_yiqi,
+							)
+							session.add(new_provider)
+							created += 1
+
+					await session.commit()
+					typer.echo(f"✅ Se sincronizaron {len(providers_data)} proveedores (Nuevos: {created}, Actualizados: {updated})")
+				except Exception as e:
+					await session.rollback()
+					typer.echo(f"❌ Error sincronizando proveedores: {e}")
+					raise
 			typer.echo("")
 
 		typer.echo("=" * 60)

@@ -48,6 +48,10 @@ class YiqiServiceProtocol(Protocol):
 		"""
 		...
 
+	async def get_providers_list(self, id_schema: int) -> List[dict]:
+		"""Obtiene lista de proveedores del ERP"""
+		...
+
 	async def upload_file(self, command: Any, id_schema: int) -> dict:
 		"""
 		Sube un archivo al ERP.
