@@ -1,42 +1,31 @@
+"""
+Módulo de Invoicing
+Configuración simplificada usando variables y funciones
+"""
+
 from typing import Dict
 
-from dependency_injector.containers import DeclarativeContainer
 from fastapi import APIRouter
 
 from modules.invoicing.container import InvoicingContainer
-from shared.interfaces.module_registry import ModuleInterface
 
 
-class InvoicingModule(ModuleInterface):
-	"""Módulo de invoicing desacoplado"""
+def setup_routes() -> APIRouter:
+	"""Configura las rutas del módulo"""
+	from .adapter.input.api.v1.purchase_invoice import (
+		purchase_invoice_router as purchase_invoice_v1_router,
+	)
 
-	def __init__(self):
-		self._container = InvoicingContainer()
-		self._routes = self._setup_routes()
+	router = APIRouter(prefix="/invoicing", tags=["Invoicing"])
+	router.include_router(purchase_invoice_v1_router, prefix="/v1/purchase_invoice")
 
-	@property
-	def name(self) -> str:
-		return "invoicing"
+	return router
 
-	@property
-	def container(self) -> DeclarativeContainer:
-		return self._container
 
-	@property
-	def service(self) -> Dict[str, object]:
-		return {"purchase_invoice_service": self._container.purchase_invoice_service}
-
-	@property
-	def routes(self) -> APIRouter:
-		return self._routes
-
-	def _setup_routes(self) -> APIRouter:
-		"""Configura las rutas del módulo"""
-		from .adapter.input.api.v1.purchase_invoice import (
-			purchase_invoice_router as purchase_invoice_v1_router,
-		)
-
-		router = APIRouter(prefix="/invoicing", tags=["Invoicing"])
-		router.include_router(purchase_invoice_v1_router, prefix="/v1/purchase_invoice")
-
-		return router
+# Configuración del módulo
+name = "invoicing"
+container = InvoicingContainer()
+service: Dict[str, object] = {
+	"purchase_invoice_service": container.purchase_invoice_service,
+}
+routes = setup_routes()

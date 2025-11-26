@@ -1,44 +1,30 @@
-from fastapi import APIRouter
-from dependency_injector.containers import DeclarativeContainer
+"""
+Módulo de autenticación
+Configuración simplificada usando variables y funciones
+"""
 
-from shared.interfaces.module_registry import ModuleInterface
-from modules.auth.container import AuthContainer
 from typing import Dict
 
+from fastapi import APIRouter
 
-class AuthModule(ModuleInterface):
-	"""Módulo de autenticacion desacoplado"""
+from modules.auth.container import AuthContainer
 
-	def __init__(self):
-		self._container = AuthContainer()
-		self._routes = self._setup_routes()
 
-	@property
-	def name(self) -> str:
-		return "auth"
+def setup_routes() -> APIRouter:
+	"""Configura las rutas del módulo"""
+	from .adapter.input.api.v1.auth import auth_router as auth_v1_router
 
-	@property
-	def container(self) -> DeclarativeContainer:
-		return self._container
+	router = APIRouter(prefix="/auth", tags=["Authentication"])
+	router.include_router(auth_v1_router, prefix="/v1/auth", tags=["Authentication"])
 
-	@property
-	def service(self) -> Dict[str, object]:
-		return {
-			"auth_service": self._container.service,
-			"auth.jwt_service": self._container.jwt_service,
-		}
+	return router
 
-	@property
-	def routes(self) -> APIRouter:
-		return self._routes
 
-	def _setup_routes(self) -> APIRouter:
-		"""Configura las rutas del módulo"""
-		from .adapter.input.api.v1.auth import auth_router as auth_v1_router
-
-		router = APIRouter(prefix="/auth", tags=["Authentication"])
-		router.include_router(
-			auth_v1_router, prefix="/v1/auth", tags=["Authentication"]
-		)
-
-		return router
+# Configuración del módulo
+name = "auth"
+container = AuthContainer()
+service: Dict[str, object] = {
+	"auth_service": container.service,
+	"auth.jwt_service": container.jwt_service,
+}
+routes = setup_routes()
