@@ -8,3 +8,6 @@ from modules.provider.domain.entity import *
 from modules.rbac.domain.entity import *
 from modules.user.domain.entity import *
 from modules.user_relationships.domain.entity import *
+
+# Core models
+from core.audit.models import AuditLog
