@@ -1,6 +1,7 @@
 from typing import List, Sequence
 
 from modules.provider.application.dto import ProviderServiceWithRequirementsDTO
+from modules.provider.domain.command import SearchPurchaseInvoiceServiceCommand
 from modules.provider.domain.entity import PurchaseInvoiceService
 from modules.provider.domain.entity.purchase_invoice_service import (
 	ProviderInvoiceServiceLink,
@@ -69,3 +70,8 @@ class PurchaseInvoiceServiceRepositoryAdapter(PurchaseInvoiceServiceRepository):
 		return await self.purchase_invoice_service_repository.get_provider_service_link(
 			id_provider, id_service
 		)
+
+	async def search_services(
+		self, command: SearchPurchaseInvoiceServiceCommand
+	) -> tuple[List[PurchaseInvoiceService] | Sequence[PurchaseInvoiceService], int]:
+		return await self.purchase_invoice_service_repository.search_services(command)

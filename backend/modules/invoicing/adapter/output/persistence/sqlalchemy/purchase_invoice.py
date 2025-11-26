@@ -1,16 +1,20 @@
 from typing import List, Sequence
+
 from sqlmodel import select
 
-from core.db import session_factory, session as global_session
+from core.db import session as global_session
+from core.db import session_factory
 from core.search import DynamicSearchMixin
+from modules.invoicing.application.command import SearchPurchaseInvoiceCommand
 from modules.invoicing.domain.entity import PurchaseInvoice
 from modules.invoicing.domain.repository.purchase_invoice import (
 	PurchaseInvoiceRepository,
 )
-from modules.invoicing.application.command import SearchPurchaseInvoiceCommand
 
 
-class PurchaseInvoiceSQLAlchemyRepository(DynamicSearchMixin, PurchaseInvoiceRepository):
+class PurchaseInvoiceSQLAlchemyRepository(
+	DynamicSearchMixin, PurchaseInvoiceRepository
+):
 	model_class = PurchaseInvoice
 	date_fields = {
 		"service_month",
@@ -66,5 +70,6 @@ class PurchaseInvoiceSQLAlchemyRepository(DynamicSearchMixin, PurchaseInvoiceRep
 				session=session,
 				filters=command.filters,
 				limit=command.limit,
-				page=command.page
+				page=command.page,
+				model_class=self.model_class,
 			)
