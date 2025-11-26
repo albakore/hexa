@@ -2,16 +2,18 @@
 Mixins reutilizables para modelos SQLModel/SQLAlchemy
 
 Este módulo proporciona mixins que agregan funcionalidad común a los modelos,
-como campos de timestamp que se actualizan automáticamente.
+como campos de timestamp y auditoría que se actualizan automáticamente.
+
+IMPORTANTE: Los mixins ahora usan Field() de SQLModel en lugar de @declared_attr
+para garantizar compatibilidad completa con SQLModel.
 """
 
 import warnings
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import Column, DateTime, String, func
+from sqlalchemy import func
 from sqlalchemy.exc import SAWarning
-from sqlalchemy.orm import declared_attr
 from sqlmodel import Field
 
 # Silenciar warnings de SQLAlchemy sobre acceso a atributos declarativos
@@ -36,23 +38,25 @@ class TimestampMixin:
 		class MyModel(SQLModel, TimestampMixin, table=True):
 			id: int | None = Field(primary_key=True)
 			name: str
-			# created_at y updated_at se agregan automáticamente al final
+			# created_at y updated_at se agregan automáticamente
 	"""
 
-	@declared_attr
-	def created_at(cls):
-		return Column(
-			DateTime(timezone=True), server_default=func.now(), nullable=False
-		)
+	created_at: Optional[datetime] = Field(
+		default=None,
+		sa_column_kwargs={
+			"server_default": func.now(),
+			"nullable": False,
+		},
+	)
 
-	@declared_attr
-	def updated_at(cls):
-		return Column(
-			DateTime(timezone=True),
-			server_default=func.now(),
-			onupdate=func.now(),
-			nullable=False,
-		)
+	updated_at: Optional[datetime] = Field(
+		default=None,
+		sa_column_kwargs={
+			"server_default": func.now(),
+			"onupdate": func.now(),
+			"nullable": False,
+		},
+	)
 
 
 class UserTimestampMixin:
@@ -69,33 +73,40 @@ class UserTimestampMixin:
 		class User(SQLModel, UserTimestampMixin, table=True):
 			id: uuid.UUID = Field(primary_key=True)
 			email: str
-			# campos de timestamp se agregan automáticamente al final
+			# campos de timestamp se agregan automáticamente
 	"""
 
-	@declared_attr
-	def date_registration(cls):
-		return Column(
-			DateTime(timezone=True), server_default=func.now(), nullable=False
-		)
+	date_registration: Optional[datetime] = Field(
+		default=None,
+		sa_column_kwargs={
+			"server_default": func.now(),
+			"nullable": False,
+		},
+	)
 
-	@declared_attr
-	def date_last_session(cls):
-		return Column(DateTime(timezone=True), nullable=True)
+	date_last_session: Optional[datetime] = Field(
+		default=None,
+		sa_column_kwargs={
+			"nullable": True,
+		},
+	)
 
-	@declared_attr
-	def created_at(cls):
-		return Column(
-			DateTime(timezone=True), server_default=func.now(), nullable=False
-		)
+	created_at: Optional[datetime] = Field(
+		default=None,
+		sa_column_kwargs={
+			"server_default": func.now(),
+			"nullable": False,
+		},
+	)
 
-	@declared_attr
-	def updated_at(cls):
-		return Column(
-			DateTime(timezone=True),
-			server_default=func.now(),
-			onupdate=func.now(),
-			nullable=False,
-		)
+	updated_at: Optional[datetime] = Field(
+		default=None,
+		sa_column_kwargs={
+			"server_default": func.now(),
+			"onupdate": func.now(),
+			"nullable": False,
+		},
+	)
 
 
 class SoftDeleteMixin:
@@ -110,16 +121,22 @@ class SoftDeleteMixin:
 		class MyModel(SQLModel, SoftDeleteMixin, TimestampMixin, table=True):
 			id: int | None = Field(primary_key=True)
 			name: str
-			# campos de soft delete se agregan automáticamente al final
+			# campos de soft delete se agregan automáticamente
 	"""
 
-	@declared_attr
-	def deleted_at(cls):
-		return Column(DateTime(timezone=True), nullable=True)
+	deleted_at: Optional[datetime] = Field(
+		default=None,
+		sa_column_kwargs={
+			"nullable": True,
+		},
+	)
 
-	@declared_attr
-	def is_deleted(cls):
-		return Column(default=False, nullable=False)
+	is_deleted: bool = Field(
+		default=False,
+		sa_column_kwargs={
+			"nullable": False,
+		},
+	)
 
 
 class AuditMixin:
@@ -127,8 +144,8 @@ class AuditMixin:
 	Mixin que agrega campos de auditoría a los modelos.
 
 	Campos:
-	- created_by: UUID del usuario que creó el registro
-	- updated_by: UUID del usuario que modificó el registro por última vez
+	- created_by: UUID del usuario que creó el registro (como string)
+	- updated_by: UUID del usuario que modificó el registro por última vez (como string)
 
 	Estos campos se actualizan automáticamente mediante event listeners.
 
@@ -136,22 +153,24 @@ class AuditMixin:
 		class MyModel(SQLModel, AuditMixin, TimestampMixin, table=True):
 			id: int | None = Field(primary_key=True)
 			name: str
-			# created_by y updated_by se agregan automáticamente al final
+			# created_by y updated_by se agregan automáticamente
 
 	Nota: Para que funcione correctamente, debe configurarse el contexto
 	de auditoría en cada request con set_audit_context().
 	"""
 
-	@declared_attr
-	def created_by(cls):
-		return Column(
-			String(36),  # UUID como string
-			nullable=True,
-		)
+	created_by: Optional[str] = Field(
+		default=None,
+		max_length=36,
+		sa_column_kwargs={
+			"nullable": True,
+		},
+	)
 
-	@declared_attr
-	def updated_by(cls):
-		return Column(
-			String(36),  # UUID como string
-			nullable=True,
-		)
+	updated_by: Optional[str] = Field(
+		default=None,
+		max_length=36,
+		sa_column_kwargs={
+			"nullable": True,
+		},
+	)
