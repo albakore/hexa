@@ -7,8 +7,9 @@ los eventos INSERT, UPDATE y DELETE de las entidades auditables.
 
 import json
 import uuid
-from datetime import datetime, date
+from datetime import date, datetime
 from typing import Any
+
 from sqlalchemy import event
 from sqlalchemy.orm import Session
 from sqlmodel import SQLModel
@@ -30,7 +31,7 @@ def _serialize_value(value: Any) -> Any:
 		return value.isoformat()
 	elif isinstance(value, date):
 		return value.isoformat()
-	elif hasattr(value, '__dict__'):
+	elif hasattr(value, "__dict__"):
 		# Para objetos complejos, intentar convertir a dict
 		try:
 			return str(value)
@@ -51,7 +52,7 @@ def _get_model_dict(instance: SQLModel, exclude_fields: set = None) -> dict:
 		Diccionario con los valores del modelo
 	"""
 	if exclude_fields is None:
-		exclude_fields = {'created_at', 'updated_at', 'created_by', 'updated_by'}
+		exclude_fields = {"created_at", "updated_at", "created_by", "updated_by"}
 
 	result = {}
 	for column in instance.__table__.columns:
@@ -86,7 +87,7 @@ def _create_audit_log(
 	entity_id: str,
 	action: str,
 	old_values: dict = None,
-	new_values: dict = None
+	new_values: dict = None,
 ):
 	"""
 	Crea un registro de auditoría.
@@ -105,7 +106,8 @@ def _create_audit_log(
 	changed_fields = None
 	if action == "UPDATE" and old_values and new_values:
 		changed_fields = [
-			field for field in new_values.keys()
+			field
+			for field in new_values.keys()
 			if old_values.get(field) != new_values.get(field)
 		]
 
@@ -113,15 +115,17 @@ def _create_audit_log(
 		entity_name=entity_name,
 		entity_id=entity_id,
 		action=action,
-		user_id=uuid.UUID(context['user_id']) if context and context.get('user_id') else None,
-		user_email=context.get('user_email') if context else None,
+		user_id=uuid.UUID(context["user_id"])
+		if context and context.get("user_id")
+		else None,
+		user_email=context.get("user_email") if context else None,
 		old_values=old_values,
 		new_values=new_values,
 		changed_fields=changed_fields,
-		ip_address=context.get('ip_address') if context else None,
-		user_agent=context.get('user_agent') if context else None,
-		endpoint=context.get('endpoint') if context else None,
-		extra_data=context.get('metadata') if context else None
+		ip_address=context.get("ip_address") if context else None,
+		user_agent=context.get("user_agent") if context else None,
+		endpoint=context.get("endpoint") if context else None,
+		extra_data=context.get("metadata") if context else None,
 	)
 
 	session.add(audit_log)
@@ -132,9 +136,39 @@ def receive_before_flush(session: Session, flush_context, instances):
 	"""
 	Listener que se ejecuta antes del flush de la sesión.
 
-	Captura los cambios realizados en las entidades auditables.
+	Captura los cambios realizados en las entidades auditables y establece
+	los campos de auditoría (created_by, updated_by).
 	"""
-	# Capturar valores antiguos de objetos modificados
+	user_id = get_current_user_id()
+
+	# Procesar nuevos objetos (INSERT)
+	for obj in session.new:
+		if isinstance(obj, AuditLog):
+			# No auditar la tabla de auditoría
+			continue
+
+		if not isinstance(obj, SQLModel):
+			continue
+
+		# Verificar si es auditable
+		is_auditable = hasattr(obj.__class__, "__mro__") and any(
+			base.__name__ in ["AuditMixin", "TimestampMixin", "UserTimestampMixin"]
+			for base in obj.__class__.__mro__
+		)
+
+		if not is_auditable:
+			continue
+
+		# Establecer created_by y updated_by si tiene AuditMixin
+		if hasattr(obj, "created_by") and user_id:
+			if not obj.created_by:
+				obj.created_by = user_id
+
+		if hasattr(obj, "updated_by") and user_id:
+			if not obj.updated_by:
+				obj.updated_by = user_id
+
+	# Procesar objetos modificados (UPDATE)
 	for obj in session.dirty:
 		if not isinstance(obj, (SQLModel, AuditMixin)):
 			continue
@@ -144,32 +178,24 @@ def receive_before_flush(session: Session, flush_context, instances):
 			continue
 
 		# Verificar si el modelo tiene el mixin de auditoría o timestamp
-		is_auditable = (
-			hasattr(obj.__class__, '__mro__') and
-			any(base.__name__ in ['AuditMixin', 'TimestampMixin', 'UserTimestampMixin']
-				for base in obj.__class__.__mro__)
+		is_auditable = hasattr(obj.__class__, "__mro__") and any(
+			base.__name__ in ["AuditMixin", "TimestampMixin", "UserTimestampMixin"]
+			for base in obj.__class__.__mro__
 		)
 
 		if not is_auditable:
 			continue
 
 		# Actualizar el campo updated_by si tiene AuditMixin
-		if hasattr(obj, 'updated_by'):
-			user_id = get_current_user_id()
-			if user_id:
-				obj.updated_by = user_id
+		if hasattr(obj, "updated_by") and user_id:
+			obj.updated_by = user_id
 
 		# Guardar estado antiguo para auditoría
-		if not hasattr(session, '_audit_old_values'):
+		if not hasattr(session, "_audit_old_values"):
 			session._audit_old_values = {}
 
 		entity_id = _get_entity_id(obj)
 		entity_name = obj.__class__.__name__
-
-		# Obtener valores actuales de la BD
-		old_values = {}
-		for attr in session.get_attribute_history(obj, list(obj.__table__.columns.keys())[0]).unchanged:
-			pass
 
 		# Usar el objeto tal como está antes del flush
 		session._audit_old_values[(entity_name, entity_id)] = _get_model_dict(obj)
@@ -192,20 +218,13 @@ def receive_after_flush(session: Session, flush_context):
 			continue
 
 		# Verificar si es auditable
-		is_auditable = (
-			hasattr(obj.__class__, '__mro__') and
-			any(base.__name__ in ['AuditMixin', 'TimestampMixin', 'UserTimestampMixin']
-				for base in obj.__class__.__mro__)
+		is_auditable = hasattr(obj.__class__, "__mro__") and any(
+			base.__name__ in ["AuditMixin", "TimestampMixin", "UserTimestampMixin"]
+			for base in obj.__class__.__mro__
 		)
 
 		if not is_auditable:
 			continue
-
-		# Establecer created_by si tiene AuditMixin
-		if hasattr(obj, 'created_by'):
-			user_id = get_current_user_id()
-			if user_id and not obj.created_by:
-				obj.created_by = user_id
 
 		entity_name = obj.__class__.__name__
 		entity_id = _get_entity_id(obj)
@@ -216,7 +235,7 @@ def receive_after_flush(session: Session, flush_context):
 			entity_name=entity_name,
 			entity_id=entity_id,
 			action="INSERT",
-			new_values=new_values
+			new_values=new_values,
 		)
 
 	# Procesar actualizaciones
@@ -227,10 +246,9 @@ def receive_after_flush(session: Session, flush_context):
 		if not isinstance(obj, SQLModel):
 			continue
 
-		is_auditable = (
-			hasattr(obj.__class__, '__mro__') and
-			any(base.__name__ in ['AuditMixin', 'TimestampMixin', 'UserTimestampMixin']
-				for base in obj.__class__.__mro__)
+		is_auditable = hasattr(obj.__class__, "__mro__") and any(
+			base.__name__ in ["AuditMixin", "TimestampMixin", "UserTimestampMixin"]
+			for base in obj.__class__.__mro__
 		)
 
 		if not is_auditable:
@@ -241,7 +259,7 @@ def receive_after_flush(session: Session, flush_context):
 
 		# Obtener valores viejos si fueron guardados
 		old_values = None
-		if hasattr(session, '_audit_old_values'):
+		if hasattr(session, "_audit_old_values"):
 			old_values = session._audit_old_values.get((entity_name, entity_id))
 
 		new_values = _get_model_dict(obj)
@@ -254,7 +272,7 @@ def receive_after_flush(session: Session, flush_context):
 				entity_id=entity_id,
 				action="UPDATE",
 				old_values=old_values,
-				new_values=new_values
+				new_values=new_values,
 			)
 
 	# Procesar eliminaciones
@@ -265,10 +283,9 @@ def receive_after_flush(session: Session, flush_context):
 		if not isinstance(obj, SQLModel):
 			continue
 
-		is_auditable = (
-			hasattr(obj.__class__, '__mro__') and
-			any(base.__name__ in ['AuditMixin', 'TimestampMixin', 'UserTimestampMixin']
-				for base in obj.__class__.__mro__)
+		is_auditable = hasattr(obj.__class__, "__mro__") and any(
+			base.__name__ in ["AuditMixin", "TimestampMixin", "UserTimestampMixin"]
+			for base in obj.__class__.__mro__
 		)
 
 		if not is_auditable:
@@ -283,11 +300,11 @@ def receive_after_flush(session: Session, flush_context):
 			entity_name=entity_name,
 			entity_id=entity_id,
 			action="DELETE",
-			old_values=old_values
+			old_values=old_values,
 		)
 
 	# Limpiar valores antiguos almacenados
-	if hasattr(session, '_audit_old_values'):
+	if hasattr(session, "_audit_old_values"):
 		session._audit_old_values.clear()
 
 
