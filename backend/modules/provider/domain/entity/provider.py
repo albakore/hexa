@@ -6,6 +6,7 @@ from modules.user_relationships.shared.decorators import user_relationship
 from modules.provider.domain.entity.purchase_invoice_service import (
 	ProviderInvoiceServiceLink,
 )
+from shared.mixins import TimestampMixin, AuditMixin
 
 if TYPE_CHECKING:
 	from modules.user.domain.entity.user import User
@@ -24,7 +25,7 @@ class UserProviderLink(SQLModel, table=True):
 
 
 @user_relationship("provider")
-class Provider(SQLModel, table=True):
+class Provider(SQLModel, AuditMixin, TimestampMixin, table=True):
 	id: int | None = Field(None, primary_key=True)
 	name: str
 

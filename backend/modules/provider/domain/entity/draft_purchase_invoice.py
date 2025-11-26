@@ -1,9 +1,10 @@
 from datetime import date
 import uuid
 from sqlmodel import SQLModel, Field
+from shared.mixins import AuditMixin, TimestampMixin
 
 
-class DraftPurchaseInvoice(SQLModel, table=True):
+class DraftPurchaseInvoice(SQLModel, AuditMixin, TimestampMixin, table=True):
 	id: int | None = Field(None, primary_key=True)
 	number: str | None = Field(default=None, description="Numero de la factura")
 	concept: str | None = Field(default=None, description="Concepto")
