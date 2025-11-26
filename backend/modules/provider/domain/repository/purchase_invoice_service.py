@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List, Sequence
 
 from modules.provider.application.dto import ProviderServiceWithRequirementsDTO
+from modules.provider.domain.command import SearchPurchaseInvoiceServiceCommand
 from modules.provider.domain.entity.purchase_invoice_service import (
 	PurchaseInvoiceService,
 	ProviderInvoiceServiceLink,
@@ -46,3 +47,8 @@ class PurchaseInvoiceServiceRepository(ABC):
 	async def get_provider_service_link(
 		self, id_provider: int, id_service: int
 	) -> ProviderInvoiceServiceLink | None: ...
+
+	@abstractmethod
+	async def search_services(
+		self, command: SearchPurchaseInvoiceServiceCommand
+	) -> tuple[List[PurchaseInvoiceService] | Sequence[PurchaseInvoiceService], int]: ...

@@ -1,7 +1,10 @@
 from dataclasses import dataclass
-from typing import Sequence
+from typing import List, Sequence
 from modules.provider.application.exception import ProviderNotFoundException
-from modules.provider.domain.command import CreateProviderCommand
+from modules.provider.domain.command import (
+	CreateProviderCommand,
+	SearchProviderCommand,
+)
 from modules.provider.domain.entity.provider import Provider
 from modules.provider.domain.repository.provider import ProviderRepository
 from modules.provider.application.usecase.provider import (
@@ -42,3 +45,8 @@ class ProviderService:
 
 	async def update_provider(self, command: UpdateProviderCommand):
 		return await self.provider_usecase.update_provider(command)
+
+	async def search_providers(
+		self, command: SearchProviderCommand
+	) -> tuple[List[Provider] | Sequence[Provider], int]:
+		return await self.provider_usecase.search_providers(command)

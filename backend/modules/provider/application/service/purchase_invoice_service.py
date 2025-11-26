@@ -10,6 +10,7 @@ from modules.provider.domain.command import (
 	CreatePurchaseInvoiceServiceCommand,
 	LinkPurchaseInvoiceServiceToProviderCommand,
 	UpdatePurchaseInvoiceServiceCommand,
+	SearchPurchaseInvoiceServiceCommand,
 )
 from modules.provider.domain.entity.purchase_invoice_service import (
 	PurchaseInvoiceService,
@@ -116,3 +117,8 @@ class PurchaseInvoiceServiceTypeService:
 		return await self.purchase_invoice_service_usecase.get_provider_service_link(
 			id_provider, id_service
 		)
+
+	async def search_services(
+		self, command: SearchPurchaseInvoiceServiceCommand
+	) -> tuple[List[PurchaseInvoiceService] | Sequence[PurchaseInvoiceService], int]:
+		return await self.purchase_invoice_service_usecase.search_services(command)

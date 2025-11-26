@@ -2,8 +2,12 @@ from typing import List, Sequence
 from sqlmodel import col, select, delete
 
 from core.db import session_factory, session as global_session
+from core.search import DynamicSearchMixin
 from modules.provider.application.dto import ProviderServiceWithRequirementsDTO
-from modules.provider.domain.command import LinkPurchaseInvoiceServiceToProviderCommand
+from modules.provider.domain.command import (
+	LinkPurchaseInvoiceServiceToProviderCommand,
+	SearchPurchaseInvoiceServiceCommand,
+)
 from modules.provider.domain.entity import ProviderInvoiceServiceLink
 from modules.provider.domain.entity.purchase_invoice_service import (
 	PurchaseInvoiceService,
@@ -13,7 +17,10 @@ from modules.provider.domain.repository.purchase_invoice_service import (
 )
 
 
-class PurchaseInvoiceServiceSQLAlchemyRepository(PurchaseInvoiceServiceRepository):
+class PurchaseInvoiceServiceSQLAlchemyRepository(DynamicSearchMixin, PurchaseInvoiceServiceRepository):
+	model_class = PurchaseInvoiceService
+	date_fields = set()  # PurchaseInvoiceService no tiene campos de fecha
+
 	async def get_services_list(
 		self, limit: int = 12, page: int = 0
 	) -> List[PurchaseInvoiceService] | Sequence[PurchaseInvoiceService]:
@@ -135,3 +142,15 @@ class PurchaseInvoiceServiceSQLAlchemyRepository(PurchaseInvoiceServiceRepositor
 			result = await session.execute(query)
 
 		return result.scalar_one_or_none()
+
+	async def search_services(
+		self, command: SearchPurchaseInvoiceServiceCommand
+	) -> tuple[List[PurchaseInvoiceService] | Sequence[PurchaseInvoiceService], int]:
+		"""Búsqueda dinámica de servicios de factura de compra con filtros"""
+		async with session_factory() as session:
+			return await self.dynamic_search(
+				session=session,
+				filters=command.filters,
+				limit=command.limit,
+				page=command.page
+			)
