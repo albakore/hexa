@@ -1,13 +1,12 @@
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, Query
 
-from modules.provider.container import ProviderContainer
 from modules.provider.adapter.input.api.v1.request import (
 	ProviderCreateRequest,
 	ProviderUpdateRequest,
 )
 from modules.provider.application.service.provider import ProviderService
-
+from modules.provider.container import ProviderContainer
 
 provider_router = APIRouter()
 
@@ -15,7 +14,7 @@ provider_router = APIRouter()
 @provider_router.get("")
 @inject
 async def get_all_providers(
-	limit: int = Query(default=10, ge=1, le=50),
+	limit: int = Query(default=3000, ge=1, le=5000),
 	page: int = Query(default=0),
 	service: ProviderService = Depends(Provide[ProviderContainer.provider_service]),
 ):

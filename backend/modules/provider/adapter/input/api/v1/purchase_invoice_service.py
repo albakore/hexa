@@ -19,7 +19,7 @@ purchase_invoice_service_router = APIRouter()
 @purchase_invoice_service_router.get("")
 @inject
 async def get_all_services(
-	limit: int = Query(default=10, ge=1, le=50),
+	limit: int = Query(default=3000, ge=1, le=5000),
 	page: int = Query(default=0),
 	service: PurchaseInvoiceServiceTypeService = Depends(
 		Provide[ProviderContainer.invoice_servicetype_service]

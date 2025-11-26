@@ -17,7 +17,7 @@ class PurchaseInvoiceServiceRepositoryAdapter(PurchaseInvoiceServiceRepository):
 		self.purchase_invoice_service_repository = purchase_invoice_service_repository
 
 	async def get_services_list(
-		self, limit: int = 12, page: int = 0
+		self, limit: int = 1000, page: int = 0
 	) -> list[PurchaseInvoiceService] | Sequence[PurchaseInvoiceService]:
 		return await self.purchase_invoice_service_repository.get_services_list(
 			limit, page
