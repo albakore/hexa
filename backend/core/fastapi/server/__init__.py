@@ -9,6 +9,8 @@ from fastapi.responses import JSONResponse
 from fastapi.routing import APIRoute
 from rich import print
 
+from core.audit.listeners import setup_audit_listeners
+from core.audit.middleware import AuditMiddleware
 from core.config.settings import env
 from core.exceptions.base import CustomException
 from core.fastapi.dependencies.logging import Logging
@@ -98,6 +100,9 @@ def make_middleware() -> list[Middleware]:
 		# NOTA: Ya no usamos PermissionValidationMiddleware como middleware
 		# Los permisos se validan con una dependency inyectada automáticamente por @require_permissions
 		# Middleware(PermissionValidationMiddleware),
+		# Middleware de auditoría - excluye paths que no necesitan auditoría
+		# Para excluir paths adicionales: Middleware(AuditMiddleware, exclude_paths=['/api/public', '/webhooks'])
+		Middleware(AuditMiddleware),
 		Middleware(SQLAlchemyMiddleware),
 		# Middleware(ResponseLogMiddleware),
 	]
@@ -179,8 +184,12 @@ def create_app() -> FastAPI:
 
 	# Descubrir módulos DESPUÉS de registrar servicios base
 	print("🔍 Discovering and registering modules...")
-	from shared.interfaces.module_discovery import discover_modules, discover_permissions
+	from shared.interfaces.module_discovery import (
+		discover_modules,
+		discover_permissions,
+	)
 
+	setup_audit_listeners()
 	discover_modules("modules", "module.py")
 
 	# Descubrir permisos para registro en PERMISSIONS_REGISTRY
@@ -225,7 +234,6 @@ def create_app() -> FastAPI:
 	)
 	init_containers(app_=app_)
 	init_routes_pack(app_=app_)
-	# init_routers(app_=app_)
 	init_listeners(app_=app_)
 	export_openapi(app_=app_)
 	generate_openapi_for_frontend(app_=app_)
