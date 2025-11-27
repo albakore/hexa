@@ -1,10 +1,13 @@
-
+from modules.auth.domain.entity import *
+from modules.file_storage.domain.entity import *
+from modules.finance.domain.entity import *
+from modules.invoicing.domain.entity import *
+from modules.module.domain.entity import *
+from modules.notification.domain.entity import *
+from modules.provider.domain.entity import *
+from modules.rbac.domain.entity import *
 from modules.user.domain.entity import *
 from modules.user_relationships.domain.entity import *
-from modules.rbac.domain.entity import *
-from modules.module.domain.entity import *
-from modules.auth.domain.entity import *
-from modules.provider.domain.entity import *
-from modules.invoicing.domain.entity import *
-from modules.file_storage.domain.entity import *
-from modules.notification.domain.entity import *
+
+# Core models
+from core.audit.models import AuditLog

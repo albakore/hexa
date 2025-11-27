@@ -1,4 +1,6 @@
-from typing import Sequence
+from typing import List, Sequence
+
+from modules.provider.domain.command import SearchProviderCommand
 from modules.provider.domain.entity.provider import Provider
 from modules.provider.domain.repository.provider import ProviderRepository
 
@@ -8,7 +10,7 @@ class ProviderRepositoryAdapter(ProviderRepository):
 		self.provider_repository = provider_repository
 
 	async def get_all_providers(
-		self, limit: int = 12, page: int = 0
+		self, limit: int = 5000, page: int = 0
 	) -> list[Provider] | Sequence[Provider]:
 		return await self.provider_repository.get_all_providers(limit, page)
 
@@ -20,3 +22,8 @@ class ProviderRepositoryAdapter(ProviderRepository):
 
 	async def delete(self, provider: Provider):
 		return await self.provider_repository.delete(provider)
+
+	async def search_providers(
+		self, command: SearchProviderCommand
+	) -> tuple[List[Provider] | Sequence[Provider], int]:
+		return await self.provider_repository.search_providers(command)

@@ -1,11 +1,15 @@
 from dataclasses import dataclass
-from typing import Sequence
+from typing import List, Sequence
 
 from modules.user.domain.entity import User
 from modules.user.domain.repository.user import UserRepository
 from core.db import Transactional
 from modules.provider.application.exception import ProviderNotFoundException
-from modules.provider.domain.command import CreateProviderCommand, UpdateProviderCommand
+from modules.provider.domain.command import (
+	CreateProviderCommand,
+	UpdateProviderCommand,
+	SearchProviderCommand,
+)
 from modules.provider.domain.entity.provider import Provider
 from modules.provider.domain.repository.provider import ProviderRepository
 
@@ -79,6 +83,16 @@ class LinkUserToProviderUseCase:
 
 
 @dataclass
+class SearchProvidersUseCase:
+	provider_repository: ProviderRepository
+
+	async def __call__(
+		self, command: SearchProviderCommand
+	) -> tuple[List[Provider] | Sequence[Provider], int]:
+		return await self.provider_repository.search_providers(command)
+
+
+@dataclass
 class ProviderUseCaseFactory:
 	provider_repository: ProviderRepository
 
@@ -89,3 +103,4 @@ class ProviderUseCaseFactory:
 		self.save_provider = SaveProviderUseCase(self.provider_repository)
 		self.delete_provider = DeleteProviderUseCase(self.provider_repository)
 		self.update_provider = UpdateProviderUseCase(self.provider_repository)
+		self.search_providers = SearchProvidersUseCase(self.provider_repository)

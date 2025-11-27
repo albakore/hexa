@@ -7,6 +7,7 @@ from modules.provider.domain.command import (
 	CreatePurchaseInvoiceServiceCommand,
 	LinkPurchaseInvoiceServiceToProviderCommand,
 	UpdatePurchaseInvoiceServiceCommand,
+	SearchPurchaseInvoiceServiceCommand,
 )
 from modules.provider.domain.entity.purchase_invoice_service import (
 	PurchaseInvoiceService,
@@ -130,6 +131,16 @@ class GetProviderServiceLinkUseCase:
 
 
 @dataclass
+class SearchPurchaseInvoiceServicesUseCase:
+	purchase_invoice_repository: PurchaseInvoiceServiceRepository
+
+	async def __call__(
+		self, command: SearchPurchaseInvoiceServiceCommand
+	) -> tuple[List[PurchaseInvoiceService] | Sequence[PurchaseInvoiceService], int]:
+		return await self.purchase_invoice_repository.search_services(command)
+
+
+@dataclass
 class PurchaseInvoiceServiceUseCaseFactory:
 	purchase_invoice_repository: PurchaseInvoiceServiceRepository
 
@@ -160,5 +171,8 @@ class PurchaseInvoiceServiceUseCaseFactory:
 			self.purchase_invoice_repository
 		)
 		self.get_provider_service_link = GetProviderServiceLinkUseCase(
+			self.purchase_invoice_repository
+		)
+		self.search_services = SearchPurchaseInvoiceServicesUseCase(
 			self.purchase_invoice_repository
 		)

@@ -1,41 +1,29 @@
-from fastapi import APIRouter
-from dependency_injector.containers import DeclarativeContainer
+"""
+Módulo de Finance
+Configuración simplificada usando variables y funciones
+"""
 
-from shared.interfaces.module_registry import ModuleInterface
-from modules.finance.container import FinanceContainer
 from typing import Dict
 
+from fastapi import APIRouter
 
-class FinanceModule(ModuleInterface):
-	"""Módulo de finanzas desacoplado"""
+from modules.finance.container import FinanceContainer
 
-	def __init__(self):
-		self._container = FinanceContainer()
-		self._routes = self._setup_routes()
 
-	@property
-	def name(self) -> str:
-		return "finance"
+def setup_routes() -> APIRouter:
+	"""Configura las rutas del módulo"""
+	from .adapter.input.api.v1.currency import currency_router as currency_v1_router
 
-	@property
-	def container(self) -> DeclarativeContainer:
-		return self._container
+	router = APIRouter(prefix="/finance", tags=["Finance"])
+	router.include_router(currency_v1_router, prefix="/v1/currency", tags=["Finance"])
 
-	@property
-	def service(self) -> Dict[str, object]:
-		return {"currency_service": self._container.currency_service}
+	return router
 
-	@property
-	def routes(self) -> APIRouter:
-		return self._routes
 
-	def _setup_routes(self) -> APIRouter:
-		"""Configura las rutas del módulo"""
-		from .adapter.input.api.v1.currency import currency_router as currency_v1_router
-
-		router = APIRouter(prefix="/finance", tags=["Finance"])
-		router.include_router(
-			currency_v1_router, prefix="/v1/currency", tags=["Finance"]
-		)
-
-		return router
+# Configuración del módulo
+name = "finance"
+container = FinanceContainer()
+service: Dict[str, object] = {
+	"currency_service": container.currency_service,
+}
+routes = setup_routes()

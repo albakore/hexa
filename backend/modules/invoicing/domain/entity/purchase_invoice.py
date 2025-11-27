@@ -1,9 +1,10 @@
 from datetime import date
 import uuid
 from sqlmodel import SQLModel, Field
+from shared.mixins import AuditMixin, TimestampMixin
 
 
-class PurchaseInvoice(SQLModel, table=True):
+class PurchaseInvoice(SQLModel, AuditMixin, TimestampMixin, table=True):
 	# region General
 	# General
 

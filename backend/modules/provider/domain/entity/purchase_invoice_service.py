@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, List
 
 from sqlmodel import Field, Relationship, SQLModel
+from shared.mixins import AuditMixin, TimestampMixin
 
 if TYPE_CHECKING:
 	from modules.provider.domain.entity.provider import Provider
@@ -19,7 +20,7 @@ class ProviderInvoiceServiceLink(SQLModel, table=True):
 	require_detail_file: bool | None = Field(default=None)
 
 
-class PurchaseInvoiceService(SQLModel, table=True):
+class PurchaseInvoiceService(SQLModel, AuditMixin, TimestampMixin, table=True):
 	id: int | None = Field(None, primary_key=True)
 	name: str = Field(default=None, description="Nombre del servicio")
 	description: str | None = Field(

@@ -1,9 +1,9 @@
 import uuid
 from datetime import date
-from enum import Enum
-from typing import Any, List
+from typing import List
 
 from pydantic import BaseModel, Field
+from core.search import FilterOperator, FilterCriteria
 
 
 class CreateProviderCommand(BaseModel):
@@ -141,6 +141,22 @@ class FilterCriteria(BaseModel):
 
 
 class SearchDraftPurchaseInvoiceCommand(BaseModel):
+	filters: List[FilterCriteria] = Field(
+		default=[], description="Lista de filtros a aplicar"
+	)
+	limit: int = Field(default=20, ge=1, le=50000, description="Límite de resultados")
+	page: int = Field(default=0, ge=0, description="Página de resultados")
+
+
+class SearchProviderCommand(BaseModel):
+	filters: List[FilterCriteria] = Field(
+		default=[], description="Lista de filtros a aplicar"
+	)
+	limit: int = Field(default=20, ge=1, le=50000, description="Límite de resultados")
+	page: int = Field(default=0, ge=0, description="Página de resultados")
+
+
+class SearchPurchaseInvoiceServiceCommand(BaseModel):
 	filters: List[FilterCriteria] = Field(
 		default=[], description="Lista de filtros a aplicar"
 	)

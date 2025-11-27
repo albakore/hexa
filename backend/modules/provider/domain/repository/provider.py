@@ -1,5 +1,6 @@
-from typing import Sequence
+from typing import List, Sequence
 from modules.provider.domain.entity.provider import Provider
+from modules.provider.domain.command import SearchProviderCommand
 from abc import ABC, abstractmethod
 
 
@@ -17,3 +18,8 @@ class ProviderRepository(ABC):
 
 	@abstractmethod
 	async def delete(self, provider: Provider): ...
+
+	@abstractmethod
+	async def search_providers(
+		self, command: SearchProviderCommand
+	) -> tuple[List[Provider] | Sequence[Provider], int]: ...

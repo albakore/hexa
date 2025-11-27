@@ -5,12 +5,13 @@ from datetime import datetime
 
 from core.helpers.password import PasswordHelper
 from modules.provider.domain.entity import UserProviderLink, Provider
+from shared.mixins import UserTimestampMixin
 
 if TYPE_CHECKING:
 	from modules.rbac.domain.entity import Role
 
 
-class User(SQLModel, table=True):
+class User(SQLModel, UserTimestampMixin, table=True):
 	id: uuid.UUID | None = Field(default_factory=uuid.uuid4, primary_key=True)
 	nickname: str | None = Field(default=None)
 	name: str | None = Field(default=None)
@@ -24,8 +25,6 @@ class User(SQLModel, table=True):
 	initial_password: str | None = Field(
 		nullable=True, default_factory=PasswordHelper.generate_password
 	)
-	date_last_session: datetime = Field(default_factory=datetime.now)
-	date_registration: datetime = Field(default_factory=datetime.now)
 	fk_role: int | None = Field(default=None, foreign_key="role.id")
 	is_admin: bool = Field(default=False)
 	is_owner: bool = Field(default=False)

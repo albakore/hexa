@@ -4,6 +4,8 @@ from modules.provider.domain.command import (
 	CreatePurchaseInvoiceServiceCommand,
 	LinkPurchaseInvoiceServiceToProviderCommand,
 	SearchDraftPurchaseInvoiceCommand,
+	SearchProviderCommand,
+	SearchPurchaseInvoiceServiceCommand,
 	UpdateAirWaybillCommand,
 	UpdateDraftPurchaseInvoiceCommand,
 	UpdateProviderCommand,
@@ -37,6 +39,12 @@ class LinkPurchaseInvoiceServiceToProviderRequest(
 
 
 class PurchaseInvoiceServiceUpdateRequest(UpdatePurchaseInvoiceServiceCommand): ...
+
+
+class ProviderSearchRequest(SearchProviderCommand): ...
+
+
+class PurchaseInvoiceServiceSearchRequest(SearchPurchaseInvoiceServiceCommand): ...
 
 
 class AirWaybillCreateRequest(CreateAirWaybillCommand): ...

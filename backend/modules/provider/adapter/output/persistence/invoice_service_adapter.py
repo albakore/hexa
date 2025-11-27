@@ -1,6 +1,7 @@
 from typing import List, Sequence
 
 from modules.provider.application.dto import ProviderServiceWithRequirementsDTO
+from modules.provider.domain.command import SearchPurchaseInvoiceServiceCommand
 from modules.provider.domain.entity import PurchaseInvoiceService
 from modules.provider.domain.entity.purchase_invoice_service import (
 	ProviderInvoiceServiceLink,
@@ -17,17 +18,17 @@ class PurchaseInvoiceServiceRepositoryAdapter(PurchaseInvoiceServiceRepository):
 		self.purchase_invoice_service_repository = purchase_invoice_service_repository
 
 	async def get_services_list(
-		self, limit: int = 12, page: int = 0
+		self, limit: int = 1000, page: int = 0
 	) -> list[PurchaseInvoiceService] | Sequence[PurchaseInvoiceService]:
 		return await self.purchase_invoice_service_repository.get_services_list(
 			limit, page
 		)
 
 	async def get_services_by_id(
-		self, id_provider: int
+		self, id_service: int
 	) -> PurchaseInvoiceService | None:
 		return await self.purchase_invoice_service_repository.get_services_by_id(
-			id_provider
+			id_service
 		)
 
 	async def save_service(
@@ -50,10 +51,10 @@ class PurchaseInvoiceServiceRepositoryAdapter(PurchaseInvoiceServiceRepository):
 		)
 
 	async def add_services_to_provider(
-		self, id_provider: int, id_services_list: List[int]
+		self, id_provider: int, services: List[int]
 	) -> None:
 		return await self.purchase_invoice_service_repository.add_services_to_provider(
-			id_provider, id_services_list
+			id_provider, services
 		)
 
 	async def remove_services_from_provider(
@@ -69,3 +70,8 @@ class PurchaseInvoiceServiceRepositoryAdapter(PurchaseInvoiceServiceRepository):
 		return await self.purchase_invoice_service_repository.get_provider_service_link(
 			id_provider, id_service
 		)
+
+	async def search_services(
+		self, command: SearchPurchaseInvoiceServiceCommand
+	) -> tuple[List[PurchaseInvoiceService] | Sequence[PurchaseInvoiceService], int]:
+		return await self.purchase_invoice_service_repository.search_services(command)
