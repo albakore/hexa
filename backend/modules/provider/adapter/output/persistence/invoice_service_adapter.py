@@ -25,10 +25,10 @@ class PurchaseInvoiceServiceRepositoryAdapter(PurchaseInvoiceServiceRepository):
 		)
 
 	async def get_services_by_id(
-		self, id_provider: int
+		self, id_service: int
 	) -> PurchaseInvoiceService | None:
 		return await self.purchase_invoice_service_repository.get_services_by_id(
-			id_provider
+			id_service
 		)
 
 	async def save_service(
@@ -51,10 +51,10 @@ class PurchaseInvoiceServiceRepositoryAdapter(PurchaseInvoiceServiceRepository):
 		)
 
 	async def add_services_to_provider(
-		self, id_provider: int, id_services_list: List[int]
+		self, id_provider: int, services: List[int]
 	) -> None:
 		return await self.purchase_invoice_service_repository.add_services_to_provider(
-			id_provider, id_services_list
+			id_provider, services
 		)
 
 	async def remove_services_from_provider(

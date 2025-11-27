@@ -6,10 +6,10 @@ Estos son tests de integración que verifican la interacción con la base de dat
 
 import pytest
 
-from modules.invoicing.domain.entity.purchase_invoice import PurchaseInvoice
 from modules.invoicing.adapter.output.persistence.purchase_invoice_adapter import (
 	PurchaseInvoiceRepositoryAdapter,
 )
+from modules.invoicing.domain.entity.purchase_invoice import PurchaseInvoice
 
 
 @pytest.mark.integration
@@ -221,6 +221,8 @@ class TestPurchaseInvoiceRepository:
 		# Arrange
 		repository = real_purchase_invoice_repository
 		saved_invoice = await repository.save_purchase_invoice(sample_purchase_invoice)
+		assert saved_invoice.id is not None
+
 		invoice_id = saved_invoice.id
 
 		# Modificar campos

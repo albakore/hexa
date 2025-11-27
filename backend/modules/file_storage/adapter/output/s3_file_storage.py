@@ -1,12 +1,13 @@
-from typing import BinaryIO, cast
+from typing import BinaryIO
+import asyncio
 import boto3
+from functools import partial
 from modules.file_storage.application.exceptions import (
 	FileStorageUploadException,
 	FileStorageDownloadException,
 )
 from modules.file_storage.domain.repository.file_storage import FileStorageRepository
 from botocore.exceptions import ClientError
-from botocore.response import StreamingBody
 
 
 class S3FileStorage(FileStorageRepository):
@@ -24,26 +25,54 @@ class S3FileStorage(FileStorageRepository):
 			region_name=region,
 		)
 		self._s3 = self._session.client("s3")
-		self._bucket_name = bucket_name
+		self._region = region
 
 	async def upload_file(self, file: BinaryIO, filename: str) -> str:
+		"""
+		Sube un archivo a S3 usando boto3 en un thread pool para no bloquear el event loop.
+		"""
 		try:
-			self._s3.upload_fileobj(Fileobj=file, Bucket=self.bucket_name, Key=filename)
+			# Leer el contenido del archivo
+			file_content = file.read()
+
+			# Ejecutar la operación bloqueante en un thread pool
+			loop = asyncio.get_event_loop()
+			await loop.run_in_executor(
+				None,
+				partial(
+					self._s3.put_object,
+					Bucket=self.bucket_name,
+					Key=filename,
+					Body=file_content
+				)
+			)
 		except ClientError as e:
 			raise FileStorageUploadException(message=e)
 
 		return (
 			f"https://{self.bucket_name}.s3."
-			f"{self._s3.meta.region_name}.amazonaws.com/{filename}"
+			f"{self._region}.amazonaws.com/{filename}"
 		)
 
 	async def download_file(self, filename: str) -> bytes:
+		"""
+		Descarga un archivo de S3 usando boto3 en un thread pool para no bloquear el event loop.
+		"""
 		try:
-			response = self._s3.get_object(
-				Bucket=self.bucket_name,
-				Key=filename,
+			# Ejecutar la operación bloqueante en un thread pool
+			loop = asyncio.get_event_loop()
+			response = await loop.run_in_executor(
+				None,
+				partial(
+					self._s3.get_object,
+					Bucket=self.bucket_name,
+					Key=filename
+				)
 			)
-			body = cast(StreamingBody, response["Body"])
-			return body.read()
+
+			# Leer el body (esto también es bloqueante, así que lo ejecutamos en el executor)
+			body = response["Body"]
+			file_content = await loop.run_in_executor(None, body.read)
+			return file_content
 		except ClientError as e:
 			raise FileStorageDownloadException(message=e)
