@@ -79,19 +79,29 @@ async def get_provider_by_id(
 	return await service.get_provider_by_id(int(id_provider), id_schema)
 
 
-@yiqi_erp_router.get("/air_waybills_template")
+@yiqi_erp_router.get("/air_waybills_template_file")
 @inject
-async def get_air_waybills_template(
+async def get_air_waybills_template_file(
 	id_schema: int = Depends(Provide[YiqiContainer.config.YIQI_SCHEMA]),
 	service: YiqiService = Depends(Provide[YiqiContainer.service]),
 ):
-	file = await service.get_air_waybills_template(id_schema)
+	file = await service.get_air_waybills_template_file(id_schema)
 	headers = {"Content-Disposition": f'attachment; filename="{file.filename}"'}
 	return StreamingResponse(
 		content=BytesIO(file.file),
 		headers=headers,
 		media_type="application/octet-stream",
 	)
+
+
+@yiqi_erp_router.get("/air_waybills/{id_invoice}")
+@inject
+async def get_air_waybills_by_invoice_id(
+	id_invoice: int,
+	id_schema: int = Depends(Provide[YiqiContainer.config.YIQI_SCHEMA]),
+	service: YiqiService = Depends(Provide[YiqiContainer.service]),
+):
+	return await service.get_air_waybills_by_invoice_id(int(id_invoice), id_schema)
 
 
 @yiqi_erp_router.post("/create_air_waybill")

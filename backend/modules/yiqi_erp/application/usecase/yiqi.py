@@ -42,12 +42,23 @@ class CreateMultipleAirWaybillsUseCase:
 
 
 @dataclass
-class GetAirWaybillsTemplateUseCase:
+class GetAirWaybillsTemplateFileUseCase:
 	yiqi_repository: YiqiRepository
 
 	async def __call__(self, id_schema: int):
-		template = await self.yiqi_repository.get_air_waybills_template(id_schema)
+		template = await self.yiqi_repository.get_air_waybills_template_file(id_schema)
 		return template
+
+
+@dataclass
+class GetAirWaybillsByInvoiceIdUseCase:
+	yiqi_repository: YiqiRepository
+
+	async def __call__(self, id_invoice: int, id_schema: int):
+		air_waybills = await self.yiqi_repository.get_air_waybills_by_invoice_id(
+			id_invoice, id_schema
+		)
+		return air_waybills
 
 
 @dataclass
@@ -168,7 +179,10 @@ class YiqiUseCaseFactory:
 		self.create_multiple_air_waybills = CreateMultipleAirWaybillsUseCase(
 			self.yiqi_repository
 		)
-		self.get_air_waybills_template = GetAirWaybillsTemplateUseCase(
+		self.get_air_waybills_template_file = GetAirWaybillsTemplateFileUseCase(
+			self.yiqi_repository
+		)
+		self.get_air_waybills_by_invoice_id = GetAirWaybillsByInvoiceIdUseCase(
 			self.yiqi_repository
 		)
 		self.get_provider_by_id = GetProviderByIdUseCase(self.yiqi_repository)

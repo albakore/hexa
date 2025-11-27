@@ -325,6 +325,7 @@ class YiqiApiRepository(YiqiRepository):
 			)
 
 		file_path = upload_file.text
+		print(f"DEBUG: File path from uploadExcel: {file_path}")
 		url = "/api/instancesApi/ImportExcel"
 		import_file = await self.client.get(
 			url,
@@ -333,6 +334,7 @@ class YiqiApiRepository(YiqiRepository):
 				"entityId": 1044,
 				"updateOnDuplicatePK": "true",
 				"parentInstanceId": "null",
+				"filePath": file_path,  # Pass the file path from uploadExcel
 			},
 			headers=headers,
 		)
@@ -358,12 +360,17 @@ class YiqiApiRepository(YiqiRepository):
 					process.text,
 				)
 			process = process.text
-			print(process)
+			print(f"debug: ${process}")
 			if "100|OK" in process:
+				break
+			if "|ERROR|" in process:
+				raise Exception(
+					"Error during import of multiple air waybills in YiqiERP", process
+				)
 				break
 		return {"status": "ok"}
 
-	async def get_air_waybills_template(self, id_schema: int = 316):
+	async def get_air_waybills_template_file(self, id_schema: int = 316):
 		url = "/api/instancesApi/GenerateExcelTemplate"
 		params = {"schemaId": id_schema, "entityId": 1044}
 		template_response = await self.client.get(
@@ -403,6 +410,45 @@ class YiqiApiRepository(YiqiRepository):
 		)
 		print("DEBUG file:", file)
 		return file
+
+	async def get_air_waybills_by_invoice_id(
+		self, id_invoice: int, id_schema: int = 316
+	):
+		url = "/api/InstancesAPI/GetEntityUpdates2"
+		entity_name = "GUIAS_AEREAS"
+		last_update = "01011900"
+		aditional_filters = [
+			{
+				"columnName": "FACO_ID_FACO",
+				"TipoDato": 2,
+				"operator": 1,
+				"operating": str(id_invoice),
+			}
+		]
+		attributes = [
+			"CLIE_ID_CLIE",
+			"FACO_ID_FACO",
+			"GUAE_GUIA_AEREA",
+			# "GUAE_CN38",
+			"PAIS_ID_PAI1",
+			"PAIS_ID_PAIS",
+			"GUAE_KG",
+			# "GUAE_BAGS",
+		]
+		params = {
+			"schemaId": id_schema,
+			"entityName": entity_name,
+			"lastUpdate": last_update,
+			"additionalFilters": aditional_filters.__repr__(),
+			"attributes": ",".join(attributes),
+		}
+		response = await self.client.get(url, params)
+		if response.is_success:
+			data_list = response.json()
+			if len(data_list) > 0:
+				return data_list
+			return None
+		raise RequestException(code=response.status_code, message=response.text)
 
 	async def upload_file(self, file: UploadFile, id_schema: int = 316):
 		url = "/api/InstancesAPI/SaveFile"

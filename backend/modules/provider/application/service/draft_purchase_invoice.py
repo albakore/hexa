@@ -113,8 +113,10 @@ class DraftPurchaseInvoiceService:
 			raise DraftPurchaseInvoiceNotFoundException
 
 		# Obtener todas las guías aéreas asociadas a la draft invoice
-		air_waybills = await self.air_waybill_service.get_all_air_waybills(
-			id_draft_purchase_invoice
+		air_waybills = (
+			await self.air_waybill_service.get_air_waybills_by_draft_invoice_id(
+				id_draft_purchase_invoice
+			)
 		)
 
 		if not air_waybills:
@@ -235,8 +237,10 @@ class DraftPurchaseInvoiceService:
 		await self.save_draft_purchase_invoice(finalized_draft)
 
 		# Asociar guías aéreas a la purchase invoice
-		air_waybills = await self.air_waybill_service.get_all_air_waybills(
-			id_draft_purchase_invoice
+		air_waybills = (
+			await self.air_waybill_service.get_air_waybills_by_draft_invoice_id(
+				id_draft_purchase_invoice
+			)
 		)
 
 		if not air_waybills:

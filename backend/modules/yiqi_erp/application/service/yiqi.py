@@ -31,8 +31,11 @@ class YiqiService:
 	):
 		return await self.usecase.create_multiple_air_waybills(command, id_schema)
 
-	async def get_air_waybills_template(self, id_schema: int):
-		return await self.usecase.get_air_waybills_template(id_schema)
+	async def get_air_waybills_template_file(self, id_schema: int):
+		return await self.usecase.get_air_waybills_template_file(id_schema)
+
+	async def get_air_waybills_by_invoice_id(self, id_invoice: int, id_schema: int):
+		return await self.usecase.get_air_waybills_by_invoice_id(id_invoice, id_schema)
 
 	async def get_provider_by_id(self, id_provider: int, id_schema: int):
 		return await self.usecase.get_provider_by_id(id_provider, id_schema)

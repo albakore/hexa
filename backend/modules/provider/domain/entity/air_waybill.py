@@ -16,3 +16,6 @@ class AirWaybill(SQLModel, table=True):
 		default=None, description="Destino de la guía aérea"
 	)
 	kg: float | None = Field(default=None, description="Peso en kg")
+	fk_yiqi_awb: int | None = Field(
+		default=None, description="ID de la guía aérea en YiqiERP"
+	)

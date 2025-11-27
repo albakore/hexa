@@ -92,3 +92,40 @@ class PurchaseInvoiceServiceTypeServiceProtocol(Protocol):
 	async def get_services_by_id(self, id_service_type: int) -> Optional[Any]:
 		"""Obtiene tipo de servicio por ID"""
 		...
+
+
+class AirWaybillServiceProtocol(Protocol):
+	"""API pública del módulo Provider para gestión de guías aéreas"""
+
+	def __call__(self) -> Self: ...
+	async def get_air_waybill_by_id(self, id_air_waybill: int) -> Optional[Any]:
+		"""Obtiene guía aérea por ID"""
+		...
+
+	async def get_air_waybills_by_draft_invoice_id(
+		self, id_draft_invoice: int
+	) -> List[Any] | Sequence[Any]:
+		"""Obtiene guías aéreas asociadas a una factura Draft"""
+		...
+
+	async def get_air_waybills_by_purchase_invoice_id(
+		self, id_purchase_invoice: int
+	) -> List[Any] | Sequence[Any]:
+		"""Obtiene guías aéreas asociadas a una factura"""
+		...
+
+	async def create_air_waybill(self, command: Any) -> Any:
+		"""Crea una nueva guía aérea"""
+		...
+
+	async def save_air_waybill(self, air_waybill: Any) -> Any:
+		"""Guarda una guía aérea"""
+		...
+
+	async def update_air_waybill(self, command: Any) -> Any:
+		"""Actualiza una guía aérea existente"""
+		...
+
+	async def delete_air_waybill(self, air_waybill: Any) -> Any:
+		"""Elimina una guía aérea"""
+		...

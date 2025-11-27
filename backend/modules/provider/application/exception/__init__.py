@@ -114,3 +114,9 @@ class AirWaybillHasBeenEmittedException(CustomException):
 	code = 400
 	error_code = "AIR_WAYBILL__HAS_BEEN_EMITTED_ERROR"
 	message = "Air Waybill has been emitted and cannot be modified"
+
+
+class AirWaybillDuplicatedException(CustomException):
+	code = 400
+	error_code = "AIR_WAYBILL__DUPLICATED_ERROR"
+	message = "Air Waybill already exists for this provider"
