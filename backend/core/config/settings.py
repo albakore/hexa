@@ -48,6 +48,8 @@ class Settings(BaseSettings):
 	YIQI_LAST_INVOICE_UPDATE: list = [2025, 4, 7]
 	YIQI_SCHEMA: int = 000
 
+	FRONTEND_URL: str = "http://10.0.100.124"
+
 	model_config = SettingsConfigDict(
 		env_file=".env", env_file_encoding="utf-8", extra="ignore"
 	)

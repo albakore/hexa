@@ -34,9 +34,20 @@ class NotificationsTasksProtocol(Protocol):
 		...
 
 
+class EmailBasicInformation(TypedDict):
+	to: list[str]
+	subject: str
+
+
 class NotificationCommandType(TypedDict):
 	notification: dict[str, Any]
 	sender: str
+
+
+class EmailNotificationCommandType(TypedDict):
+	template_name: str
+	notification: EmailBasicInformation
+	data_injection: dict
 
 
 class NotificationServiceProtocol(Protocol):
@@ -50,6 +61,9 @@ class NotificationServiceProtocol(Protocol):
 	async def delete_notification(self, id: int) -> Any | None: ...
 
 	async def send_notification(self, command: NotificationCommandType) -> None: ...
+	async def send_email_notification(
+		self, command: EmailNotificationCommandType
+	) -> None: ...
 
 
 class EmailTemplateServiceProtocol(Protocol):

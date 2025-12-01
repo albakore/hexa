@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 from fastapi.encoders import jsonable_encoder
 
+from core.config.settings import env
 from core.db.transactional import Transactional
 from core.helpers.password import PasswordHelper
 from core.helpers.token import TokenHelper
@@ -123,8 +124,91 @@ class AuthService:
 		await self.user_service.set_user_password(user, hashed_password)
 		return True
 
-	# TODO agregar un recovery_password que notifique al usuario los pasos a seguir para reestablecerla
-	# template email_recoverypassword
+	@Transactional()
+	async def recovery_password(self, email_or_nickname: str) -> bool:
+		"""
+		Crea una solicitud de recuperación de contraseña y envía un email al usuario
+		con una contraseña temporal.
+
+		Flujo:
+		1. Genera una contraseña temporal
+		2. La guarda hasheada en RecoverPassword
+		3. Envía email con la contraseña temporal en texto plano
+		4. Usuario debe llamar a complete_recovery_password con la temporal + nueva contraseña
+
+		Args:
+			email_or_nickname: Email o nickname del usuario que solicita la recuperación
+
+		Returns:
+			bool: True si se envió el email correctamente
+
+		Raises:
+			UserNotFoundException: Si el usuario no existe
+		"""
+		# Buscar el usuario por email o nickname
+		user = await self.user_service.get_user_by_email_or_nickname(
+			email=email_or_nickname, nickname=email_or_nickname
+		)
+
+		if not user:
+			raise UserNotFoundException
+
+		# Crear la solicitud de recuperación (guarda el registro en BD con contraseña hasheada)
+		recovery_request = await self.usecase.create_recovery_password_request(
+			user_uuid=user.id  # type: ignore
+		)
+
+		await self.notification_service.send_email_notification(
+			{
+				"template_name": "recover_password",
+				"notification": {
+					"to": [user.email],
+					"subject": "Reset password",
+				},
+				"data_injection": {
+					"name": user.name,
+					"redirect_url": f"{env.FRONTEND_URL}?email={user.email}&temp={recovery_request.temporary_password_plain}",
+				},
+			}
+		)
+		return True
+
+	@Transactional()
+	async def complete_recovery_password(
+		self, email_or_nickname: str, temporary_password: str, new_password: str
+	) -> bool:
+		"""
+		Completa el proceso de recuperación de contraseña validando la contraseña
+		temporal contra el registro de RecoverPassword.
+
+		Args:
+			email_or_nickname: Email o nickname del usuario
+			temporary_password: Contraseña temporal recibida por email
+			new_password: Nueva contraseña elegida por el usuario
+
+		Returns:
+			bool: True si se completó exitosamente
+
+		Raises:
+			UserNotFoundException: Si el usuario no existe
+			ValueError: Si la contraseña temporal es inválida o expiró
+		"""
+		# Buscar el usuario
+		user = await self.user_service.get_user_by_email_or_nickname(
+			email=email_or_nickname, nickname=email_or_nickname
+		)
+
+		if not user:
+			raise UserNotFoundException
+
+		# Completar la recuperación usando el caso de uso
+		await self.usecase.complete_recovery_password(
+			user_uuid=user.id,  # type: ignore
+			temporary_password=temporary_password,
+			new_password=new_password,
+		)
+
+		return True
 
 	### TODO ofrecer un servicio que sea get_user_session -> LoginResponseDTO | AuthPasswordResetResponseDTO
 

@@ -5,6 +5,9 @@ from dependency_injector.providers import Singleton
 
 from modules.notification.application.exception import ProviderSenderNotFoundException
 from modules.notification.application.service.email_template import EmailTemplateService
+from modules.notification.application.usecase.notification import (
+	NotificationUseCaseFactory,
+)
 from modules.notification.domain.command import (
 	CreateNotificationCommand,
 	SendEmailNotificationCommand,
@@ -13,7 +16,6 @@ from modules.notification.domain.command import (
 from modules.notification.domain.exception import EmailTemplateNotFoundException
 from modules.notification.domain.repository.notification import NotificationRepository
 from modules.notification.domain.repository.sender_provider import SenderProviderPort
-from modules.notification.application.usecase.notification import NotificationUseCaseFactory
 
 
 @dataclass
@@ -49,7 +51,11 @@ class NotificationService:
 
 		await sender().send(command.notification)
 
-	async def send_email_notification(self, command: SendEmailNotificationCommand):
+	async def send_email_notification(
+		self, command: SendEmailNotificationCommand | dict[str, Any]
+	):
+		if isinstance(command, dict):
+			command = SendEmailNotificationCommand.model_validate(command)
 		template = await self.email_template_service.get_email_template_by_name(
 			command.template_name
 		)

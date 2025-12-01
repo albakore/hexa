@@ -15,3 +15,13 @@ class RefreshTokenResponse(BaseModel):
 
 class AuthPasswordResetResponse(BaseModel):
 	status: str = "ok"
+
+
+class AuthRecoveryPasswordResponse(BaseModel):
+	status: str = "ok"
+	message: str = "Recovery password email sent successfully"
+
+
+class AuthCompleteRecoveryPasswordResponse(BaseModel):
+	status: str = "ok"
+	message: str = "Password updated successfully"

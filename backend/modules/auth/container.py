@@ -3,6 +3,7 @@ from dependency_injector.providers import Factory, Object, Singleton
 
 from core.db.redis_db import RedisClient
 from modules.auth.adapter.output.persistence.redis import RedisAuthRepository
+from modules.auth.adapter.output.persistence.sqlalchemy import AuthSQLAlchemyRepository
 from modules.auth.adapter.output.persistence.repository_adapter import (
 	AuthRepositoryAdapter,
 )
@@ -23,7 +24,13 @@ class AuthContainer(DeclarativeContainer):
 		permission_repository=redis_permission_repository,
 	)
 
-	repository_adapter = Factory(AuthRepositoryAdapter, repository=redis_repository)
+	sqlalchemy_repository = Singleton(AuthSQLAlchemyRepository)
+
+	repository_adapter = Factory(
+		AuthRepositoryAdapter,
+		redis_repository=redis_repository,
+		sqlalchemy_repository=sqlalchemy_repository,
+	)
 
 	service = Factory(
 		AuthService,

@@ -25,3 +25,13 @@ class AuthPasswordResetRequest(BaseModel):
 	id: uuid.UUID = Field(..., description="User ID")
 	initial_password: str = Field(..., description="Initial password")
 	new_password: str = Field(..., description="New password account")
+
+
+class AuthRecoveryPasswordRequest(BaseModel):
+	email_or_nickname: str = Field(..., description="Email or nickname of the user")
+
+
+class AuthCompleteRecoveryPasswordRequest(BaseModel):
+	email_or_nickname: str = Field(..., description="Email or nickname of the user")
+	temporary_password: str = Field(..., description="Temporary password received by email")
+	new_password: str = Field(..., description="New password chosen by the user")

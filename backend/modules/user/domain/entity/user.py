@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING, List
 import uuid
 from sqlmodel import Field, Relationship, SQLModel
-from datetime import datetime
 
 from core.helpers.password import PasswordHelper
 from modules.provider.domain.entity import UserProviderLink, Provider
@@ -9,6 +8,7 @@ from shared.mixins import UserTimestampMixin
 
 if TYPE_CHECKING:
 	from modules.rbac.domain.entity import Role
+	from modules.auth.domain.entity import RecoverPassword
 
 
 class User(SQLModel, UserTimestampMixin, table=True):
@@ -34,3 +34,5 @@ class User(SQLModel, UserTimestampMixin, table=True):
 	providers: List["Provider"] = Relationship(
 		back_populates="users", link_model=UserProviderLink
 	)
+
+	recover_passwords: List["RecoverPassword"] = Relationship(back_populates="user")

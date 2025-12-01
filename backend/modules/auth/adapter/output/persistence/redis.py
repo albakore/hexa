@@ -1,8 +1,10 @@
+import uuid
 from datetime import datetime, timedelta
 
 from fastapi.encoders import jsonable_encoder
 from redis.asyncio import Redis
 from modules.auth.domain.repository.auth import AuthRepository
+from modules.auth.domain.entity import RecoverPassword
 from modules.user.application.dto import LoginResponseDTO
 
 
@@ -51,3 +53,25 @@ class RedisAuthRepository(AuthRepository):
 			f"{self.session_prefix}:{user_uuid}"
 		)
 		print(f" -- [{status}] Session deleted for: {user_uuid}")
+
+	async def create_recovery_password_request(
+		self, recovery_request: RecoverPassword
+	) -> RecoverPassword:
+		# RecoverPassword se maneja en SQLAlchemy, no en Redis
+		raise NotImplementedError(
+			"RecoverPassword se maneja en AuthSQLAlchemyRepository"
+		)
+
+	async def get_active_recovery_request(
+		self, user_uuid: uuid.UUID
+	) -> RecoverPassword | None:
+		# RecoverPassword se maneja en SQLAlchemy, no en Redis
+		raise NotImplementedError(
+			"RecoverPassword se maneja en AuthSQLAlchemyRepository"
+		)
+
+	async def mark_recovery_as_completed(self, recovery_id: uuid.UUID) -> None:
+		# RecoverPassword se maneja en SQLAlchemy, no en Redis
+		raise NotImplementedError(
+			"RecoverPassword se maneja en AuthSQLAlchemyRepository"
+		)
