@@ -3,9 +3,12 @@ from datetime import date
 from typing import List
 
 from pydantic import BaseModel, Field
-from core.search import FilterOperator, FilterCriteria
+from core.search import FilterCriteria
 
 
+###
+### PROVIDER SERVICE
+###
 class CreateProviderCommand(BaseModel):
 	name: str = Field(..., description="Name of provider")
 	currency: str | None = None
@@ -29,6 +32,17 @@ class UpdateProviderCommand(BaseModel):
 	)
 
 
+class SearchProviderCommand(BaseModel):
+	filters: List[FilterCriteria] = Field(
+		default=[], description="Lista de filtros a aplicar"
+	)
+	limit: int = Field(default=20, ge=1, le=50000, description="Límite de resultados")
+	page: int = Field(default=0, ge=0, description="Página de resultados")
+
+
+###
+### INVOICE SERVICE
+###
 class CreateDraftPurchaseInvoiceCommand(BaseModel):
 	number: str | None = Field(default=None, description="Numero de la factura")
 	concept: str | None = Field(default=None, description="Concepto")
@@ -60,9 +74,6 @@ class CreateDraftPurchaseInvoiceCommand(BaseModel):
 	)
 
 
-###
-### INVOICE SERVICE
-###
 class CreatePurchaseInvoiceServiceCommand(BaseModel):
 	name: str
 	description: str | None = None
@@ -95,17 +106,34 @@ class SearchDraftPurchaseInvoiceCommand(BaseModel):
 	page: int = Field(default=0, ge=0, description="Página de resultados")
 
 
-class SearchProviderCommand(BaseModel):
-	filters: List[FilterCriteria] = Field(
-		default=[], description="Lista de filtros a aplicar"
-	)
-	limit: int = Field(default=20, ge=1, le=50000, description="Límite de resultados")
-	page: int = Field(default=0, ge=0, description="Página de resultados")
-
-
 class SearchPurchaseInvoiceServiceCommand(BaseModel):
 	filters: List[FilterCriteria] = Field(
 		default=[], description="Lista de filtros a aplicar"
 	)
 	limit: int = Field(default=20, ge=1, le=50000, description="Límite de resultados")
 	page: int = Field(default=0, ge=0, description="Página de resultados")
+
+
+###
+### AIR_WAYBILL SERVICE
+###
+class CreateAirWaybillCommand(BaseModel):
+	fk_provider: int | None = Field(default=None, description="ID de proveedor")
+	fk_draft_invoice: int | None = Field(
+		default=None, description="ID de la factura de compra"
+	)
+	awb_code: str | None = Field(default=None, description="Código de la guía aérea")
+	origin: str | None = Field(default=None, description="Origen de la guía aérea")
+	destination: str | None = Field(
+		default=None, description="Destino de la guía aérea"
+	)
+	kg: float | None = Field(default=None, description="Peso en kg")
+
+
+class UpdateAirWaybillCommand(BaseModel):
+	awb_code: str | None = Field(default=None, description="Código de la guía aérea")
+	origin: str | None = Field(default=None, description="Origen de la guía aérea")
+	destination: str | None = Field(
+		default=None, description="Destino de la guía aérea"
+	)
+	kg: float | None = Field(default=None, description="Peso en kg")

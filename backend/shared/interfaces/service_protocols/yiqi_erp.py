@@ -48,11 +48,23 @@ class YiqiServiceProtocol(Protocol):
 		"""
 		...
 
+	async def get_country_list(self, id_schema: int = 316) -> List[dict]:
+		"""Obtiene lista de países del ERP"""
+		...
+
+	async def get_country_by_name(self, name: str, id_schema: int = 316) -> dict:
+		"""
+		Obtiene país del ERP por nombre.
+
+		Used by:
+		"""
+		...
+
 	async def get_providers_list(self, id_schema: int) -> List[dict]:
 		"""Obtiene lista de proveedores del ERP"""
 		...
 
-	async def upload_file(self, command: Any, id_schema: int) -> dict:
+	async def upload_file(self, command: Any, id_schema: int = 316) -> dict:
 		"""
 		Sube un archivo al ERP.
 

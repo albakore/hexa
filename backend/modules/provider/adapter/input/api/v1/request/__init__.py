@@ -6,9 +6,12 @@ from modules.provider.domain.command import (
 	SearchDraftPurchaseInvoiceCommand,
 	SearchProviderCommand,
 	SearchPurchaseInvoiceServiceCommand,
+	UpdateAirWaybillCommand,
 	UpdateDraftPurchaseInvoiceCommand,
 	UpdateProviderCommand,
 	UpdatePurchaseInvoiceServiceCommand,
+	SearchDraftPurchaseInvoiceCommand,
+	CreateAirWaybillCommand,
 )
 
 
@@ -42,3 +45,9 @@ class ProviderSearchRequest(SearchProviderCommand): ...
 
 
 class PurchaseInvoiceServiceSearchRequest(SearchPurchaseInvoiceServiceCommand): ...
+
+
+class AirWaybillCreateRequest(CreateAirWaybillCommand): ...
+
+
+class AirWaybillUpdateRequest(UpdateAirWaybillCommand): ...

@@ -19,6 +19,7 @@ dependencies = [
     "flower>=2.0.1",
     "lazyops>=0.4.5",
     "minify-html>=0.18.1",
+    "pandas[excel]>=2.3.3",
     "passlib>=1.7.4",
     "pika>=1.3.2",
     "psycopg-binary>=3.2.12",

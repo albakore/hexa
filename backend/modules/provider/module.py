@@ -19,6 +19,10 @@ def setup_routes() -> APIRouter:
 	from .adapter.input.api.v1.purchase_invoice_service import (
 		purchase_invoice_service_router as purchase_invoice_service_v1_router,
 	)
+	from .adapter.input.api.v1.air_waybill import (
+	air_waybill_router as air_waybill_v1_router,
+	)
+
 
 	router = APIRouter(prefix="/providers", tags=["Providers"])
 	router.include_router(
@@ -34,6 +38,11 @@ def setup_routes() -> APIRouter:
 		prefix="/v1/purchase_invoice_service",
 		tags=["Providers Draft Invoice[Service]"],
 	)
+	router.include_router(
+		air_waybill_v1_router,
+		prefix="/v1/air_waybill",
+		tags=["Providers Air Waybill"],
+	)
 
 	return router
 
@@ -45,5 +54,6 @@ service: Dict[str, object] = {
 	"provider_service": container.provider_service,
 	"draft_invoice_service": container.draft_invoice_service,
 	"draft_invoice_servicetype_service": container.invoice_servicetype_service,
+	"air_waybill_service": container.air_waybill_service,	
 }
 routes = setup_routes()

@@ -101,3 +101,9 @@ class DraftPurchaseInvoiceDetailFileInvalidException(CustomException):
 	code = 400
 	error_code = "DRAFT_PURCHASE_INVOICE_DETAIL_FILE__INVALID_ERROR"
 	message = "Detail file does not exist in storage"
+
+
+class AirWaybillNotFoundException(CustomException):
+	code = 400
+	error_code = "AIR_WAYBILL__NOT_FOUND_ERROR"
+	message = "Air Waybill not found"

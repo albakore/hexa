@@ -1,6 +1,13 @@
 from dependency_injector.providers import Factory, Singleton
 from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
 
+from modules.provider.adapter.output.persistence.air_waybill_adapter import (
+	AirWaybillRepositoryAdapter,
+)
+from modules.provider.adapter.output.persistence.sqlalchemy.air_waybill import (
+	AirWaybillSQLAlchemyRepository,
+)
+from modules.provider.application.service.air_waybill import AirWaybillService
 from shared.interfaces.service_locator import service_locator
 from modules.provider.adapter.output.persistence.draft_invoice_adapter import (
 	DraftPurchaseInvoiceAdapter,
@@ -40,6 +47,8 @@ class ProviderContainer(DeclarativeContainer):
 
 	invoice_service_repo = Singleton(PurchaseInvoiceServiceSQLAlchemyRepository)
 
+	air_waybill_repo = Singleton(AirWaybillSQLAlchemyRepository)
+
 	provider_repo_adapter = Factory(
 		ProviderRepositoryAdapter, provider_repository=provider_repo
 	)
@@ -54,6 +63,10 @@ class ProviderContainer(DeclarativeContainer):
 		purchase_invoice_service_repository=invoice_service_repo,
 	)
 
+	air_waybill_repo_adapter = Factory(
+		AirWaybillRepositoryAdapter, air_waybill_repository=air_waybill_repo
+	)
+
 	provider_service = Factory(
 		ProviderService,
 		provider_repository=provider_repo_adapter,
@@ -65,6 +78,12 @@ class ProviderContainer(DeclarativeContainer):
 		purchase_invoice_service_repository=invoice_service_repo_adapter,
 	)
 
+	air_waybill_service = Factory(
+		AirWaybillService,
+		air_waybill_repository=air_waybill_repo_adapter,
+		yiqi_erp_service=service_locator.get_dependency("yiqi_service"),
+	)
+
 	draft_invoice_service = Factory(
 		DraftPurchaseInvoiceService,
 		draft_purchase_invoice_repository=draft_invoice_repo_adapter,
@@ -74,4 +93,5 @@ class ProviderContainer(DeclarativeContainer):
 		),
 		file_storage_service=service_locator.get_dependency("file_storage_service"),
 		currency_service=service_locator.get_dependency("currency_service"),
+		air_waybill_service=air_waybill_service,
 	)

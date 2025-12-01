@@ -1,8 +1,10 @@
 from abc import ABC, abstractmethod
-
 from fastapi import UploadFile
 
-from modules.yiqi_erp.domain.command import CreateYiqiInvoiceCommand
+from modules.yiqi_erp.domain.command import (
+	CreateYiqiAirWaybillCommand,
+	CreateYiqiInvoiceCommand,
+)
 
 
 class YiqiRepository(ABC):
@@ -30,6 +32,14 @@ class YiqiRepository(ABC):
 	async def get_currency_by_code(self, code: str, id_schema: int) -> list[dict]: ...
 
 	@abstractmethod
+	async def get_country_list(self, id_schema: int): ...
+
+	@abstractmethod
+	async def get_country_by_name(
+		self, country_name: str, id_schema: int
+	) -> dict | None: ...
+
+	@abstractmethod
 	async def get_invoices_list_of_provider(self, id_provider: int, id_schema: int): ...
 
 	@abstractmethod
@@ -41,6 +51,28 @@ class YiqiRepository(ABC):
 		id_child: bool | None = None,
 		id_entity: int = 660,
 	) -> dict: ...
+
+	@abstractmethod
+	async def create_air_waybill(
+		self,
+		command: CreateYiqiAirWaybillCommand,
+		id_schema: int,
+	) -> dict: ...
+
+	@abstractmethod
+	async def create_multiple_air_waybills(
+		self,
+		file: UploadFile,
+		id_schema: int,
+	) -> dict: ...
+
+	@abstractmethod
+	async def get_air_waybills_template_file(self, id_schema: int) -> UploadFile: ...
+
+	@abstractmethod
+	async def get_air_waybills_by_invoice_id(
+		self, id_invoice: int, id_schema: int
+	) -> list[dict]: ...
 
 	@abstractmethod
 	async def upload_file(self, file: UploadFile, id_schema: int): ...

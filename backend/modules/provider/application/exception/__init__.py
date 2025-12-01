@@ -1,3 +1,4 @@
+from calendar import c
 from core.exceptions import CustomException
 
 
@@ -101,3 +102,21 @@ class DraftPurchaseInvoiceDetailFileInvalidException(CustomException):
 	code = 400
 	error_code = "DRAFT_PURCHASE_INVOICE_DETAIL_FILE__INVALID_ERROR"
 	message = "Detail file does not exist in storage"
+
+
+class AirWaybillNotFoundException(CustomException):
+	code = 400
+	error_code = "AIR_WAYBILL__NOT_FOUND_ERROR"
+	message = "Air Waybill not found"
+
+
+class AirWaybillHasBeenEmittedException(CustomException):
+	code = 400
+	error_code = "AIR_WAYBILL__HAS_BEEN_EMITTED_ERROR"
+	message = "Air Waybill has been emitted and cannot be modified"
+
+
+class AirWaybillDuplicatedException(CustomException):
+	code = 400
+	error_code = "AIR_WAYBILL__DUPLICATED_ERROR"
+	message = "Air Waybill already exists for this provider"

@@ -67,7 +67,21 @@ class YiqiInvoiceAttach(BaseModel):
 			return value.filename
 
 
+class YiqiAirWaybill(BaseModel):
+	id_provider: int = Field(serialization_alias="CLIE_ID_CLIE")
+	id_purchase_invoice: int = Field(serialization_alias="FACO_ID_FACO")
+	awb_code: str = Field(serialization_alias="GUAE_GUIA_AEREA")
+	cn38_code: str | None = Field(default=None, serialization_alias="GUAE_CN38")
+	id_country_origin: int = Field(serialization_alias="PAIS_ID_PAI1")
+	id_country_destination: int = Field(serialization_alias="PAIS_ID_PAIS")
+	kg: float = Field(serialization_alias="GUAE_KG")
+	bags: int | None = Field(default=None, serialization_alias="GUAE_BAGS")
+
+
 class CreateYiqiInvoiceCommand(YiqiInvoice, YiqiInvoiceAttach): ...
+
+
+class CreateYiqiAirWaybillCommand(YiqiAirWaybill): ...
 
 
 class UploadFileCommand(UploadFile): ...
