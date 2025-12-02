@@ -18,9 +18,6 @@ class AirWaybillRepository(ABC):
 	) -> list[AirWaybill] | Sequence[AirWaybill]: ...
 
 	@abstractmethod
-	async def create_air_waybill(self, air_waybill: AirWaybill) -> AirWaybill: ...
-
-	@abstractmethod
 	async def validate_duplicated_air_waybill(
 		self, air_waybill: AirWaybill
 	) -> list[AirWaybill] | Sequence[AirWaybill]: ...

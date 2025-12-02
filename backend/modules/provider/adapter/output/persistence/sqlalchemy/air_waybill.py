@@ -32,9 +32,6 @@ class AirWaybillSQLAlchemyRepository(AirWaybillRepository):
 		result = await global_session.execute(query)
 		return result.scalars().all()
 
-	async def create_air_waybill(self, air_waybill) -> AirWaybill:
-		raise NotImplementedError
-
 	async def validate_duplicated_air_waybill(
 		self, air_waybill: AirWaybill
 	) -> list[AirWaybill] | Sequence[AirWaybill]:

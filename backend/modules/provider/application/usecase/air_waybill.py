@@ -49,11 +49,11 @@ class GetAirWaybillsByPurchaseInvoiceIdUseCase:
 
 
 @dataclass
-class CreateAirWaybillUseCase:
+class CreateAirWaybillsUseCase:
 	air_waybill_repository: AirWaybillRepository
 
-	def __call__(self, command: CreateAirWaybillCommand) -> AirWaybill:
-		return AirWaybill.model_validate(command)
+	def __call__(self, command: list[CreateAirWaybillCommand]) -> list[AirWaybill]:
+		return [AirWaybill.model_validate(command) for command in command]
 
 
 @dataclass
@@ -128,7 +128,7 @@ class AirWaybillUseCaseFactory:
 		self.get_air_waybills_by_purchase_invoice_id = (
 			GetAirWaybillsByPurchaseInvoiceIdUseCase(self.air_waybill_repository)
 		)
-		self.create_air_waybill = CreateAirWaybillUseCase(self.air_waybill_repository)
+		self.create_air_waybills = CreateAirWaybillsUseCase(self.air_waybill_repository)
 		self.validate_duplicated_air_waybill = ValidateDuplicatedAirWaybillUseCase(
 			self.air_waybill_repository
 		)
