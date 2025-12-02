@@ -1,4 +1,3 @@
-from attr import validate
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 
@@ -49,16 +48,26 @@ async def get_air_waybills_by_purchase_invoice_id(
 
 @air_waybill_router.post("")
 @inject
-async def create_air_waybill(
-	command: AirWaybillCreateRequest,
+async def create_air_waybills(
+	command: list[AirWaybillCreateRequest],
 	service: AirWaybillService = Depends(
 		Provide[ProviderContainer.air_waybill_service]
 	),
 ):
-	air_waybill = await service.create_air_waybill(command)
-	print(air_waybill)
-	await service.validate_duplicated_air_waybill(air_waybill)
-	return await service.save_air_waybill(air_waybill)
+	air_waybills = await service.create_air_waybills(command)
+	print(air_waybills)
+
+	# Validate each air waybill for duplicates
+	for air_waybill in air_waybills:
+		await service.validate_duplicated_air_waybill(air_waybill)
+
+	# Save all air waybills
+	saved_air_waybills = []
+	for air_waybill in air_waybills:
+		saved = await service.save_air_waybill(air_waybill)
+		saved_air_waybills.append(saved)
+
+	return saved_air_waybills
 
 
 @air_waybill_router.put("/{id_air_waybill}")

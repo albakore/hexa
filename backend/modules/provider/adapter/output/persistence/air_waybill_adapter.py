@@ -26,9 +26,6 @@ class AirWaybillRepositoryAdapter(AirWaybillRepository):
 			)
 		)
 
-	async def create_air_waybill(self, air_waybill: AirWaybill) -> AirWaybill:
-		return await self.air_waybill_repository.create_air_waybill(air_waybill)
-
 	async def validate_duplicated_air_waybill(
 		self, air_waybill: AirWaybill
 	) -> list[AirWaybill] | Sequence[AirWaybill]:

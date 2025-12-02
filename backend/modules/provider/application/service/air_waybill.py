@@ -52,8 +52,10 @@ class AirWaybillService:
 			raise AirWaybillNotFoundException
 		return air_waybills
 
-	async def create_air_waybill(self, command: CreateAirWaybillCommand) -> AirWaybill:
-		result = self.air_waybill_usecase.create_air_waybill(command)
+	async def create_air_waybills(
+		self, command: list[CreateAirWaybillCommand]
+	) -> list[AirWaybill]:
+		result = self.air_waybill_usecase.create_air_waybills(command)
 		return result
 
 	async def validate_duplicated_air_waybill(
