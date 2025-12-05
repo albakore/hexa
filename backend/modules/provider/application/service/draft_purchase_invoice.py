@@ -111,24 +111,12 @@ class DraftPurchaseInvoiceService:
 		)
 		if not draft_purchase_invoice:
 			raise DraftPurchaseInvoiceNotFoundException
+		if not draft_purchase_invoice.id:
+			raise DraftPurchaseInvoiceNotFoundException
 
-		# Obtener todas las guías aéreas asociadas a la draft invoice
-		air_waybills = (
-			await self.air_waybill_service.get_air_waybills_by_draft_invoice_id(
-				id_draft_purchase_invoice
-			)
+		await self.air_waybill_service.delete_all_air_waybills_by_draft_invoice(
+			draft_purchase_invoice.id
 		)
-
-		if not air_waybills:
-			raise AirWaybillNotFoundException
-
-		# Eliminar todas las guías aéreas previamente encontradas
-		for air_waybill in air_waybills:
-			aw_id = air_waybill.id
-			if not aw_id:
-				raise AirWaybillNotFoundException
-			await self.air_waybill_service.delete_air_waybill(aw_id)
-
 		return await self.draft_purchase_invoice_usecase.delete_draft_purchase_invoice(
 			draft_purchase_invoice
 		)

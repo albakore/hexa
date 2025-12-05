@@ -89,3 +89,8 @@ class AirWaybillService:
 		if air_waybill.fk_purchase_invoice:
 			raise AirWaybillHasBeenEmittedException
 		return await self.air_waybill_usecase.delete_air_waybill(air_waybill)
+
+	async def delete_all_air_waybills_by_draft_invoice(self, id_draft_invoice: int):
+		await self.air_waybill_usecase.delete_all_air_waybills_by_draft_invoice(
+			id_draft_invoice
+		)

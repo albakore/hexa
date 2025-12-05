@@ -27,3 +27,6 @@ class AirWaybillRepository(ABC):
 
 	@abstractmethod
 	async def delete_air_waybill(self, air_waybill: AirWaybill): ...
+
+	@abstractmethod
+	async def delete_all_air_waybills_by_draft_invoice(self, id_draft_invoice: int): ...
