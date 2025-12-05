@@ -1,3 +1,4 @@
+import re
 from typing import Type, TypeVar, List, Sequence, Set
 from datetime import datetime
 from sqlmodel import select, and_, col, func
@@ -26,9 +27,7 @@ class DynamicSearchMixin:
 	date_fields: Set[str] = set()
 
 	def _build_filter_condition(
-		self,
-		filter_criteria: FilterCriteria,
-		model_class: Type[T] = None
+		self, filter_criteria: FilterCriteria, model_class: Type[T] = None
 	):
 		"""
 		Construye una condición de filtro basada en el criterio
@@ -67,6 +66,17 @@ class DynamicSearchMixin:
 			if value2 is not None:
 				value2 = self._parse_date_value(value2, filter_criteria.field)
 
+		expr = field_attr
+		is_string_col = hasattr(field_attr, "type") and isinstance(
+			field_attr.type, String
+		)
+
+		if not is_string_col and operator in [
+			FilterOperator.CONTAINS,
+			FilterOperator.NOT_CONTAINS,
+		]:
+			expr = cast(field_attr, String)
+
 		# Construir condición según el operador
 		if operator == FilterOperator.EQUALS:
 			return field_attr == value
@@ -81,9 +91,9 @@ class DynamicSearchMixin:
 		elif operator == FilterOperator.LESS_THAN_OR_EQUAL:
 			return field_attr <= value
 		elif operator == FilterOperator.CONTAINS:
-			return cast(field_attr, String).contains(str(value))
+			return expr.ilike(f"%{value}%")
 		elif operator == FilterOperator.NOT_CONTAINS:
-			return ~cast(field_attr, String).contains(str(value))
+			return ~expr.ilike(f"%{value}%")
 		elif operator == FilterOperator.BETWEEN:
 			if value2 is None:
 				raise ValueError("Operador 'between' requiere value2")
@@ -100,6 +110,22 @@ class DynamicSearchMixin:
 			return field_attr.is_(None)
 		elif operator == FilterOperator.IS_NOT_NULL:
 			return field_attr.is_not(None)
+		elif operator == FilterOperator.SMART_SEARCH:
+			# Supongamos que creas un nuevo Enum FilterOperator.SMART_SEARCH
+			# Esto implementa la lógica de dividir palabras que vimos antes
+			if not value:
+				return True  # O una condición vacía
+
+			terms = list(filter(None, re.split(r"[\s\W]+", str(value))))
+			conditions = []
+			for word in terms:
+				# unaccent(columna) ILIKE unaccent('%palabra%')
+				# Esto ignora acentos y mayúsculas
+				pattern = f"%{word}%"
+				conditions.append(func.unaccent(expr).ilike(func.unaccent(pattern)))
+
+			# Deben cumplirse TODAS las palabras (AND) en ese campo
+			return and_(*conditions)
 		else:
 			raise ValueError(f"Operador '{operator}' no soportado")
 
@@ -133,7 +159,7 @@ class DynamicSearchMixin:
 		filters: List[FilterCriteria],
 		limit: int = 20,
 		page: int = 0,
-		model_class: Type[T] = None
+		model_class: Type[T] = None,
 	) -> tuple[List[T] | Sequence[T], int]:
 		"""
 		Búsqueda dinámica con filtros y paginación
@@ -163,8 +189,7 @@ class DynamicSearchMixin:
 		if filters:
 			for filter_criteria in filters:
 				condition = self._build_filter_condition(
-					filter_criteria,
-					model_class=target_model
+					filter_criteria, model_class=target_model
 				)
 				conditions.append(condition)
 
