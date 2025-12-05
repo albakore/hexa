@@ -38,3 +38,10 @@ class AirWaybillRepositoryAdapter(AirWaybillRepository):
 
 	async def delete_air_waybill(self, air_waybill: AirWaybill):
 		return await self.air_waybill_repository.delete_air_waybill(air_waybill)
+
+	async def delete_all_air_waybills_by_draft_invoice(self, id_draft_invoice: int):
+		return (
+			await self.air_waybill_repository.delete_all_air_waybills_by_draft_invoice(
+				id_draft_invoice
+			)
+		)

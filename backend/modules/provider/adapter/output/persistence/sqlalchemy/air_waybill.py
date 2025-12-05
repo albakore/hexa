@@ -1,4 +1,5 @@
-from sqlmodel import select
+from celery.bin.result import result
+from sqlmodel import select, delete
 from typing import Sequence
 
 from core.db import session_factory, session as global_session
@@ -49,4 +50,11 @@ class AirWaybillSQLAlchemyRepository(AirWaybillRepository):
 
 	async def delete_air_waybill(self, air_waybill: AirWaybill):
 		await global_session.delete(air_waybill)
+		await global_session.flush()
+
+	async def delete_all_air_waybills_by_draft_invoice(self, id_draft_invoice: int):
+		query = delete(AirWaybill).where(
+			AirWaybill.fk_draft_invoice == int(id_draft_invoice)
+		)
+		await global_session.execute(query)
 		await global_session.flush()

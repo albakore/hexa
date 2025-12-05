@@ -102,6 +102,19 @@ class DeleteAirWaybillUseCase:
 
 
 @dataclass
+class DeleteAllAirWaybillsByDraftInvoiceUseCase:
+	air_waybill_repository: AirWaybillRepository
+
+	@Transactional()
+	async def __call__(self, id_draft_invoice: int):
+		return (
+			await self.air_waybill_repository.delete_all_air_waybills_by_draft_invoice(
+				id_draft_invoice
+			)
+		)
+
+
+@dataclass
 class LinkInvoiceToAirWaybillUseCase:
 	air_waybill_repository: AirWaybillRepository
 	invoice_repository: PurchaseInvoiceRepository
@@ -135,3 +148,6 @@ class AirWaybillUseCaseFactory:
 		self.save_air_waybill = SaveAirWaybillUseCase(self.air_waybill_repository)
 		self.update_air_waybill = UpdateAirWaybillUseCase(self.air_waybill_repository)
 		self.delete_air_waybill = DeleteAirWaybillUseCase(self.air_waybill_repository)
+		self.delete_all_air_waybills_by_draft_invoice = (
+			DeleteAllAirWaybillsByDraftInvoiceUseCase(self.air_waybill_repository)
+		)
